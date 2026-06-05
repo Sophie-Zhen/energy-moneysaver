@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# OS
+.DS_Store
+*.log
+.env
+.envrc
+
+# Personal data — user configs and HDF exports should not be committed
+my_config.yaml
+my_*.yaml
+*.csv
+HDF_*
+report*.html
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>energy-moneysaver — Data Guide</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1d1d1f; --muted: #6e6e73; --line: #e0e0d8;
+    --accent: #0a7d57; --warn: #b94b00; --code-bg: #f4f4ef;
+  }
+  * { box-sizing: border-box; }
+  body { font: 15.5px/1.55 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; margin: 0; background: var(--bg); color: var(--fg); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 28px; }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 20px; margin: 36px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--accent); }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  .meta { color: var(--muted); font-size: 13.5px; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+  details summary { cursor: pointer; font-weight: 600; padding: 2px 0; }
+  details[open] summary { margin-bottom: 8px; }
+  details summary::marker { color: var(--accent); }
+  code, pre { font: 13px/1.5 "SF Mono", Menlo, Consolas, monospace; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+  pre { background: var(--code-bg); padding: 10px 14px; border-radius: 6px; overflow-x: auto; }
+  .field { display: inline-block; background: #e8f3ed; color: #0a5f3f; padding: 1px 6px; border-radius: 3px; font: 12.5px "SF Mono", monospace; font-weight: 600; }
+  blockquote { border-left: 3px solid var(--accent); margin: 12px 0; padding: 4px 14px; color: #2c2c2e; background: #f0f7f3; border-radius: 0 6px 6px 0; }
+  blockquote.warn { border-color: var(--warn); background: #fcf3e7; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; background: #fff; font-size: 14.5px; }
+  th, td { padding: 8px 11px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { background: #f4f4ee; font-weight: 600; }
+  .quick-start { background: #fffbe7; border: 1px solid #ecd97a; border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
+  .quick-start h3 { margin-top: 0; color: #7a4e00; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Data Guide</h1>
+  <div class="meta">
+    Click each section below to see where to find the data the tool needs.
+    Open <code>example_config.yaml</code> next to this guide and fill in your numbers as you go.
+  </div>
+</header>
+
+<div class="quick-start">
+  <h3>Minimum viable run (5 minutes)</h3>
+  <p>If you just want a quick estimate, you only need <em>two</em> numbers:</p>
+  <ul>
+    <li><span class="field">electricity.annual_kwh</span> — your annual electricity use (kWh). Find this on your latest bill.</li>
+    <li><span class="field">gas.annual_kwh</span> — your annual gas use (kWh). Same bill, or omit this section if you have no gas.</li>
+  </ul>
+  <p>Everything else (HDF data, EV details, current plan id) is optional. Without them the tool uses a default Irish residential load profile and treats your current plan as the Electric Ireland Home Electric+ Saver 28% baseline.</p>
+</div>
+
+<h2>Electricity</h2>
+
+<details>
+  <summary><span class="field">electricity.annual_kwh</span> — Your yearly electricity usage in kWh</summary>
+  <h3>Where to find it</h3>
+  <ol>
+    <li><strong>Easiest:</strong> Look at your latest electricity bill. Most Irish bills include an "Annual Estimated Consumption" or 12-month total near the unit-rate breakdown.</li>
+    <li><strong>Most accurate:</strong> Add up the kWh from every bill in the last 12 months (usually 6 bills, every 2 months).</li>
+    <li><strong>From smart meter:</strong> Log in to your supplier's online portal — they show a 12-month chart you can read off.</li>
+    <li><strong>From ESB Networks HDF:</strong> Sum the "Active Import Interval (kWh)" column in your half-hour CSV — most accurate, but takes longer to set up. See the next section.</li>
+  </ol>
+  <h3>Sanity range</h3>
+  <p>Typical Irish 2–3 person household: 3,500–4,500 kWh/year. Family of 4–5: 5,000–6,500 kWh. With an EV charging at home: add 1,500–3,000 kWh.</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.meter_type</span> — Smart, standard, or day/night meter?</summary>
+  <h3>How to tell</h3>
+  <p>Check your most recent bill or the meter itself:</p>
+  <ul>
+    <li><strong>smart</strong> — Bill mentions "Smart Tariff" / "MCC12" / "MCC16" / "Time of Use". The meter has a digital display that shows several rate periods (Day, Night, Peak).</li>
+    <li><strong>day_night</strong> — Bill has separate "Day rate" and "Night rate" lines but no Peak. Older Nightsaver meters. The physical meter has two digital counters.</li>
+    <li><strong>standard_24hr</strong> — A single unit rate on the bill. Most older meters.</li>
+  </ul>
+  <p>If unsure, check ESB Networks' "My Account" page — your meter category code is shown there. v0 supports <code>smart</code> fully and treats the other two as smart equivalents (catalogue expansion to dedicated non-smart plans is on the roadmap).</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.hdf_csv_path</span> — (optional) ESB Networks half-hour data</summary>
+  <h3>What this is</h3>
+  <p>Your smart meter sends a kWh reading every 30 minutes. ESB Networks gives you a 2-year CSV export of that data. When the simulator has this, it uses your <em>actual</em> hourly consumption pattern instead of a default profile — much more accurate for time-of-use plans (especially with EV charging).</p>
+  <h3>How to download</h3>
+  <ol>
+    <li>Sign up / log in at <a href="https://myaccount.esbnetworks.ie/" target="_blank">myaccount.esbnetworks.ie</a> (separate from your supplier's account).</li>
+    <li>You'll need your MPRN (see next section) and a recent ESB Networks bill to register.</li>
+    <li>Menu → <strong>My Smart Data Tools</strong> → <strong>Download My Data</strong>.</li>
+    <li>Choose <strong>HDF</strong> format and the date range (the tool can use as little as 30 days, but 6–12 months gives a much more reliable seasonal pattern).</li>
+    <li>Email arrives within minutes; download the CSV.</li>
+  </ol>
+  <blockquote class="warn">
+    <strong>Latency:</strong> ESB Networks publishes data with a 2–3 day delay. If you just installed your smart meter, wait at least 2–3 days before trying to download.
+  </blockquote>
+  <h3>What the file looks like</h3>
+  <p>Filename will be something like <code>HDF_calckWh_10001234567_31-05-2026.csv</code> (the 11-digit number is your MPRN; the date is the export end date).</p>
+  <p>Set <code>hdf_csv_path: /absolute/path/to/HDF_calckWh_*.csv</code> in your config. The simulator will report how many days it found.</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.ev_start_date</span> — When you started charging an EV at home</summary>
+  <p>Only relevant if you have an EV <em>and</em> your HDF spans a period both before and after you started home-charging. The simulator uses only pre-EV readings to extract your baseload (so EV charging doesn't double-count when the simulator adds the EV layer back on top).</p>
+  <ul>
+    <li>Got your EV after the HDF period started → set <code>ev_start_date</code> to the date you first plugged in at home.</li>
+    <li>Already had EV when HDF starts → omit or set to <code>null</code>; whole HDF will be used as "with-EV" pattern.</li>
+    <li>No EV → ignore.</li>
+  </ul>
+</details>
+
+<details>
+  <summary><span class="field">electricity.ev</span> — EV usage details</summary>
+  <h3>annual_kwh</h3>
+  <p>How much you charge at home per year (kWh). Find it in:</p>
+  <ul>
+    <li><strong>Tesla:</strong> Tesla app → <strong>Charging Stats</strong> (energy added at home only).</li>
+    <li><strong>myenergi Zappi:</strong> myenergi app → <strong>Stats</strong> → totals tab.</li>
+    <li><strong>Easee:</strong> Easee app → home unit → energy used.</li>
+    <li><strong>Other smart charger:</strong> Whatever total energy reading the charger app provides.</li>
+    <li><strong>Rough estimate:</strong> Annual km × kWh/100km ÷ home-charging fraction. Example: a Tesla Model Y driver doing 15,000 km/year at ~17 kWh/100 km, charging 85% at home, charges about 3,000 kWh/year at home. Sample household in the verification dataset comes out around 2,022 kWh because they do more public charging.</li>
+  </ul>
+  <h3>can_schedule_charging</h3>
+  <p>Can your charger be set to a fixed daily window (e.g. 02:00–05:00)?</p>
+  <ul>
+    <li><strong>true</strong> — myenergi Zappi (Boost Timer), Tesla (Scheduled Charging), Easee (Smart Charging), most modern EV chargers. The simulator runs a "Shifted" scenario that puts all EV kWh in each plan's cheapest band.</li>
+    <li><strong>false</strong> — Older chargers or always charging on arrival. Only "Now" cost is computed.</li>
+  </ul>
+</details>
+
+<details>
+  <summary><span class="field">electricity.current_plan.plan_id</span> — Which plan you're on now</summary>
+  <p>Used to build the BASELINE row in your report (so you can see how much switching saves). The id must match an entry in <code>tariffs/electricity.yaml</code>.</p>
+  <h3>How to find your current plan id</h3>
+  <ol>
+    <li>Look at your most recent bill — the plan name is usually at the top (e.g. "Home Electric+ Saver", "Smart Standard Dual Fuel", "EV Smart").</li>
+    <li>Open <code>tariffs/electricity.yaml</code> and search for that name. The id is the <code>id:</code> field on the matching entry.</li>
+    <li>If your plan isn't in the catalogue, either: (a) pick the closest match, or (b) add a custom plan in the config — see Example 3 in <code>example_config.yaml</code>.</li>
+  </ol>
+  <p>Example ids: <code>ei_home_electric_saver_28pc</code>, <code>bg_smart_standard_dual_fuel_2026q2</code>, <code>energia_smart_data_mcc12_2026q2</code>, <code>flogas_ev_night_charge_2026q2</code>.</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.current_plan.discount_expires_on</span> — Your discount end date</summary>
+  <p>When the introductory discount on your current plan runs out. Used to model the "DO-NOTHING" row in the report (what you'd pay if you let your discount lapse and rolled onto the standard rate).</p>
+  <ul>
+    <li>Look on your supplier's welcome email, latest bill, or My Account page.</li>
+    <li>It is exactly 12 months from your sign-up date for most fixed-discount Irish plans.</li>
+    <li>Omit if you've been with the same supplier on standard rates for a long time (DO-NOTHING row will not be shown).</li>
+  </ul>
+</details>
+
+<h2>Gas</h2>
+
+<details>
+  <summary>Omit the <code>gas:</code> section entirely if you have no mains gas</summary>
+  <p>The simulator handles electricity-only households correctly. If you heat with a heat pump or oil, just remove the whole <code>gas:</code> block from <code>my_config.yaml</code>.</p>
+</details>
+
+<details>
+  <summary><span class="field">gas.annual_kwh</span> — Yearly gas usage in kWh</summary>
+  <p>From your latest gas bill or by summing 12 months of bills. Typical Irish 2-bed apartment with gas hob only: 1,500–3,000 kWh/year. Average 3-bed semi with gas central heating: 11,000 kWh/year. Bigger or poorly insulated house: 15,000–22,000 kWh/year.</p>
+  <p>Important: Irish gas bills sometimes report in <strong>m³</strong> (cubic meters) instead of kWh. To convert: multiply m³ by ~11.0 (the conversion factor is shown on the bill, usually around 10.8–11.3 depending on calorific value).</p>
+</details>
+
+<details>
+  <summary><span class="field">gas.current_plan.plan_id</span> — Your current gas plan</summary>
+  <p>Same approach as electricity. Look at your bill, find the plan name, look it up in <code>tariffs/gas.yaml</code>. If you're on a dual-fuel bundle, the gas plan id usually has the bundle discount in the name (e.g. <code>ei_gas_dual_plus_8_5pc</code>, <code>energia_gas_27pc_with_smart_data</code>).</p>
+</details>
+
+<h2>Tariff catalogue — fixing wrong rates</h2>
+
+<details>
+  <summary>The shipped catalogue says X but my quote says Y</summary>
+  <p>Rates change a few times per year. If the rate on your personal quote disagrees with our YAML, you have three escape hatches — none of them requires editing the shipped YAML.</p>
+  <h3>Override a single field</h3>
+<pre>tariff_overrides:
+  flogas_ev_night_charge_2026q2:
+    standing_eur_per_year: 320.00
+    welcome_credit_eur: 50</pre>
+
+  <h3>Override a banded rate table wholesale</h3>
+<pre>tariff_overrides:
+  energia_smart_data_mcc12_2026q2:
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 34.10, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 16.50, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 16.50, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 30.20, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 30.20, label: Day}</pre>
+
+  <h3>Add a brand-new plan + rank it</h3>
+<pre>custom_electricity_plans:
+  - id: my_personal_energia_quote_2026_06
+    supplier: Energia
+    label: "My Energia quote (10 May 2026)"
+    # ... full plan schema, see Example 3 in example_config.yaml
+
+custom_combos:
+  - electricity_id: my_personal_energia_quote_2026_06
+    gas_id: energia_gas_27pc_with_smart_data
+    label: "My personal Energia quote + Energia Gas 27%"</pre>
+  <p>Overridden / custom plans are tagged <code>[USER OVERRIDE]</code> in the report so it's obvious which numbers are yours, not ours.</p>
+</details>
+
+<h2>Where to find supporting reference data</h2>
+
+<details>
+  <summary>MPRN (Meter Point Reference Number)</summary>
+  <p>11-digit number printed on every electricity bill and on the front of your meter. Needed to register on ESB Networks (for HDF download). Format: <code>10001234567</code> — starts with 1 in the Republic of Ireland.</p>
+</details>
+
+<details>
+  <summary>GPRN (Gas Point Reference Number)</summary>
+  <p>7-digit number on every gas bill. Format: <code>1234567</code>. Needed when you switch suppliers but the tool doesn't ask for it directly.</p>
+</details>
+
+<details>
+  <summary>Eircode</summary>
+  <p>On every utility bill. The 3-character prefix (e.g. <code>D09</code>, <code>K67</code>) is what the config asks for — used to flag regional plan eligibility in the future. Not load-bearing in v0.</p>
+</details>
+
+<details>
+  <summary>Smart meter type codes (MCC)</summary>
+  <table>
+    <tr><th>Code</th><th>What it means</th></tr>
+    <tr><td>MCC01</td><td>Standard 24-hour meter (non-smart)</td></tr>
+    <tr><td>MCC02</td><td>Day/Night meter (non-smart, 2-band)</td></tr>
+    <tr><td>MCC12</td><td>Smart, 30-minute interval, NOT publishing to ESB Networks data feed</td></tr>
+    <tr><td>MCC16</td><td>Smart, 30-minute interval, publishing to data feed (you can download HDF)</td></tr>
+  </table>
+  <p>Some Energia plans are MCC-specific (their Smart Data plan is MCC12-only; their Smart Standard is MCC16-only). If you don't know your MCC, check your meter — Irish smart meters have a sticker, or call ESB Networks customer service.</p>
+</details>
+
+<h2>Once you've filled in <code>my_config.yaml</code></h2>
+
+<pre>conda activate energy-moneysaver
+python -m src.cli --config my_config.yaml --output report.html
+open report.html</pre>
+
+<p>For a quick terminal-only view (no HTML):</p>
+<pre>python -m src.cli --config my_config.yaml --text-only</pre>
+
+<p>If the simulator complains about a missing plan_id, double-check it against <code>tariffs/electricity.yaml</code> / <code>tariffs/gas.yaml</code>.</p>
+
+<footer>
+  Found wrong data, a missing plan, or a new supplier? <strong>Open a PR.</strong> See <code>tariffs/METADATA.md</code> for the verification procedure.
+</footer>
+
+</div>
+</body>
+</html>

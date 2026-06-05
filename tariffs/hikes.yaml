@@ -1,0 +1,46 @@
+schema_version: 1
+last_verified: 2026-06-03
+verified_by: sophiezhen
+notes: |
+  Announced supplier price changes with future effective dates.
+
+  Each entry applies a multiplicative scale factor to every plan from the
+  given supplier whose rates were collected BEFORE the effective date.
+
+  The simulator applies hikes automatically when computing forward-looking
+  annual costs that span the effective date. To prevent double-application,
+  any plan whose `source.verified_on` is on or after the effective date is
+  considered already post-hike and is skipped.
+
+  Refresh procedure: search Google News for "<supplier> energy price" within
+  the last 30 days, plus check each supplier's "price change information"
+  page directly.
+
+hikes:
+
+  - supplier: Electric Ireland
+    effective_date: 2026-07-01
+    electricity_pct: 8.0
+    gas_pct: 7.7
+    announced_on: 2026-05-28
+    source:
+      url: ESB press release 28 May 2026 (electricireland.ie/about/news)
+      confidence: FACT
+
+  - supplier: Yuno Energy
+    effective_date: 2026-07-01
+    electricity_pct: 9.5
+    gas_pct: 11.0
+    announced_on: 2026-05-29
+    source:
+      url: thejournal.ie / rte.ie / irishtimes.com (29 May 2026 coverage)
+      confidence: PRESS
+
+# Suppliers with no announced hike as of last_verified. Listed for
+# transparency so the absence is intentional, not an oversight.
+no_hike_announced:
+  - Bord Gáis
+  - SSE Airtricity
+  - Energia
+  - Flogas
+  - Pinergy

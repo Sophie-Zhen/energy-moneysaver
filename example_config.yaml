@@ -1,0 +1,152 @@
+# energy-moneysaver — user configuration
+#
+# Copy this file to my_config.yaml (already in .gitignore) and edit with
+# your own numbers. Open data_guide.html in your browser for help finding
+# each value.
+
+household:
+  # Optional metadata; v0 does not use these for the calculation.
+  occupants: 2
+  eircode_prefix: D09       # not required; useful for future regional plans
+  notes: "Dublin city, gas central heating, 1 EV"
+
+electricity:
+  # Annual electricity consumption in kWh. Find this on your most recent
+  # 12-month bill, or sum 12 months of bills, or use the total at the
+  # bottom of your ESB Networks HDF export.
+  annual_kwh: 5800
+
+  meter_type: smart         # smart | day_night | standard_24hr
+
+  # OPTIONAL: path to your ESB Networks half-hour HDF CSV export. When
+  # provided, the simulator uses your actual hourly consumption pattern;
+  # otherwise it falls back to a residential default profile.
+  # Download yours at esbnetworks.ie ("My Account" > "Download My Data").
+  hdf_csv_path: null
+
+  # OPTIONAL: date you started charging an EV at home. If your HDF spans
+  # a period before AND after this date, the simulator uses only the
+  # pre-EV days to extract baseload, then layers EV on top per the
+  # `ev:` section below. Leave null if your HDF is purely baseload or
+  # purely post-EV.
+  ev_start_date: null
+
+  # Your current electricity plan. The plan_id must match an entry in
+  # tariffs/electricity.yaml. Used to model the "do nothing" baseline.
+  current_plan:
+    plan_id: ei_home_electric_saver_28pc
+    discount_expires_on: 2026-07-03
+
+  ev:
+    enabled: true
+    # Annual EV charging in kWh. Tesla owners: Tesla app > Charging Stats
+    # > totals. Zappi/myenergi owners: app totals.
+    annual_kwh: 2022
+    # Binary: can your charger be scheduled to specific hours (e.g. Zappi
+    # boost timer, Tesla scheduled charging)? If yes, the simulator
+    # additionally models a "shifted" scenario that puts all EV kWh in the
+    # plan's cheapest band.
+    can_schedule_charging: true
+
+# Omit the `gas` section entirely if you don't have mains gas.
+gas:
+  annual_kwh: 17285
+  current_plan:
+    plan_id: ei_gas_saver_28pc
+    discount_expires_on: 2026-07-03
+
+output:
+  html_path: ./report.html
+  title: "My Energy Switch Recommendation"
+
+
+# -----------------------------------------------------------------------
+# OPTIONAL: User corrections to the shipped tariff catalogue.
+#
+# The catalogue under tariffs/ is a point-in-time snapshot. If you have a
+# personal quote with different rates, or if the catalogue is stale, use
+# the sections below to fix it for YOUR run without editing the shipped
+# YAML files. Three things you can do:
+#
+#   1. Override specific fields on a shipped plan (tariff_overrides)
+#   2. Add a brand new plan that isn't in the catalogue (custom_*_plans)
+#   3. Replace a stale rate band (override `rates_inc_vat` wholesale)
+#
+# All three only affect your run — they never modify the shipped YAML.
+# Each overridden / custom plan shows up in the report tagged
+# [USER OVERRIDE] so it's obvious which numbers came from you.
+# -----------------------------------------------------------------------
+
+# Example 1: nudge an existing plan's standing charge or welcome credit.
+#   (Uncomment and edit. The plan_id must match a real id from
+#   tariffs/electricity.yaml or tariffs/gas.yaml.)
+#
+# tariff_overrides:
+#   flogas_ev_night_charge_2026q2:
+#     standing_eur_per_year: 320.00
+#     welcome_credit_eur: 50
+#   ei_gas_saver_28pc:
+#     rate_cpkwh_inc_vat: 7.95   # I have a better quote
+
+
+# Example 2: replace a banded rate plan's full band table.
+#   When overriding `rates_inc_vat`, supply the WHOLE block (kind + all
+#   bands). The simulator does not deep-merge bands.
+#
+# tariff_overrides:
+#   energia_smart_data_mcc12_2026q2:
+#     rates_inc_vat:
+#       kind: bands
+#       bands:
+#         - {hours: [17, 19], rate_cpkwh: 34.10, label: Peak}
+#         - {hours: [23, 24], rate_cpkwh: 16.50, label: Night}
+#         - {hours: [0, 8],   rate_cpkwh: 16.50, label: Night}
+#         - {hours: [8, 17],  rate_cpkwh: 30.20, label: Day}
+#         - {hours: [19, 23], rate_cpkwh: 30.20, label: Day}
+
+
+# Example 3: add a brand new plan you found that isn't in the catalogue.
+#   Use the same schema as tariffs/electricity.yaml. The id must NOT
+#   collide with any shipped plan.
+#
+# custom_electricity_plans:
+#   - id: my_personal_energia_quote_2026_06
+#     supplier: Energia
+#     label: My personal Energia quote (10 May 2026)
+#     category: new_customer_offer
+#     meter_type: smart
+#     requires_dual_fuel: false
+#     requires_ev: false
+#     contract_months: 12
+#     discount_pct: 30
+#     welcome_credit_eur: 0
+#     exit_fee_eur: 50
+#     rates_inc_vat:
+#       kind: bands
+#       bands:
+#         - {hours: [17, 19], rate_cpkwh: 33.50, label: Peak}
+#         - {hours: [23, 24], rate_cpkwh: 16.00, label: Night}
+#         - {hours: [0, 8],   rate_cpkwh: 16.00, label: Night}
+#         - {hours: [8, 17],  rate_cpkwh: 29.50, label: Day}
+#         - {hours: [19, 23], rate_cpkwh: 29.50, label: Day}
+#     standing_eur_per_year: 260.00
+#     source:
+#       url: my_quote_pdf_screenshot.png
+#       verified_on: 2026-05-10
+#       confidence: FACT
+#
+# custom_gas_plans: []
+
+
+# Example 4: rank your custom plan alongside the curated big-six combos.
+#   Without a custom_combos entry, a custom plan is loaded into the
+#   catalogue but never paired with a gas plan in the ranking.
+#
+# custom_combos:
+#   - electricity_id: my_personal_energia_quote_2026_06
+#     gas_id: energia_gas_27pc_with_smart_data
+#     label: "My personal Energia quote + Energia Gas 27%"
+#   # Pair a catalogue plan we didn't add to CURATED_DUAL_FUEL_COMBOS:
+#   - electricity_id: pinergy_lifestyle_ev_drive_time_2026q2
+#     gas_id: flogas_gas_28pc_with_smart   # cross-supplier split bundle
+#     label: "Pinergy EV Drive Time (split bundle with Flogas Gas)"
