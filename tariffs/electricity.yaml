@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-06-03
+last_verified: 2026-06-06
 verified_by: sophiezhen
 notes: |
   All rates are c/kWh INC 9% residential VAT.
@@ -394,6 +394,65 @@ plans:
       verified_on: 2026-06-04
       confidence: FACT
 
+  - id: energia_day_night_30pc_2026q2
+    supplier: Energia
+    label: Day/Night Meter (30% off, MCC02 legacy meter — standalone)
+    category: new_customer_offer
+    meter_type: day_night
+    requires_dual_fuel: false
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 30
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [23, 24], rate_cpkwh: 15.69, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 15.69, label: Night}
+        - {hours: [8, 23],  rate_cpkwh: 32.73, label: Day}
+    standing_eur_per_year: 331.97
+    source:
+      url: energia.ie/about-energia/our-tariffs (browse 6 Jun 2026)
+      verified_on: 2026-06-06
+      confidence: FACT
+    notes: |
+      For legacy MCC02 day/night meter (non-smart). Bands modelled as
+      Night 23:00-08:00, Day 08:00-23:00 (catalogue convention; MCC02
+      doesn't adjust for DST so individual customers may see a slightly
+      shifted schedule). Energia also publishes "Threshold Day/Night"
+      rates (51.82/25.24 pre-discount); usage is not documented on their
+      tariff page and is not modelled here. Rural standing €422.31/year.
+
+  - id: energia_day_night_df_25pc_2026q2
+    supplier: Energia
+    label: Day/Night Meter Dual Fuel (25% off, MCC02 + paired gas)
+    category: new_customer_offer
+    meter_type: day_night
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 25
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [23, 24], rate_cpkwh: 16.82, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 16.82, label: Night}
+        - {hours: [8, 23],  rate_cpkwh: 35.07, label: Day}
+    standing_eur_per_year: 331.97
+    source:
+      url: energia.ie/about-energia/our-tariffs (browse 6 Jun 2026)
+      verified_on: 2026-06-06
+      confidence: FACT
+    notes: |
+      Dual Fuel variant of energia_day_night_30pc_2026q2: 5pp lower
+      discount on electricity (25% vs 30%) but unlocks 25% off gas
+      (see energia_gas_25pc_with_day_night_df). Pair with that gas plan.
+
   # ----------------- Flogas -----------------
   - id: flogas_ev_night_charge_2026q2
     supplier: Flogas
@@ -722,8 +781,8 @@ plans:
   # ----------------- Pinergy -----------------
   - id: pinergy_lifestyle_ev_drive_time_2026q2
     supplier: Pinergy
-    label: Lifestyle EV Drive Time (5.99c @ 2-5am — cheapest EV rate in Ireland)
-    category: new_customer_offer
+    label: Lifestyle EV Night Time (5.99c @ 2-5am — DISCONTINUED 21 May 2026)
+    category: discontinued
     meter_type: smart
     requires_dual_fuel: false
     requires_ev: true
@@ -740,14 +799,16 @@ plans:
         - {hours: [5, 24],  rate_cpkwh: 41.77, label: Standard}
     standing_eur_per_year: 283.47
     source:
-      url: pinergy.ie/lifestyle-smart-tariffs/ (browse 5 Jun 2026)
-      verified_on: 2026-06-05
+      url: pinergy.ie/customer-information/lifestyle-smart-tariffs/ (browse 6 Jun 2026)
+      verified_on: 2026-06-06
       confidence: FACT
     notes: |
-      Earlier YAML marked this as discontinued — that was WRONG. Pinergy
-      currently still offers EV Drive Time. Off-peak rate (5am-2am: 41.77c)
-      is HIGH, so this only saves money if you charge >50% of usage in the
-      3-hour 2-5am window. Early termination €11.25/month remaining.
+      Pinergy's official tariffs page (https://pinergy.ie/customer-information/
+      lifestyle-smart-tariffs/) explicitly states: "Pinergy Lifestyle 'EV Night
+      Time' Electricity Rates (not longer on sale from 21 May 2026)". Rates
+      kept here because existing customers may still be on this plan, but
+      it is no longer offered to new switchers. Pinergy's customer-facing
+      name is "EV Night Time" (id kept as ev_drive_time for backward compat).
 
   - id: pinergy_lifestyle_smart_2026q2
     supplier: Pinergy
@@ -771,8 +832,8 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 41.77, label: Day}
     standing_eur_per_year: 283.47
     source:
-      url: pinergy.ie/lifestyle-smart-tariffs/ (browse 5 Jun 2026)
-      verified_on: 2026-06-05
+      url: pinergy.ie/customer-information/lifestyle-smart-tariffs/ (browse 6 Jun 2026)
+      verified_on: 2026-06-06
       confidence: FACT
     notes: No upfront discount; Day rate is one of the highest in the market.
 
@@ -795,8 +856,8 @@ plans:
         - {hours: [0, 19],  rate_cpkwh: 41.77, label: Standard}
     standing_eur_per_year: 283.47
     source:
-      url: pinergy.ie/lifestyle-smart-tariffs/ (browse 5 Jun 2026)
-      verified_on: 2026-06-05
+      url: pinergy.ie/customer-information/lifestyle-smart-tariffs/ (browse 6 Jun 2026)
+      verified_on: 2026-06-06
       confidence: FACT
     notes: |
       Aimed at families who use most electricity 7pm-midnight (cooking,
@@ -804,7 +865,7 @@ plans:
 
   - id: pinergy_lifestyle_working_hours_2026q2
     supplier: Pinergy
-    label: Lifestyle Working Hours (29.24c 9am-5pm weekdays, 41.77c rest)
+    label: Lifestyle Working from Home Time (29.24c 9am-5pm weekdays, 41.77c rest)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: false
@@ -825,10 +886,12 @@ plans:
         - {hours: [17, 24], rate_cpkwh: 41.77, label: Standard}
     standing_eur_per_year: 283.47
     source:
-      url: pinergy.ie/lifestyle-smart-tariffs/ (browse 5 Jun 2026)
-      verified_on: 2026-06-05
+      url: pinergy.ie/customer-information/lifestyle-smart-tariffs/ (browse 6 Jun 2026)
+      verified_on: 2026-06-06
       confidence: FACT
     notes: |
+      Pinergy's official name is "Working from Home Time" (the YAML id
+      uses "working_hours" for backward compat).
       For work-from-home users with daytime-heavy consumption. Caveat:
       simulator doesn't yet split weekday-vs-weekend for non-Peak bands,
       so weekends are modelled as if they also get the 29.24c rate (slight

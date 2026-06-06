@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-06-03
+last_verified: 2026-06-06
 verified_by: sophiezhen
 notes: |
   All rates are c/kWh INC 9% residential VAT.
@@ -17,8 +17,8 @@ plans:
   # ----------------- Electric Ireland -----------------
   - id: ei_gas_saver_28pc
     supplier: Electric Ireland
-    label: Gas EnergySaver with 28% new-customer discount
-    category: new_customer_offer
+    label: Gas EnergySaver (28% off — Q1/Q2 2026 promo, no longer offered)
+    category: discontinued
     requires_dual_fuel: false
     requires_dual_fuel_with: null
     contract_months: 12
@@ -32,6 +32,35 @@ plans:
       url: electricireland.ie/switch/new-customer/price-plans-bundles
       verified_on: 2026-06-03
       confidence: FACT
+    notes: |
+      Rate verified FACT on 2026-06-03 was the standalone 28% off promo.
+      On 2026-06-06 EI's own price-plans page only listed a 10% off
+      standalone offer (see ei_gas_saver_10pc_2026q2), so the 28% promo
+      is treated as discontinued for new sign-ups. Existing customers
+      already on this plan may still be paying these rates.
+
+  - id: ei_gas_saver_10pc_2026q2
+    supplier: Electric Ireland
+    label: Gas EnergySaver (10% off, online new-customer offer, 12-month)
+    category: new_customer_offer
+    requires_dual_fuel: false
+    requires_dual_fuel_with: null
+    contract_months: 12
+    discount_pct: 10
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rate_cpkwh_inc_vat: 10.060
+    standing_eur_per_year: 149.71
+    source:
+      url: electricireland.ie/switch/new-customer/price-plans?priceType=G (browse 6 Jun 2026)
+      verified_on: 2026-06-06
+      confidence: FACT
+    notes: |
+      Currently EI's only standalone gas offer for new customers (no
+      dual-fuel pairing required). Requires direct debit + paperless billing.
+      Post-1-Jul-2026 hike rate: 11.016 c/kWh inc VAT (standing unchanged).
+      EI quotes an EAB of €1,394 at 11,000 kWh CRU reference usage.
 
   - id: ei_gas_dual_plus_8_5pc
     supplier: Electric Ireland
@@ -177,6 +206,30 @@ plans:
     notes: |
       The "killer gas discount" — jumps from 10% (standalone or with EV
       Smart Drive) to 27% only when bundled with Smart Data Dual Fuel.
+
+  - id: energia_gas_25pc_with_day_night_df
+    supplier: Energia
+    label: Gas (25% off, paired with Day/Night Meter Dual Fuel)
+    category: new_customer_offer
+    requires_dual_fuel: true
+    requires_dual_fuel_with:
+      - energia_day_night_df_25pc_2026q2
+    contract_months: 12
+    discount_pct: 25
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rate_cpkwh_inc_vat: 8.45      # 11.26 - 25%
+    standing_eur_per_year: 141.60
+    source:
+      url: energia.ie/about-energia/our-tariffs (browse 6 Jun 2026)
+      verified_on: 2026-06-06
+      confidence: FACT
+    notes: |
+      Unlocked only when paired with the Day/Night Meter Dual Fuel
+      electricity plan (MCC02). Discount is between standalone (10%)
+      and Smart Data (27%) — reflecting Energia's preference for
+      pushing MCC12 smart-meter customers.
 
   - id: energia_gas_15pc_with_smart_standard
     supplier: Energia
