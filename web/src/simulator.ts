@@ -45,6 +45,36 @@ export function rateForHourAware(
   return rateForHour(plan, hour);
 }
 
+export function cheapestBandHour(plan: ElectricityPlan): number {
+  if (plan.kind === "flat") return 0;
+  if (!plan.bands) throw new Error(`banded plan ${plan.id} missing bands`);
+  const cheapestRate = Math.min(...plan.bands.map((b) => b.rate_cpkwh));
+  for (const band of plan.bands) {
+    if (band.rate_cpkwh === cheapestRate) return band.hours[0];
+  }
+  throw new Error("unreachable");
+}
+
+export function cheapestBandEvDistribution(
+  plan: ElectricityPlan,
+): Record<number, number> {
+  // All EV kWh distributed evenly across hours in the plan's cheapest band.
+  // Mirrors src/simulator.py:ev_distribution_in_cheapest_band.
+  if (plan.kind === "flat") return { 0: 1.0 };
+  if (!plan.bands) throw new Error(`banded plan ${plan.id} missing bands`);
+  const cheapestRate = Math.min(...plan.bands.map((b) => b.rate_cpkwh));
+  const hours: number[] = [];
+  for (const band of plan.bands) {
+    if (band.rate_cpkwh === cheapestRate) {
+      const [lo, hi] = band.hours;
+      for (let h = lo; h < hi; h++) hours.push(h);
+    }
+  }
+  if (hours.length === 0) return { 0: 1.0 };
+  const share = 1.0 / hours.length;
+  return Object.fromEntries(hours.map((h) => [h, share]));
+}
+
 export type DualFuelInput = {
   weekdayHourly: HourlySeries; // length 24, kWh/day at each hour
   weekendHourly: HourlySeries;
@@ -87,11 +117,44 @@ export function annualGasCostEur(plan: GasPlan, annualKwh: number): number {
 }
 
 export function annualDualFuelCostEur(input: DualFuelInput): number {
-  const elecUnits = annualElectricityCostEur(input);
-  const elecOverhead =
+  const elecOnly = annualElectricityOnlyCostEur({
+    weekdayHourly: input.weekdayHourly,
+    weekendHourly: input.weekendHourly,
+    elecPlan: input.elecPlan,
+    evAnnualKwh: input.evAnnualKwh,
+    evDistribution: input.evDistribution,
+  });
+  const gas = annualGasCostEur(input.gasPlan, input.gasAnnualKwh);
+  return elecOnly + gas;
+}
+
+export type ElectricityOnlyInput = {
+  weekdayHourly: HourlySeries;
+  weekendHourly: HourlySeries;
+  elecPlan: ElectricityPlan;
+  evAnnualKwh: number;
+  evDistribution?: Record<number, number>;
+};
+
+export function annualElectricityOnlyCostEur(
+  input: ElectricityOnlyInput,
+): number {
+  // annualElectricityCostEur is the units-only piece; the same
+  // overhead (standing + PSO - welcome credit) applies whether or not
+  // there's a paired gas plan.
+  const dummyDualFuelInput: DualFuelInput = {
+    weekdayHourly: input.weekdayHourly,
+    weekendHourly: input.weekendHourly,
+    elecPlan: input.elecPlan,
+    gasPlan: undefined as never,
+    gasAnnualKwh: 0,
+    evAnnualKwh: input.evAnnualKwh,
+    evDistribution: input.evDistribution,
+  };
+  const units = annualElectricityCostEur(dummyDualFuelInput);
+  const overhead =
     input.elecPlan.standing_eur_per_year +
     ANNUAL_PSO_LEVY_INC_VAT -
     input.elecPlan.welcome_credit_eur;
-  const gas = annualGasCostEur(input.gasPlan, input.gasAnnualKwh);
-  return elecUnits + elecOverhead + gas;
+  return units + overhead;
 }

@@ -1,32 +1,83 @@
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   margin: 2rem auto;
-  max-width: 720px;
+  max-width: 880px;
   padding: 0 1rem;
   line-height: 1.5;
   color: #1a1a1a;
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
 
+.muted {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8f8f8;
+  border-radius: 6px;
+}
+
 .field {
-  display: block;
-  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.95rem;
 }
 
-.field input {
-  margin-left: 0.5rem;
-  padding: 0.25rem 0.5rem;
+.field input[type="number"],
+.field select {
+  padding: 0.4rem 0.5rem;
   font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
+.field input[type="checkbox"] {
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+table.ranking {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+table.ranking th,
+table.ranking td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+table.ranking th.num,
+table.ranking td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+table.ranking tr.best {
+  background: #effbef;
+  font-weight: 500;
 }
 
 .result {
@@ -34,9 +85,4 @@ button {
   padding: 1rem;
   background: #f4f4f4;
   border-radius: 4px;
-}
-
-.muted {
-  color: #666;
-  font-size: 0.9rem;
 }
