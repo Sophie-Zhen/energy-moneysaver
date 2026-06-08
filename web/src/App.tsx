@@ -13,8 +13,10 @@ import {
   cheapestBandEvDistribution,
 } from "./simulator";
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
-import type { MeterType } from "./types";
+import { parseHdfCsv, type HdfParseResult } from "./hdfParser";
+import type { HourlySeries, MeterType } from "./types";
 
+type Mode = "form" | "hdf";
 type RankedCombo = { combo: Combo; annualEur: number };
 
 export function App() {
@@ -22,12 +24,18 @@ export function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  const [mode, setMode] = useState<Mode>("form");
+
   const [annualElecKwh, setAnnualElecKwh] = useState(3500);
   const [hasGas, setHasGas] = useState(true);
   const [annualGasKwh, setAnnualGasKwh] = useState(12_000);
   const [hasEv, setHasEv] = useState(false);
   const [annualEvKwh, setAnnualEvKwh] = useState(2_000);
   const [meterType, setMeterType] = useState<MeterType>("smart");
+
+  const [hdfFileName, setHdfFileName] = useState<string | null>(null);
+  const [hdfText, setHdfText] = useState<string | null>(null);
+  const [evStartDate, setEvStartDate] = useState<string>(""); // YYYY-MM-DD
 
   useEffect(() => {
     Promise.all([fetchTariffSnapshot(), fetchProfiles()])
@@ -38,15 +46,41 @@ export function App() {
       .catch((err: Error) => setLoadError(err.message));
   }, []);
 
-  const ranking: RankedCombo[] | null = useMemo(() => {
-    if (!snapshot || !profile) return null;
+  const hdfResult = useMemo<HdfParseResult | { error: string } | null>(() => {
+    if (mode !== "hdf" || !hdfText) return null;
+    try {
+      const cutoff =
+        hasEv && evStartDate ? new Date(`${evStartDate}T00:00:00`) : undefined;
+      return parseHdfCsv(hdfText, cutoff);
+    } catch (e) {
+      return { error: (e as Error).message };
+    }
+  }, [mode, hdfText, hasEv, evStartDate]);
 
+  const series = useMemo<{
+    weekday: HourlySeries;
+    weekend: HourlySeries;
+    derivedAnnualKwh: number;
+  } | null>(() => {
+    if (mode === "hdf") {
+      if (!hdfResult || "error" in hdfResult) return null;
+      return {
+        weekday: hdfResult.weekdayHourly,
+        weekend: hdfResult.weekendHourly,
+        derivedAnnualKwh: hdfResult.stats.annualisedKwh,
+      };
+    }
+    if (!profile) return null;
     const [weekday, weekend] = scaleProfileToAnnualKwh(
       profile.weekday,
       profile.weekend,
       annualElecKwh,
     );
+    return { weekday, weekend, derivedAnnualKwh: annualElecKwh };
+  }, [mode, hdfResult, profile, annualElecKwh]);
 
+  const ranking: RankedCombo[] | null = useMemo(() => {
+    if (!snapshot || !series) return null;
     const constraints: UserConstraints = { hasGas, hasEv, meterType };
     const combos = buildCombos(snapshot, constraints);
 
@@ -60,8 +94,8 @@ export function App() {
 
         const annualEur = combo.gas
           ? annualDualFuelCostEur({
-              weekdayHourly: weekday,
-              weekendHourly: weekend,
+              weekdayHourly: series.weekday,
+              weekendHourly: series.weekend,
               elecPlan: combo.elec,
               gasPlan: combo.gas,
               gasAnnualKwh: annualGasKwh,
@@ -69,8 +103,8 @@ export function App() {
               evDistribution: evDist,
             })
           : annualElectricityOnlyCostEur({
-              weekdayHourly: weekday,
-              weekendHourly: weekend,
+              weekdayHourly: series.weekday,
+              weekendHourly: series.weekend,
               elecPlan: combo.elec,
               evAnnualKwh: effectiveEvKwh,
               evDistribution: evDist,
@@ -78,25 +112,28 @@ export function App() {
         return { combo, annualEur };
       })
       .sort((a, b) => a.annualEur - b.annualEur);
-  }, [
-    snapshot,
-    profile,
-    annualElecKwh,
-    hasGas,
-    annualGasKwh,
-    hasEv,
-    annualEvKwh,
-    meterType,
-  ]);
+  }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType]);
+
+  const handleFile = (file: File | null) => {
+    if (!file) {
+      setHdfFileName(null);
+      setHdfText(null);
+      return;
+    }
+    setHdfFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (e) => setHdfText(String(e.target?.result ?? ""));
+    reader.onerror = () => setHdfText(null);
+    reader.readAsText(file);
+  };
 
   return (
     <main>
       <h1>energy-moneysaver</h1>
       <p className="muted">
-        Compare Irish electricity {hasGas ? "& gas " : ""}plans for your
-        household. Form mode uses the default Dublin residential load profile
-        scaled to your annual kWh; for higher accuracy, upload an ESB Networks
-        HDF export (coming in M3).
+        Compare Irish electricity {hasGas ? "& gas " : ""}plans. Pick a mode:
+        a form-only quick estimate, or upload your ESB Networks half-hour
+        export for higher accuracy. Files never leave your browser.
       </p>
 
       {loadError && (
@@ -105,18 +142,68 @@ export function App() {
         </div>
       )}
 
-      <section className="form-grid">
-        <label className="field">
-          Annual electricity kWh
+      <fieldset className="mode-toggle">
+        <legend className="muted">Input mode</legend>
+        <label>
           <input
-            type="number"
-            min={500}
-            max={20000}
-            step={100}
-            value={annualElecKwh}
-            onChange={(e) => setAnnualElecKwh(Number(e.target.value))}
+            type="radio"
+            name="mode"
+            value="form"
+            checked={mode === "form"}
+            onChange={() => setMode("form")}
           />
+          {" "}Form mode (annual kWh + default profile)
         </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            value="hdf"
+            checked={mode === "hdf"}
+            onChange={() => setMode("hdf")}
+          />
+          {" "}Upload HDF (ESB Networks half-hour CSV)
+        </label>
+      </fieldset>
+
+      <section className="form-grid">
+        {mode === "form" && (
+          <label className="field">
+            Annual electricity kWh
+            <input
+              type="number"
+              min={500}
+              max={20000}
+              step={100}
+              value={annualElecKwh}
+              onChange={(e) => setAnnualElecKwh(Number(e.target.value))}
+            />
+          </label>
+        )}
+
+        {mode === "hdf" && (
+          <label className="field" style={{ gridColumn: "1 / -1" }}>
+            HDF CSV file
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+            />
+            {hdfFileName && <span className="muted">{hdfFileName}</span>}
+            {hdfResult && "error" in hdfResult && (
+              <span className="error">Error: {hdfResult.error}</span>
+            )}
+            {hdfResult && "stats" in hdfResult && (
+              <span className="muted">
+                {hdfResult.stats.weekdayDays} weekdays +{" "}
+                {hdfResult.stats.weekendDays} weekend days,{" "}
+                annualised ~{Math.round(hdfResult.stats.annualisedKwh)} kWh
+                {hdfResult.stats.rowsAfterEvCutoff > 0 &&
+                  ` (${hdfResult.stats.rowsAfterEvCutoff} rows after EV cutoff)`}
+              </span>
+            )}
+          </label>
+        )}
 
         <label className="field">
           Meter type
@@ -173,14 +260,34 @@ export function App() {
               value={annualEvKwh}
               onChange={(e) => setAnnualEvKwh(Number(e.target.value))}
             />
-            <span className="muted"> (assumed scheduled to cheapest band)</span>
+            <span className="muted">
+              {" "}(assumed scheduled to cheapest band)
+            </span>
+          </label>
+        )}
+
+        {mode === "hdf" && hasEv && (
+          <label className="field">
+            EV charging started on (optional)
+            <input
+              type="date"
+              value={evStartDate}
+              onChange={(e) => setEvStartDate(e.target.value)}
+            />
+            <span className="muted">
+              {" "}Skips readings on/after this date so the baseload isn't
+              inflated by EV charging.
+            </span>
           </label>
         )}
       </section>
 
       {ranking && (
         <section>
-          <h2>Ranking ({ranking.length} combos)</h2>
+          <h2>
+            Ranking ({ranking.length} combos
+            {series && `, modelled at ${Math.round(series.derivedAnnualKwh)} kWh elec`})
+          </h2>
           {ranking.length === 0 ? (
             <p className="muted">
               No plans match these constraints. Try changing meter type or
@@ -206,7 +313,9 @@ export function App() {
                         <div>{row.combo.label}</div>
                         <div className="muted">
                           {row.combo.elec.supplier}
-                          {row.combo.gas ? ` + ${row.combo.gas.supplier} gas` : ""}
+                          {row.combo.gas
+                            ? ` + ${row.combo.gas.supplier} gas`
+                            : ""}
                         </div>
                       </td>
                       <td className="num">{row.annualEur.toFixed(0)}</td>

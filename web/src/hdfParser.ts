@@ -1,0 +1,176 @@
+// Parse an ESB Networks HDF half-hour CSV export into (weekday, weekend)
+// hourly baseload patterns. TS port of src/simulator.py:load_hdf_baseload_pattern.
+//
+// Privacy: the file is read into memory via the browser File API and never
+// leaves the browser. No upload, no network call.
+
+import Papa from "papaparse";
+
+import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "./constants";
+import type { HourlySeries } from "./types";
+
+const ACTIVE_IMPORT = "Active Import Interval (kWh)";
+const REQUIRED_COLUMNS = [
+  "Read Type",
+  "Read Value",
+  "Read Date and End Time",
+] as const;
+
+export type HdfStats = {
+  weekdayDays: number;
+  weekendDays: number;
+  weekdayDailyAvgKwh: number;
+  weekendDailyAvgKwh: number;
+  annualisedKwh: number;
+  firstReading: Date;
+  lastReading: Date;
+  rowsKept: number;
+  rowsTotal: number;
+  rowsAfterEvCutoff: number;
+};
+
+export type HdfParseResult = {
+  weekdayHourly: HourlySeries;
+  weekendHourly: HourlySeries;
+  stats: HdfStats;
+};
+
+// ESB Networks dates: "DD-MM-YYYY HH:MM" in Irish local time (naive).
+// Constructed via `new Date(y, m-1, d, H, M)` so the browser interprets in
+// local time; for any user not in IST, daylight-saving boundaries may produce
+// off-by-one-hour rows. v0.2 ignores this — Irish users only.
+export function parseEsbDate(s: string): Date {
+  const trimmed = s.trim();
+  const spaceIdx = trimmed.indexOf(" ");
+  if (spaceIdx < 0) {
+    throw new Error(`unparseable HDF datetime: ${s}`);
+  }
+  const datePart = trimmed.slice(0, spaceIdx);
+  const timePart = trimmed.slice(spaceIdx + 1);
+  const [dd, mm, yyyy] = datePart.split("-").map(Number);
+  const [HH, MM] = timePart.split(":").map(Number);
+  if (
+    !Number.isInteger(dd) ||
+    !Number.isInteger(mm) ||
+    !Number.isInteger(yyyy) ||
+    !Number.isInteger(HH) ||
+    !Number.isInteger(MM)
+  ) {
+    throw new Error(`unparseable HDF datetime: ${s}`);
+  }
+  return new Date(yyyy, mm - 1, dd, HH, MM);
+}
+
+function dateKey(d: Date): string {
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function isWeekend(d: Date): boolean {
+  const day = d.getDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+}
+
+export function parseHdfCsv(
+  csvText: string,
+  evStartDate?: Date,
+): HdfParseResult {
+  const parsed = Papa.parse<Record<string, string>>(csvText, {
+    header: true,
+    skipEmptyLines: true,
+  });
+  if (parsed.errors.length > 0) {
+    const e = parsed.errors[0];
+    throw new Error(`CSV parse error (row ${e.row}): ${e.message}`);
+  }
+  const rows = parsed.data;
+  if (rows.length === 0) {
+    throw new Error("HDF CSV is empty after header");
+  }
+
+  const sample = rows[0];
+  for (const col of REQUIRED_COLUMNS) {
+    if (!(col in sample)) {
+      throw new Error(
+        `HDF CSV missing required column "${col}". ` +
+          `Got: ${Object.keys(sample).join(", ")}`,
+      );
+    }
+  }
+
+  const weekdayHourSum = new Array<number>(24).fill(0);
+  const weekendHourSum = new Array<number>(24).fill(0);
+  const weekdayDates = new Set<string>();
+  const weekendDates = new Set<string>();
+
+  let firstReading: Date | null = null;
+  let lastReading: Date | null = null;
+  let rowsKept = 0;
+  let rowsAfterEvCutoff = 0;
+
+  for (const row of rows) {
+    if (row["Read Type"] !== ACTIVE_IMPORT) continue;
+
+    const endTime = parseEsbDate(row["Read Date and End Time"]);
+    const startTime = new Date(endTime.getTime() - 30 * 60 * 1000);
+
+    if (evStartDate && startTime >= evStartDate) {
+      rowsAfterEvCutoff++;
+      continue;
+    }
+
+    const kwh = Number(row["Read Value"]);
+    if (!Number.isFinite(kwh)) continue;
+
+    if (!firstReading || startTime < firstReading) firstReading = startTime;
+    if (!lastReading || startTime > lastReading) lastReading = startTime;
+
+    const hour = startTime.getHours();
+    if (isWeekend(startTime)) {
+      weekendHourSum[hour] += kwh;
+      weekendDates.add(dateKey(startTime));
+    } else {
+      weekdayHourSum[hour] += kwh;
+      weekdayDates.add(dateKey(startTime));
+    }
+    rowsKept++;
+  }
+
+  const wdDays = weekdayDates.size;
+  const weDays = weekendDates.size;
+  if (wdDays === 0 && weDays === 0) {
+    throw new Error(
+      "No valid readings after filtering — check Read Type values " +
+        "or the EV cutoff date.",
+    );
+  }
+
+  const weekdayHourly: HourlySeries = weekdayHourSum.map((s) =>
+    wdDays > 0 ? s / wdDays : 0,
+  );
+  const weekendHourly: HourlySeries = weekendHourSum.map((s) =>
+    weDays > 0 ? s / weDays : 0,
+  );
+
+  const weekdayDailyAvgKwh = weekdayHourly.reduce((a, b) => a + b, 0);
+  const weekendDailyAvgKwh = weekendHourly.reduce((a, b) => a + b, 0);
+  const annualisedKwh =
+    weekdayDailyAvgKwh * WEEKDAYS_PER_YEAR +
+    weekendDailyAvgKwh * WEEKENDS_PER_YEAR;
+
+  return {
+    weekdayHourly,
+    weekendHourly,
+    stats: {
+      weekdayDays: wdDays,
+      weekendDays: weDays,
+      weekdayDailyAvgKwh,
+      weekendDailyAvgKwh,
+      annualisedKwh,
+      firstReading: firstReading!,
+      lastReading: lastReading!,
+      rowsKept,
+      rowsTotal: rows.length,
+      rowsAfterEvCutoff,
+    },
+  };
+}
