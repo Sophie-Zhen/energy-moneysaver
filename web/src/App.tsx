@@ -137,6 +137,16 @@ export function App() {
         a form-only quick estimate, or upload your ESB Networks half-hour
         export for higher accuracy. Files never leave your browser.
       </p>
+      <p className="muted">
+        Not sure where to find your annual kWh or how to download an HDF?{" "}
+        <a
+          href={`${import.meta.env.BASE_URL}data_guide.html`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Data guide →
+        </a>
+      </p>
 
       {loadError && (
         <div className="result" role="alert">

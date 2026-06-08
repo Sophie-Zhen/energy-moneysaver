@@ -16,6 +16,9 @@ The web app runs entirely in your browser. Upload your ESB Networks HDF
 half-hour CSV for high-accuracy modelling, or pick form mode and enter your
 annual kWh. Your file never leaves your device.
 
+Not sure where to find your inputs? See the
+[data guide](https://sophie-zhen.github.io/energy-moneysaver/data_guide.html).
+
 ## Why this exists
 
 Irish comparison sites (bonkers.ie, switcher.ie) are commission-driven and
