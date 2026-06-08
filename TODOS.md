@@ -22,3 +22,4 @@ v0 shipped to GitHub. Next: GitHub housekeeping (description, topics, Pages) and
 - [ ] Profiles: source authoritative CRU residential load profile to replace single-household sample
 - [ ] CI: GitHub Actions running `verify_against_v3` on every PR
 - [ ] Docs: CONTRIBUTING.md with PR template for new tariff data
+- [ ] Upgrade Vite 5→8 / React 18→19 / Vitest 2→4 cluster (breaking; defer until after M4)

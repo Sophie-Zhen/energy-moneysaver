@@ -23,3 +23,6 @@ report*.html
 .vscode/
 .idea/
 .gstack/
+
+# Node (web/ has its own .gitignore but belt-and-suspenders for the repo root)
+node_modules/
