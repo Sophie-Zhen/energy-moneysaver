@@ -5,8 +5,16 @@ self-contained HTML report ranking dual-fuel and single-fuel options by total
 annual cost, factoring in time-of-use bands, announced price hikes, welcome
 credits, and standing charges.
 
-Built for households on smart meters (MCC12). Standard 24-hour and day/night
-meter support coming in v0.1.
+Built for households on smart meters (MCC12), with Day/Night meter support
+added in v0.2.
+
+## Try it online
+
+**→ [sophie-zhen.github.io/energy-moneysaver](https://sophie-zhen.github.io/energy-moneysaver/)**
+
+The web app runs entirely in your browser. Upload your ESB Networks HDF
+half-hour CSV for high-accuracy modelling, or pick form mode and enter your
+annual kWh. Your file never leaves your device.
 
 ## Why this exists
 
@@ -71,17 +79,17 @@ required fields.
 
 ## Status
 
-v0 (WIP):
-- [x] Time-of-use simulator with weekday-only Peak handling
-- [x] Six suppliers' main smart-meter plans (catalogue expansion in progress)
-- [ ] HDF auto-detection of EV charging pattern
-- [ ] CLI entry point
-- [ ] HTML report generator
+v0.2 shipped:
+- [x] CLI tool with HTML report generator
+- [x] 32 electricity + 16 gas plans across EI, BG, Energia, SSE, Flogas, Yuno, Pinergy
+- [x] Smart meter + Day/Night meter support
+- [x] Web app at [sophie-zhen.github.io/energy-moneysaver](https://sophie-zhen.github.io/energy-moneysaver/)
+      with HDF upload and form mode (TS port of the simulator, parity-tested
+      against the Python reference)
 
 Roadmap:
-- v0.1: standard 24hr and day/night meter plans, smaller suppliers
-  (Pinergy, Bright Energy, Community Power)
-- v1.0: web UI
+- v0.3: "Free Day" plan support (SSE Smart Weekends, BG Smart Weekend, EI
+  Weekender), authoritative CRU residential load profile, smaller suppliers
 
 ## License
 

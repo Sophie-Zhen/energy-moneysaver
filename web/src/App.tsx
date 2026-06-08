@@ -37,6 +37,8 @@ export function App() {
   const [hdfText, setHdfText] = useState<string | null>(null);
   const [evStartDate, setEvStartDate] = useState<string>(""); // YYYY-MM-DD
 
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
   useEffect(() => {
     Promise.all([fetchTariffSnapshot(), fetchProfiles()])
       .then(([snap, profiles]) => {
@@ -306,30 +308,169 @@ export function App() {
               <tbody>
                 {ranking.map((row, i) => {
                   const delta = row.annualEur - ranking[0].annualEur;
+                  const isExpanded = expandedId === row.combo.id;
+                  const toggle = () =>
+                    setExpandedId(isExpanded ? null : row.combo.id);
                   return (
-                    <tr key={row.combo.id} className={i === 0 ? "best" : ""}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <div>{row.combo.label}</div>
-                        <div className="muted">
-                          {row.combo.elec.supplier}
-                          {row.combo.gas
-                            ? ` + ${row.combo.gas.supplier} gas`
-                            : ""}
-                        </div>
-                      </td>
-                      <td className="num">{row.annualEur.toFixed(0)}</td>
-                      <td className="num">
-                        {i === 0 ? "—" : `+${delta.toFixed(0)}`}
-                      </td>
-                    </tr>
+                    <RankingRow
+                      key={row.combo.id}
+                      row={row}
+                      rank={i + 1}
+                      delta={delta}
+                      isBest={i === 0}
+                      isExpanded={isExpanded}
+                      onToggle={toggle}
+                    />
                   );
                 })}
               </tbody>
             </table>
           )}
+          {ranking.length > 0 && <ModellingDisclosure />}
         </section>
       )}
     </main>
+  );
+}
+
+function RankingRow({
+  row,
+  rank,
+  delta,
+  isBest,
+  isExpanded,
+  onToggle,
+}: {
+  row: RankedCombo;
+  rank: number;
+  delta: number;
+  isBest: boolean;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const { combo, annualEur } = row;
+  return (
+    <>
+      <tr
+        className={`${isBest ? "best " : ""}${isExpanded ? "expanded" : ""}`}
+        onClick={onToggle}
+      >
+        <td>
+          <span aria-hidden="true" className="caret">
+            {isExpanded ? "▾" : "▸"}
+          </span>{" "}
+          {rank}
+        </td>
+        <td>
+          <div>{combo.label}</div>
+          <div className="muted">
+            {combo.elec.supplier}
+            {combo.gas ? ` + ${combo.gas.supplier} gas` : ""}
+          </div>
+        </td>
+        <td className="num">{annualEur.toFixed(0)}</td>
+        <td className="num">{rank === 1 ? "—" : `+${delta.toFixed(0)}`}</td>
+      </tr>
+      {isExpanded && (
+        <tr className="drawer-row">
+          <td colSpan={4}>
+            <div className="drawer">
+              <PlanDetail
+                title={`Electricity: ${combo.elec.supplier}`}
+                label={combo.elec.label}
+                source={combo.elec.source}
+                notes={combo.elec.notes}
+              />
+              {combo.gas && (
+                <PlanDetail
+                  title={`Gas: ${combo.gas.supplier}`}
+                  label={combo.gas.label}
+                  source={combo.gas.source}
+                  notes={combo.gas.notes}
+                />
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+function PlanDetail({
+  title,
+  label,
+  source,
+  notes,
+}: {
+  title: string;
+  label: string;
+  source: { url: string; verified_on: string; confidence: string };
+  notes?: string | null;
+}) {
+  const href = extractHref(source.url);
+  return (
+    <div className="plan-detail">
+      <h3>{title}</h3>
+      <div className="muted">{label}</div>
+      <div className="badges">
+        <span className={`badge confidence-${source.confidence.toLowerCase()}`}>
+          {source.confidence}
+        </span>
+        <span className="badge verified-on">
+          verified {source.verified_on}
+        </span>
+      </div>
+      <div className="source">
+        Source:{" "}
+        {href ? (
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            {source.url}
+          </a>
+        ) : (
+          source.url
+        )}
+      </div>
+      {notes && <p className="notes muted">{notes}</p>}
+    </div>
+  );
+}
+
+function extractHref(raw: string): string | null {
+  const first = raw.split(/\s/)[0];
+  if (!first.includes(".")) return null;
+  return first.startsWith("http") ? first : `https://${first}`;
+}
+
+function ModellingDisclosure() {
+  return (
+    <details className="modelling">
+      <summary>What's modelled (and what isn't)</summary>
+      <ul>
+        <li>
+          <strong>Included:</strong> unit rates (inc 9% VAT), standing
+          charges (inc VAT), PSO levy (€19.10/year), gas carbon tax
+          (1.25 c/kWh), welcome credits (deducted once).
+        </li>
+        <li>
+          <strong>Discount assumed for the full year.</strong> Most "X% off"
+          deals revert to standard rates after 12 months — you may end up
+          paying more in year 2 unless you switch again.
+        </li>
+        <li>
+          <strong>Urban standing charges only.</strong> Rural standing is
+          typically €60-€90/year higher; not yet modelled.
+        </li>
+        <li>
+          <strong>EV charging assumed scheduled to each plan's cheapest
+          band</strong> (e.g. via a Zappi smart charger). Without scheduling,
+          the rankings could shift by €100+/year.
+        </li>
+        <li>
+          <strong>Free Day / weekend-free plans</strong> (SSE Smart Weekends,
+          BG Smart Weekend, EI Weekender) are not yet modelled.
+        </li>
+      </ul>
+    </details>
   );
 }

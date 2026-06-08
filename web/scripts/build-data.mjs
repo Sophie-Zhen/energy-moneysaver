@@ -43,6 +43,7 @@ function normalizeElectricityPlan(raw) {
     requires_dual_fuel: raw.requires_dual_fuel ?? false,
     requires_ev: raw.requires_ev ?? false,
     source: raw.source ?? {},
+    notes: raw.notes ?? null,
   };
   if (rates.kind === "flat") {
     if (typeof rates.rate_cpkwh !== "number") {
@@ -77,6 +78,7 @@ function normalizeGasPlan(raw) {
     requires_dual_fuel: raw.requires_dual_fuel ?? false,
     requires_dual_fuel_with: raw.requires_dual_fuel_with ?? null,
     source: raw.source ?? {},
+    notes: raw.notes ?? null,
   };
 }
 

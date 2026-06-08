@@ -31,6 +31,7 @@ export type ElectricityPlan = {
   requires_dual_fuel: boolean;
   requires_ev: boolean;
   source: PlanSource;
+  notes?: string | null;
 };
 
 export type GasPlan = {
@@ -45,6 +46,7 @@ export type GasPlan = {
   requires_dual_fuel: boolean;
   requires_dual_fuel_with: string[] | null;
   source: PlanSource;
+  notes?: string | null;
 };
 
 export type HourlySeries = number[]; // length 24

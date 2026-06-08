@@ -106,3 +106,121 @@ table.ranking tr.best {
   color: #b00020;
   font-size: 0.9rem;
 }
+
+table.ranking tr:not(.drawer-row) {
+  cursor: pointer;
+}
+
+table.ranking tr.expanded td {
+  border-bottom: none;
+}
+
+.caret {
+  display: inline-block;
+  width: 1em;
+  color: #888;
+  font-size: 0.85em;
+}
+
+.drawer-row td {
+  background: #fafafa;
+  padding: 1rem 1.25rem 1.25rem;
+  border-bottom: 1px solid #eee;
+}
+
+.drawer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .drawer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plan-detail h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.25rem;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.4rem 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background: #eee;
+  color: #333;
+}
+
+.badge.confidence-fact {
+  background: #d4f4dd;
+  color: #1b5e20;
+}
+
+.badge.confidence-bonkers {
+  background: #d4e7fa;
+  color: #0d3a6e;
+}
+
+.badge.confidence-third_party {
+  background: #fef0c7;
+  color: #6b4500;
+}
+
+.badge.confidence-guess {
+  background: #fcd9d6;
+  color: #781e15;
+}
+
+.badge.verified-on {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.source {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  word-break: break-all;
+}
+
+.source a {
+  color: #1565c0;
+}
+
+.notes {
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  white-space: pre-line;
+}
+
+details.modelling {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f8f8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+details.modelling summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+details.modelling ul {
+  margin: 0.6rem 0 0;
+  padding-left: 1.25rem;
+}
+
+details.modelling li {
+  margin-bottom: 0.4rem;
+}
