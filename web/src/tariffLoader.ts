@@ -42,7 +42,7 @@ export function toSnapshot(raw: RawTariffData): TariffSnapshot {
 }
 
 export async function fetchTariffSnapshot(
-  url = "/tariffs.json",
+  url = `${import.meta.env.BASE_URL}tariffs.json`,
 ): Promise<TariffSnapshot> {
   const resp = await fetch(url);
   if (!resp.ok) {

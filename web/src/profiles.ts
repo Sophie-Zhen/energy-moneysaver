@@ -45,7 +45,7 @@ export function toProfiles(raw: RawProfilesData): Record<string, Profile> {
 }
 
 export async function fetchProfiles(
-  url = "/profiles.json",
+  url = `${import.meta.env.BASE_URL}profiles.json`,
 ): Promise<Record<string, Profile>> {
   const resp = await fetch(url);
   if (!resp.ok) {
