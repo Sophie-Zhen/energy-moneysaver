@@ -13,11 +13,12 @@ import {
   cheapestBandEvDistribution,
 } from "./simulator";
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
+import { projectElectricity, projectGas } from "./hikes";
 import { parseHdfCsv, type HdfParseResult } from "./hdfParser";
 import type { HourlySeries, MeterType } from "./types";
 
 type Mode = "form" | "hdf";
-type RankedCombo = { combo: Combo; annualEur: number };
+type RankedCombo = { combo: Combo; annualEur: number; hiked: boolean };
 
 export function App() {
   const [snapshot, setSnapshot] = useState<TariffSnapshot | null>(null);
@@ -39,6 +40,10 @@ export function App() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [currentComboId, setCurrentComboId] = useState<string | null>(null);
+
+  // "As of now" anchor for time-weighting announced hikes. Stable per mount.
+  // When a switch/contract-end date input lands, pass that instead.
+  const referenceDate = useMemo(() => new Date(), []);
 
   useEffect(() => {
     Promise.all([fetchTariffSnapshot(), fetchProfiles()])
@@ -89,18 +94,29 @@ export function App() {
 
     return combos
       .map((combo) => {
+        // Project to the next 12 months: apply announced hikes to pre-hike
+        // plans so the ranking reflects what you'll actually pay.
+        const elecProj = projectElectricity(combo.elec, snapshot.hikes, referenceDate);
+        const gasProj = combo.gas
+          ? projectGas(combo.gas, snapshot.hikes, referenceDate)
+          : null;
+        const elec = elecProj.plan;
+        const gas = gasProj?.plan ?? null;
+        const hiked = elecProj.hikePct != null || gasProj?.hikePct != null;
+        const projectedCombo: Combo = { ...combo, elec, gas };
+
         const evDist =
-          hasEv && combo.elec.kind === "bands"
-            ? cheapestBandEvDistribution(combo.elec)
+          hasEv && elec.kind === "bands"
+            ? cheapestBandEvDistribution(elec)
             : undefined;
         const effectiveEvKwh = hasEv ? annualEvKwh : 0;
 
-        const annualEur = combo.gas
+        const annualEur = gas
           ? annualDualFuelCostEur({
               weekdayHourly: series.weekday,
               weekendHourly: series.weekend,
-              elecPlan: combo.elec,
-              gasPlan: combo.gas,
+              elecPlan: elec,
+              gasPlan: gas,
               gasAnnualKwh: annualGasKwh,
               evAnnualKwh: effectiveEvKwh,
               evDistribution: evDist,
@@ -108,14 +124,14 @@ export function App() {
           : annualElectricityOnlyCostEur({
               weekdayHourly: series.weekday,
               weekendHourly: series.weekend,
-              elecPlan: combo.elec,
+              elecPlan: elec,
               evAnnualKwh: effectiveEvKwh,
               evDistribution: evDist,
             });
-        return { combo, annualEur };
+        return { combo: projectedCombo, annualEur, hiked };
       })
       .sort((a, b) => a.annualEur - b.annualEur);
-  }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType]);
+  }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType, referenceDate]);
 
   const handleFile = (file: File | null) => {
     if (!file) {
@@ -411,7 +427,7 @@ function AnswerHero({
 
   return (
     <section className="answer">
-      <p className="muted">Your plan now → cheapest for you</p>
+      <p className="muted">Your plan vs the cheapest for you — next 12 months</p>
       <p className="answer-headline">
         €{current.annualEur.toFixed(0)} → €{cheapest.annualEur.toFixed(0)}
         <span className="answer-save"> save €{savings.toFixed(0)}/yr</span>
@@ -419,6 +435,12 @@ function AnswerHero({
       <p className="muted">
         Current: {current.combo.label}. Cheapest: {cheapest.combo.label}.
       </p>
+      {current.hiked && (
+        <p className="muted">
+          ⚠️ Your current figure includes your supplier's announced July
+          increase — part of why switching saves.
+        </p>
+      )}
     </section>
   );
 }
@@ -541,6 +563,15 @@ function ModellingDisclosure() {
           <strong>Included:</strong> unit rates (inc 9% VAT), standing
           charges (inc VAT), PSO levy (€19.10/year), gas carbon tax
           (1.25 c/kWh), welcome credits (deducted once).
+        </li>
+        <li>
+          <strong>Next-12-month projection, time-weighted.</strong> Announced
+          July 2026 increases — Electric Ireland (+8% elec / +7.7% gas) and Yuno
+          (+9.5% / +11%) — are applied only to the part of the year after they
+          take effect (1 Jul 2026), measured from today. Other suppliers are
+          shown at their current rate: they're variable too and could change,
+          but nothing is announced, so we don't speculate. Weighting is uniform
+          over time, not by seasonal usage.
         </li>
         <li>
           <strong>Discount assumed for the full year.</strong> Most "X% off"

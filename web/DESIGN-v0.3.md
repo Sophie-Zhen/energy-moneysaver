@@ -196,7 +196,7 @@ first, switch if that fails), **stacked on mobile**.
 
 | Need | Where | Notes |
 | ---- | ----- | ----- |
-| Forward 12-month projection | simulator/planner | Apply announced hikes (`tariffs/hikes.yaml`) to each plan's current rate to project the next 12 months. This becomes the ranking baseline, not today's spot rate. |
+| Forward 12-month projection | planner layer (`hikes.ts`), NOT the simulator | Irish plans are predominantly variable-rate: an announced supplier increase passes through to discounted customers (discount % unchanged, applied to a higher base; fixed-price products have largely been pulled). So apply announced hikes (`tariffs/hikes.yaml`) to pre-hike plans, **time-weighted**: only the share of the 12-month window after the effective date pays the increase. Reference start = today (becomes the user's switch/contract date when that input lands). Skip plans already at post-hike rates (`post_hike_standard`, or `verified_on` past the effective date). Keeps the simulator-parity contract because projection happens before the simulator on raw plans. |
 | Current-plan baseline | planner | User names their current plan; project *it* forward to power "your plan will get worse" and savings. |
 | Cost breakdown | simulator | Expose per-component split (standing / day / peak / night / gas / credit / hike), not just the scalar total. |
 | Retention back-solve | new module | Binary-search discount % on current plan to match best switch cost. Two targets (rate-only, incl. welcome credit). |
@@ -229,11 +229,18 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
 - **Verify:** load the app, pick a current plan, see a correct savings figure vs
   that plan at the top; ranking still reachable below.
 
-### v0.3-M2 — Forward projection + "your plan will get worse"
-- Project every plan 12 months forward through `hikes.yaml`.
-- Optional contract-end-date input; personalise the "expires on X" line.
-- **Verify:** a plan with an announced hike shows a higher 12-month figure than
-  its spot rate; numbers reconcile with a hand check.
+### v0.3-M2 — Forward projection + "your plan will get worse"  ✅ done
+- Apply announced hikes to pre-hike variable plans, time-weighted from today
+  (only the post-effective-date share of the 12-month window is hiked). EI
+  (+8%/+7.7%) and Yuno (+9.5%/+11%) only — no speculative hikes for unannounced
+  suppliers. Skips already-post-hike plans. `hikes.ts`, unit-tested.
+- Hero flags when the current plan's figure includes the announced increase.
+- Deferred to a later milestone (with the personalisation block): a
+  contract-end / switch-date input to anchor the projection window per user
+  instead of "today".
+- **Verify (done):** EI/Yuno plans show higher, time-weighted figures (Yuno
+  €2529 → €2733, EI SST → €2851); un-hiked suppliers unchanged; 609/609 tests
+  pass; hand-check in `hikes.test.ts`.
 
 ### v0.3-M3 — Cost breakdown
 - Simulator exposes per-component breakdown; render the side-by-side split.
@@ -271,7 +278,7 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
 
 | Question | Need-by | Notes |
 | -------- | ------- | ----- |
-| Forward-projection baseline: generic 12-month-with-hikes vs contract-expiry-aware as default? | M2 | Recommendation: generic default, expiry-aware as the optional enhancement when the user supplies a date. |
+| ~~Forward-projection baseline: generic vs contract-expiry-aware?~~ | ~~M2~~ | RESOLVED: Irish plans are variable → announced hikes pass through. Applied time-weighted from today; the switch/contract date becomes the window anchor when that input lands. |
 | Retention target: show one number (rate-only) or two (incl. welcome credit)? | M5 | Leaning two — the welcome-credit-inclusive target is the honest one for year 1. |
 | Solar feed-in rates: where is the authoritative per-supplier CEG source? | M7 | Needs a catalogue pass like the plan catalogue; CRU + supplier pages. |
 | User manual format: extend `data_guide.html` or a new in-app page? | M8 | Lean: extend data_guide for "how to get data", new page for "how to read the answer". |
