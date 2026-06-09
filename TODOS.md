@@ -8,8 +8,9 @@ v0.3 product redesign — direction locked in `web/DESIGN-v0.3.md`. Pivot from
 current plan get worse / what's cheapest for me next 12 months", with every
 chart and detail there to raise confidence in that answer. Triggered by
 dogfooding energypal.ie (feature-rich but too complex). M1 (answer-first hero +
-current-plan selector) and M2 (time-weighted forward projection of announced
-hikes) shipped on branch `v0.3-redesign`. Next action: v0.3-M3 (cost breakdown).
+current-plan selector), M2 (time-weighted forward projection of announced
+hikes), and M3 (cost breakdown current-vs-cheapest + expandable sources) shipped
+on branch `v0.3-redesign`. Next action: v0.3-M4 ("why cheapest" evidence).
 
 ## Open Questions / Blockers
 - Retention target: one number (rate-only) or two (incl. welcome credit)? (need-by M5; leaning two)
@@ -18,7 +19,6 @@ hikes) shipped on branch `v0.3-redesign`. Next action: v0.3-M3 (cost breakdown).
 
 ## Todo
 ### v0.3 redesign (per DESIGN-v0.3.md)
-- [ ] M3: cost breakdown (simulator exposes per-component split) + expand to PlanDetail drawer
 - [ ] M4: "why cheapest" evidence section — cost-weighted usage visual under its claim
 - [ ] M5: stay-and-negotiate target (retention back-solve, two targets)
 - [ ] M6: switch-timing module (submit-on date + FACT/THIRD_PARTY/advisory labelling)
