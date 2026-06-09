@@ -7,18 +7,17 @@ v0.3 product redesign — direction locked in `web/DESIGN-v0.3.md`. Pivot from
 "render a ranking table" to an **answer-first explanation**: lead with "will my
 current plan get worse / what's cheapest for me next 12 months", with every
 chart and detail there to raise confidence in that answer. Triggered by
-dogfooding energypal.ie (feature-rich but too complex). Next action: v0.3-M1
-(answer-first restructure).
+dogfooding energypal.ie (feature-rich but too complex). M1 (answer-first hero +
+current-plan selector) and M2 (time-weighted forward projection of announced
+hikes) shipped on branch `v0.3-redesign`. Next action: v0.3-M3 (cost breakdown).
 
 ## Open Questions / Blockers
-- Forward-projection baseline: generic 12-month-with-hikes vs contract-expiry-aware default? (need-by M2; leaning generic default + expiry-aware optional)
 - Retention target: one number (rate-only) or two (incl. welcome credit)? (need-by M5; leaning two)
 - Authoritative per-supplier CEG solar feed-in rates source? (need-by M7)
+- Switch/contract-end date input (anchors the projection window per user, replacing "today") — lands with the ② personalisation block, before/with M6.
 
 ## Todo
 ### v0.3 redesign (per DESIGN-v0.3.md)
-- [ ] M1: answer-first restructure — current-plan input, hero answer card, demote ranking
-- [ ] M2: forward 12-month projection through hikes.yaml + optional contract-end-date input
 - [ ] M3: cost breakdown (simulator exposes per-component split) + expand to PlanDetail drawer
 - [ ] M4: "why cheapest" evidence section — cost-weighted usage visual under its claim
 - [ ] M5: stay-and-negotiate target (retention back-solve, two targets)
