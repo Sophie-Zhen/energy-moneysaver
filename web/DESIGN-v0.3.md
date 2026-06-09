@@ -163,6 +163,35 @@ Linked out, not stuffed into the main flow:
 - **User manual** — "how this tool works", for first-time users.
 - **FAQ** — common questions. May extend the existing `data_guide.html`.
 
+### Layout (chosen): single-column, two-phase
+
+The modules above are arranged in **one vertical column read top to bottom**,
+like a letter — not a dashboard with tabs. The logical order ①→⑧ is invariant;
+this is how inputs and outputs share the page in space.
+
+The column has **two phases**:
+
+- **Before data:** the input block (① + the ② essentials) is the hero —
+  centered, inviting, "Will my plan get worse? What should I switch to?".
+  Nothing else competes.
+- **After data:** the input block **collapses to a one-line editable summary
+  bar** (e.g. `EI Home Electric Saver · 4,200 kWh · EV · gas  [edit]`) and the
+  answer (③) takes the hero position. The rest of the column (④⑤🅰🅱⑦⑧)
+  flows below.
+
+Why this over a sticky-sidebar or a two-screen wizard:
+- Reads as one continuous explanation (serves "clear, efficient reading").
+- Least dashboard-like — the opposite of energypal's control-panel feel.
+- Mobile-native: one column needs no responsive sidebar collapse.
+- The sidebar's "tweak and re-read" benefit is recovered by the inline-editable
+  summary bar, without a persistent control panel.
+
+Default expand/collapse for reading efficiency: ③ answer, 🅰 negotiate, 🅱 switch
+are **always visible** (answer + actions are the point); ④ exact maths, ⑤ deeper
+analysis, ⑦ full ranking are **collapsed by default** (progressive disclosure).
+The two action paths 🅰/🅱 sit **side by side on desktop** (a fork: negotiate
+first, switch if that fails), **stacked on mobile**.
+
 ## 4. New computation required
 
 | Need | Where | Notes |
@@ -254,3 +283,19 @@ verification/parity strategy (§9), privacy/no-backend stance (Appendix B). New
 simulator outputs (breakdown, forward projection) must keep the parity contract:
 extend the Python reference and the parity fixture in lockstep, never let the TS
 and Python diverge.
+
+## 9. Hosting & privacy (decided: no change)
+
+Stay on **GitHub Pages**. Privacy is a property of the *architecture*, not the
+host: the HDF is read in-browser via the File API, all compute is client-side,
+and there is no endpoint that receives the file — so no static host (GitHub
+Pages, Cloudflare Pages, Netlify, Codeberg Pages, …) ever sees the user's data.
+They all serve the same static bundle and are equally private. Migrating hosts
+would buy zero privacy and cost CI/deploy rework.
+
+The real privacy red lines are app-level, not host-level, and are kept:
+1. **No analytics / trackers** (no Google Analytics etc.).
+2. **No third-party CDN resources** — self-host fonts so no IP leaks on load.
+
+A privacy-hardening pass (confirm self-hosted fonts, audit for any external
+request) is folded into a later milestone, not a host migration.

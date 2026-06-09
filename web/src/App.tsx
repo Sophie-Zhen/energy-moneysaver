@@ -38,6 +38,7 @@ export function App() {
   const [evStartDate, setEvStartDate] = useState<string>(""); // YYYY-MM-DD
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [currentComboId, setCurrentComboId] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([fetchTariffSnapshot(), fetchProfiles()])
@@ -179,6 +180,25 @@ export function App() {
       </fieldset>
 
       <section className="form-grid">
+        {ranking && ranking.length > 0 && (
+          <label className="field" style={{ gridColumn: "1 / -1" }}>
+            Your current plan (to see your saving)
+            <select
+              value={currentComboId ?? ""}
+              onChange={(e) => setCurrentComboId(e.target.value || null)}
+            >
+              <option value="">— select your current plan —</option>
+              {[...ranking]
+                .sort((a, b) => a.combo.label.localeCompare(b.combo.label))
+                .map((r) => (
+                  <option key={r.combo.id} value={r.combo.id}>
+                    {r.combo.label} (€{r.annualEur.toFixed(0)})
+                  </option>
+                ))}
+            </select>
+          </label>
+        )}
+
         {mode === "form" && (
           <label className="field">
             Annual electricity kWh
@@ -294,10 +314,19 @@ export function App() {
         )}
       </section>
 
+      {ranking && ranking.length > 0 && (
+        <AnswerHero
+          cheapest={ranking[0]}
+          current={
+            ranking.find((r) => r.combo.id === currentComboId) ?? null
+          }
+        />
+      )}
+
       {ranking && (
         <section>
           <h2>
-            Ranking ({ranking.length} combos
+            All plans ({ranking.length} combos
             {series && `, modelled at ${Math.round(series.derivedAnnualKwh)} kWh elec`})
           </h2>
           {ranking.length === 0 ? (
@@ -340,6 +369,57 @@ export function App() {
         </section>
       )}
     </main>
+  );
+}
+
+function AnswerHero({
+  cheapest,
+  current,
+}: {
+  cheapest: RankedCombo;
+  current: RankedCombo | null;
+}) {
+  if (!current) {
+    return (
+      <section className="answer">
+        <p className="muted">Cheapest for you, next 12 months</p>
+        <p className="answer-headline">
+          {cheapest.combo.label}{" "}
+          <span className="answer-num">€{cheapest.annualEur.toFixed(0)}/yr</span>
+        </p>
+        <p className="muted">
+          Select your current plan above to see how much you'd save.
+        </p>
+      </section>
+    );
+  }
+
+  const savings = current.annualEur - cheapest.annualEur;
+  const alreadyBest = current.combo.id === cheapest.combo.id || savings < 1;
+
+  if (alreadyBest) {
+    return (
+      <section className="answer">
+        <p className="answer-headline">You're already on the cheapest plan ✅</p>
+        <p className="muted">
+          {current.combo.label} · €{current.annualEur.toFixed(0)}/yr. Nothing to
+          do.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="answer">
+      <p className="muted">Your plan now → cheapest for you</p>
+      <p className="answer-headline">
+        €{current.annualEur.toFixed(0)} → €{cheapest.annualEur.toFixed(0)}
+        <span className="answer-save"> save €{savings.toFixed(0)}/yr</span>
+      </p>
+      <p className="muted">
+        Current: {current.combo.label}. Cheapest: {cheapest.combo.label}.
+      </p>
+    </section>
   );
 }
 
