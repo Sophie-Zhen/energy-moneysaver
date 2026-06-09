@@ -242,10 +242,18 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   €2529 → €2733, EI SST → €2851); un-hiked suppliers unchanged; 609/609 tests
   pass; hand-check in `hikes.test.ts`.
 
-### v0.3-M3 — Cost breakdown
-- Simulator exposes per-component breakdown; render the side-by-side split.
-- Expand-to-detail wires into the existing PlanDetail drawer.
-- **Verify:** breakdown components sum to the total within €0.01.
+### v0.3-M3 — Cost breakdown  ✅ done
+- `electricityBreakdown` / `gasBreakdown` split the same totals the scalar
+  functions return: night / day / peak (CRU wkdy 17-19) units, standing, PSO,
+  gas units, carbon tax, gas standing, welcome credit. Units bucketed into
+  CRU-style windows for a comparable split; rate is still the plan's actual
+  hourly rate. Simulator scalar functions untouched → parity safe.
+- Renders current-vs-cheapest side by side with a per-line "You save" column;
+  an expandable "Rates & sources" reuses the PlanDetail drawer.
+- **Verify (done):** `breakdown.test.ts` asserts components sum to the scalar
+  total within €0.005 for every catalogue plan; 611/611 pass. (Displayed
+  per-row integers can visually sum €1 off the total — rounding only; the
+  underlying math is exact.)
 
 ### v0.3-M4 — "Why cheapest" evidence section
 - One/two cost-weighted usage visuals, each under its claim. HTML/CSS or a light

@@ -11,6 +11,10 @@ import {
   annualDualFuelCostEur,
   annualElectricityOnlyCostEur,
   cheapestBandEvDistribution,
+  electricityBreakdown,
+  gasBreakdown,
+  type ElectricityBreakdown,
+  type GasBreakdown,
 } from "./simulator";
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
 import { projectElectricity, projectGas } from "./hikes";
@@ -19,6 +23,7 @@ import type { HourlySeries, MeterType } from "./types";
 
 type Mode = "form" | "hdf";
 type RankedCombo = { combo: Combo; annualEur: number; hiked: boolean };
+type ComboBreakdown = { elec: ElectricityBreakdown; gas: GasBreakdown | null };
 
 export function App() {
   const [snapshot, setSnapshot] = useState<TariffSnapshot | null>(null);
@@ -132,6 +137,37 @@ export function App() {
       })
       .sort((a, b) => a.annualEur - b.annualEur);
   }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType, referenceDate]);
+
+  // Per-component breakdown of the cheapest plan (and the current plan, if
+  // chosen) for the "where the money goes / where the saving comes from" view.
+  const breakdowns = useMemo(() => {
+    if (!ranking || ranking.length === 0 || !series) return null;
+    const mk = (combo: Combo): ComboBreakdown => {
+      const evDist =
+        hasEv && combo.elec.kind === "bands"
+          ? cheapestBandEvDistribution(combo.elec)
+          : undefined;
+      return {
+        elec: electricityBreakdown({
+          weekdayHourly: series.weekday,
+          weekendHourly: series.weekend,
+          elecPlan: combo.elec,
+          evAnnualKwh: hasEv ? annualEvKwh : 0,
+          evDistribution: evDist,
+        }),
+        gas: combo.gas ? gasBreakdown(combo.gas, annualGasKwh) : null,
+      };
+    };
+    const best = ranking[0].combo;
+    const cur =
+      ranking.find((r) => r.combo.id === currentComboId)?.combo ?? null;
+    return {
+      bestCombo: best,
+      best: mk(best),
+      curCombo: cur,
+      cur: cur ? mk(cur) : null,
+    };
+  }, [ranking, series, currentComboId, hasEv, annualEvKwh, annualGasKwh]);
 
   const handleFile = (file: File | null) => {
     if (!file) {
@@ -339,6 +375,8 @@ export function App() {
         />
       )}
 
+      {breakdowns && <CostBreakdown {...breakdowns} />}
+
       {ranking && (
         <section>
           <h2>
@@ -441,6 +479,128 @@ function AnswerHero({
           increase — part of why switching saves.
         </p>
       )}
+    </section>
+  );
+}
+
+function breakdownRows(b: ComboBreakdown) {
+  const e = b.elec;
+  const g = b.gas;
+  return [
+    { label: "Night units", v: e.nightEur },
+    { label: "Day units", v: e.dayEur },
+    { label: "Peak units (wkdy 17–19)", v: e.peakEur },
+    { label: "Electricity standing", v: e.standingEur },
+    { label: "PSO levy", v: e.psoLevyEur },
+    ...(g
+      ? [
+          { label: "Gas units", v: g.unitsEur },
+          { label: "Gas carbon tax", v: g.carbonTaxEur },
+          { label: "Gas standing", v: g.standingEur },
+        ]
+      : []),
+    {
+      label: "Welcome credit",
+      v: -(e.welcomeCreditEur + (g?.welcomeCreditEur ?? 0)),
+    },
+    { label: "Total", v: e.totalEur + (g?.totalEur ?? 0), isTotal: true },
+  ];
+}
+
+function eur(v: number): string {
+  return v < 0 ? `−€${Math.abs(v).toFixed(0)}` : `€${v.toFixed(0)}`;
+}
+
+function ComboRates({ combo }: { combo: Combo }) {
+  return (
+    <div className="drawer">
+      <PlanDetail
+        title={`Electricity: ${combo.elec.supplier}`}
+        label={combo.elec.label}
+        source={combo.elec.source}
+        notes={combo.elec.notes}
+      />
+      {combo.gas && (
+        <PlanDetail
+          title={`Gas: ${combo.gas.supplier}`}
+          label={combo.gas.label}
+          source={combo.gas.source}
+          notes={combo.gas.notes}
+        />
+      )}
+    </div>
+  );
+}
+
+function CostBreakdown({
+  bestCombo,
+  best,
+  curCombo,
+  cur,
+}: {
+  bestCombo: Combo;
+  best: ComboBreakdown;
+  curCombo: Combo | null;
+  cur: ComboBreakdown | null;
+}) {
+  const bestRows = breakdownRows(best);
+  const curRows = cur ? breakdownRows(cur) : null;
+  const hasCur = curRows != null;
+  const bestLabel = bestCombo.label;
+  const curLabel = curCombo?.label ?? null;
+  return (
+    <section className="breakdown">
+      <h2>Cost breakdown</h2>
+      <table className="breakdown-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            {hasCur && <th className="num">Current</th>}
+            <th className="num">{hasCur ? "Cheapest" : "Annual"}</th>
+            {hasCur && <th className="num">You save</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {bestRows.map((br, i) => {
+            const cv = curRows ? curRows[i].v : null;
+            const saving = cv != null ? cv - br.v : null;
+            return (
+              <tr key={br.label} className={br.isTotal ? "total" : ""}>
+                <td>{br.label}</td>
+                {hasCur && <td className="num">{cv != null ? eur(cv) : "—"}</td>}
+                <td className="num">{eur(br.v)}</td>
+                {hasCur && (
+                  <td className="num">
+                    {saving != null && Math.abs(saving) >= 0.5 ? (
+                      <span className={saving > 0 ? "save-pos" : "save-neg"}>
+                        {eur(saving)}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                )}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p className="muted">
+        {hasCur
+          ? `Current: ${curLabel}. Cheapest: ${bestLabel}. "You save" is current minus cheapest per line.`
+          : `Cheapest for you: ${bestLabel}. Pick your current plan above to compare it line by line.`}
+      </p>
+      <details className="modelling">
+        <summary>Rates &amp; sources for these plans</summary>
+        <h3 className="rates-heading">Cheapest: {bestLabel}</h3>
+        <ComboRates combo={bestCombo} />
+        {curCombo && (
+          <>
+            <h3 className="rates-heading">Current: {curLabel}</h3>
+            <ComboRates combo={curCombo} />
+          </>
+        )}
+      </details>
     </section>
   );
 }

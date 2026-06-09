@@ -111,6 +111,45 @@ table.ranking tr.best {
   color: #1b5e20;
 }
 
+.breakdown {
+  margin-top: 2rem;
+}
+
+table.breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+table.breakdown-table th,
+table.breakdown-table td {
+  text-align: left;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+table.breakdown-table th.num,
+table.breakdown-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+table.breakdown-table tr.total td {
+  border-top: 2px solid #ddd;
+  border-bottom: none;
+  font-weight: 600;
+}
+
+.save-pos {
+  color: #1b5e20;
+}
+
+.save-neg {
+  color: #b00020;
+}
+
 .mode-toggle {
   margin-top: 1.5rem;
   padding: 0.75rem 1rem;

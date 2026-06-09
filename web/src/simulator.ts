@@ -158,3 +158,99 @@ export function annualElectricityOnlyCostEur(
     input.elecPlan.welcome_credit_eur;
   return units + overhead;
 }
+
+// ----------------------------- cost breakdown -----------------------------
+// A per-component split of the same totals the scalar functions return, so the
+// UI can show "where the money goes / where the saving comes from". Units are
+// bucketed into CRU-style time windows for a comparable peak/day/night split;
+// the rate applied is still the plan's actual rate for that hour.
+
+const NIGHT_START = 23;
+const NIGHT_END = 8;
+
+function classifyHour(hour: number, isWeekend: boolean): "peak" | "day" | "night" {
+  if (hour >= NIGHT_START || hour < NIGHT_END) return "night";
+  if (!isWeekend && PEAK_HOUR_START <= hour && hour < PEAK_HOUR_END) {
+    return "peak";
+  }
+  return "day";
+}
+
+export type ElectricityBreakdown = {
+  nightEur: number;
+  dayEur: number;
+  peakEur: number; // weekday 17:00-19:00 only
+  standingEur: number;
+  psoLevyEur: number;
+  welcomeCreditEur: number; // positive; subtracted from the total
+  totalEur: number;
+};
+
+export function electricityBreakdown(
+  input: ElectricityOnlyInput,
+): ElectricityBreakdown {
+  const {
+    weekdayHourly,
+    weekendHourly,
+    elecPlan,
+    evAnnualKwh,
+    evDistribution = {},
+  } = input;
+  let peakC = 0;
+  let dayC = 0;
+  let nightC = 0;
+  for (let hour = 0; hour < 24; hour++) {
+    const wdBase = (weekdayHourly[hour] ?? 0) * WEEKDAYS_PER_YEAR;
+    const weBase = (weekendHourly[hour] ?? 0) * WEEKENDS_PER_YEAR;
+    const evHour = evAnnualKwh * (evDistribution[hour] ?? 0);
+    const evWd = (evHour * 5) / 7;
+    const evWe = (evHour * 2) / 7;
+    const wdC = (wdBase + evWd) * rateForHourAware(elecPlan, hour, false);
+    const weC = (weBase + evWe) * rateForHourAware(elecPlan, hour, true);
+    const wdBucket = classifyHour(hour, false);
+    if (wdBucket === "peak") peakC += wdC;
+    else if (wdBucket === "night") nightC += wdC;
+    else dayC += wdC;
+    // Weekend 17-19 is never peak (matches rateForHourAware).
+    if (classifyHour(hour, true) === "night") nightC += weC;
+    else dayC += weC;
+  }
+  const standingEur = elecPlan.standing_eur_per_year;
+  const psoLevyEur = ANNUAL_PSO_LEVY_INC_VAT;
+  const welcomeCreditEur = elecPlan.welcome_credit_eur;
+  const totalEur =
+    (peakC + dayC + nightC) / 100 + standingEur + psoLevyEur - welcomeCreditEur;
+  return {
+    nightEur: nightC / 100,
+    dayEur: dayC / 100,
+    peakEur: peakC / 100,
+    standingEur,
+    psoLevyEur,
+    welcomeCreditEur,
+    totalEur,
+  };
+}
+
+export type GasBreakdown = {
+  unitsEur: number;
+  carbonTaxEur: number;
+  standingEur: number;
+  welcomeCreditEur: number; // positive; subtracted from the total
+  totalEur: number;
+};
+
+export function gasBreakdown(plan: GasPlan, annualKwh: number): GasBreakdown {
+  const unitsEur = (plan.rate_cpkwh / 100) * annualKwh;
+  const carbonTaxEur = GAS_CARBON_TAX_EUR_PER_KWH_INC_VAT * annualKwh;
+  return {
+    unitsEur,
+    carbonTaxEur,
+    standingEur: plan.standing_eur_per_year,
+    welcomeCreditEur: plan.welcome_credit_eur,
+    totalEur:
+      unitsEur +
+      carbonTaxEur +
+      plan.standing_eur_per_year -
+      plan.welcome_credit_eur,
+  };
+}
