@@ -49,10 +49,18 @@ export function App() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [currentComboId, setCurrentComboId] = useState<string | null>(null);
+  const [contractEndDate, setContractEndDate] = useState<string>(""); // YYYY-MM-DD
 
-  // "As of now" anchor for time-weighting announced hikes. Stable per mount.
-  // When a switch/contract-end date input lands, pass that instead.
-  const referenceDate = useMemo(() => new Date(), []);
+  // Optional contract/discount end date: roughly when the user will switch.
+  const contractEnd = useMemo<Date | null>(() => {
+    if (!contractEndDate) return null;
+    const d = new Date(`${contractEndDate}T00:00:00`);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }, [contractEndDate]);
+
+  // Anchor for time-weighting announced hikes: the switch date if the user gave
+  // a contract-end date, otherwise today.
+  const referenceDate = useMemo(() => contractEnd ?? new Date(), [contractEnd]);
 
   useEffect(() => {
     Promise.all([fetchTariffSnapshot(), fetchProfiles()])
@@ -300,6 +308,20 @@ export function App() {
           </label>
         )}
 
+        {ranking && ranking.length > 0 && currentComboId && (
+          <label className="field">
+            Current plan ends on (optional)
+            <input
+              type="date"
+              value={contractEndDate}
+              onChange={(e) => setContractEndDate(e.target.value)}
+            />
+            <span className="muted">
+              Unlocks your switch date and anchors the price projection.
+            </span>
+          </label>
+        )}
+
         {mode === "form" && (
           <label className="field">
             Annual electricity kWh
@@ -437,6 +459,12 @@ export function App() {
       )}
 
       {negotiate && <Negotiate {...negotiate} />}
+
+      {ranking &&
+        ranking.length > 0 &&
+        ranking[0].combo.id !== currentComboId && (
+          <SwitchTiming contractEnd={contractEnd} />
+        )}
 
       {ranking && (
         <section>
@@ -662,6 +690,66 @@ function CostBreakdown({
           </>
         )}
       </details>
+    </section>
+  );
+}
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+function fmtDate(d: Date): string {
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function addDays(d: Date, n: number): Date {
+  const r = new Date(d.getTime());
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function SwitchTiming({ contractEnd }: { contractEnd: Date | null }) {
+  const submit = contractEnd ? addDays(contractEnd, 1) : null;
+  return (
+    <section className="timing">
+      <h2>If you switch: when and how</h2>
+      {submit ? (
+        <p>
+          Submit your switch around <strong>{fmtDate(submit)}</strong> — the day
+          after your current plan ends.
+        </p>
+      ) : (
+        <p>
+          Submit the day after your fixed contract or discount ends. Find that
+          date on your bill or welcome email and enter it above for an exact day.
+        </p>
+      )}
+      <ul className="timing-list">
+        <li>
+          <span className="badge confidence-fact">FACT</span> Switching before
+          your end date can trigger an early-exit fee (≈€50); it stops applying
+          once the contract ends.
+        </li>
+        <li>
+          <span className="badge confidence-third_party">FORUM</span> Some people
+          who switched on the exact end date were auto-charged the fee and had to
+          dispute it — a day later is safer.
+        </li>
+        <li>
+          <span className="badge confidence-fact">FACT</span> The switch takes
+          ~10–15 working days; you can waive the 14-day cooling-off to speed it
+          up.
+        </li>
+        <li>
+          <span className="badge confidence-fact">FACT</span> Every day past your
+          end date sits on the higher standard rate — don't drag it out.
+        </li>
+        <li>
+          <span className="badge">CHECK</span> Confirm your exact end date in
+          your supplier account before scheduling anything.
+        </li>
+      </ul>
     </section>
   );
 }

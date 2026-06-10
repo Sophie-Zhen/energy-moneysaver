@@ -211,6 +211,28 @@ table.breakdown-table tr.total td {
   margin-bottom: 0.4rem;
 }
 
+.timing {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.timing-list {
+  margin: 0.5rem 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.timing-list li {
+  margin-bottom: 0.5rem;
+}
+
+.timing-list .badge {
+  margin-right: 0.4rem;
+}
+
 .mode-toggle {
   margin-top: 1.5rem;
   padding: 0.75rem 1rem;

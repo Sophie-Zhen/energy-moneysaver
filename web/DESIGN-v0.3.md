@@ -283,10 +283,18 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   Energia deal" (units 2401 × 0.85 + fixed 450 = 2491 ✓); section hides when
   current == cheapest; 617/617 pass.
 
-### v0.3-M6 — Switch-timing module
-- Timing rule + content, driven by the expiry date.
-- **Verify:** with a sample expiry date, the recommended submit date and labelled
-  reasons render; labels match the FACT/THIRD_PARTY/advisory split.
+### v0.3-M6 — Switch-timing module  ✅ done
+- Optional "current plan ends on" date input. Recommends submitting the day
+  after (E+1) with labelled reasons: exit-fee-stops-after-end (FACT), exact-day
+  auto-charge risk (FORUM/third-party), ~10-15 working days + waivable cooling-
+  off (FACT), each day past end on standard rate (FACT), confirm your date
+  (CHECK/advisory). Generic copy when no date given.
+- **Resolves the M2 deferred anchor:** the same date becomes the projection
+  reference T0, so the hike is time-weighted from the user's actual switch date
+  rather than today. One input, two features.
+- **Verify (done):** end 2026-09-02 → "Submit around 3 Sep 2026"; the Sep anchor
+  makes EI's hike full +8% (€2851 today → €2861), vs time-weighted from today;
+  badges render FACT/FORUM/FACT/FACT/CHECK; 617/617 pass.
 
 ### v0.3-M7 — Solar export modelling
 - Parser keeps export column; `electricity_export.yaml`; simulator nets export
