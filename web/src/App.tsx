@@ -301,69 +301,70 @@ export function App() {
           </select>
         </label>
 
-        <label className="field">
-          <input
-            type="checkbox"
-            checked={hasGas}
-            onChange={(e) => setHasGas(e.target.checked)}
-          />
-          {" "}I have gas
-        </label>
-
-        {hasGas && (
-          <label className="field">
-            Annual gas kWh
+        <div className="field">
+          <label className="check">
             <input
-              type="number"
-              min={0}
-              max={50000}
-              step={500}
-              value={annualGasKwh}
-              onChange={(e) => setAnnualGasKwh(Number(e.target.value))}
+              type="checkbox"
+              checked={hasGas}
+              onChange={(e) => setHasGas(e.target.checked)}
             />
+            {" "}I have gas
           </label>
-        )}
+          {hasGas && (
+            <label className="subfield">
+              Annual gas kWh
+              <input
+                type="number"
+                min={0}
+                max={50000}
+                step={500}
+                value={annualGasKwh}
+                onChange={(e) => setAnnualGasKwh(Number(e.target.value))}
+              />
+            </label>
+          )}
+        </div>
 
-        <label className="field">
-          <input
-            type="checkbox"
-            checked={hasEv}
-            onChange={(e) => setHasEv(e.target.checked)}
-          />
-          {" "}I have an EV (charged at home)
-        </label>
-
-        {hasEv && (
-          <label className="field">
-            Annual EV charging kWh
+        <div className="field">
+          <label className="check">
             <input
-              type="number"
-              min={0}
-              max={10000}
-              step={100}
-              value={annualEvKwh}
-              onChange={(e) => setAnnualEvKwh(Number(e.target.value))}
+              type="checkbox"
+              checked={hasEv}
+              onChange={(e) => setHasEv(e.target.checked)}
             />
-            <span className="muted">
-              {" "}(assumed scheduled to cheapest band)
-            </span>
+            {" "}I have an EV (charged at home)
           </label>
-        )}
-
-        {mode === "hdf" && hasEv && (
-          <label className="field">
-            EV charging started on (optional)
-            <input
-              type="date"
-              value={evStartDate}
-              onChange={(e) => setEvStartDate(e.target.value)}
-            />
-            <span className="muted">
-              {" "}Skips readings on/after this date so the baseload isn't
-              inflated by EV charging.
-            </span>
-          </label>
-        )}
+          {hasEv && (
+            <label className="subfield">
+              Annual EV charging kWh
+              <input
+                type="number"
+                min={0}
+                max={10000}
+                step={100}
+                value={annualEvKwh}
+                onChange={(e) => setAnnualEvKwh(Number(e.target.value))}
+              />
+              <span className="muted">
+                {" "}(assumed scheduled to cheapest band)
+              </span>
+            </label>
+          )}
+          {mode === "hdf" && hasEv && (
+            <label className="subfield">
+              EV charging started on (optional)
+              <input
+                type="date"
+                value={evStartDate}
+                onChange={(e) => setEvStartDate(e.target.value)}
+              />
+              <span className="muted">
+                {" "}Skips readings on/after this date so the baseload isn't
+                inflated by EV charging.
+              </span>
+            </label>
+          )}
+        </div>
       </section>
 
       {ranking && ranking.length > 0 && (

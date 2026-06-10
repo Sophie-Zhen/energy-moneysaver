@@ -53,6 +53,15 @@ h2 {
   vertical-align: middle;
 }
 
+/* A dependent input that appears under its checkbox, inside the same grid cell
+   so toggling never re-packs the grid (no horizontal shift of neighbours). */
+.field .subfield {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
 table.ranking {
   width: 100%;
   border-collapse: collapse;
