@@ -18,6 +18,7 @@ import {
   annualGasCostEur,
   electricityBreakdown,
   gasBreakdown,
+  usageKwhByBand,
 } from "../src/simulator";
 
 const snapshot = toSnapshot(tariffsJson as unknown as RawTariffData);
@@ -46,6 +47,14 @@ describe("electricityBreakdown", () => {
       expect(b.totalEur).toBeCloseTo(scalar, 2); // within EUR 0.005
       expect(sum).toBeCloseTo(b.totalEur, 6);
     }
+  });
+});
+
+describe("usageKwhByBand", () => {
+  it("night + day + peak sum to the annual kWh", () => {
+    const split = usageKwhByBand({ weekdayHourly: wd, weekendHourly: we });
+    const total = split.nightKwh + split.dayKwh + split.peakKwh;
+    expect(total).toBeCloseTo(3500, 2);
   });
 });
 

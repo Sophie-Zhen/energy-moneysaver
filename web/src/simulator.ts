@@ -239,6 +239,36 @@ export type GasBreakdown = {
   totalEur: number;
 };
 
+export type UsageBandSplit = {
+  nightKwh: number;
+  dayKwh: number;
+  peakKwh: number; // weekday 17:00-19:00 only
+};
+
+// Where the household's electricity is used, by CRU-style time window. Used as
+// evidence for "why this plan wins" — it's a fact about the user's usage,
+// independent of any plan. EV charging is excluded (modelled separately; its
+// schedule would otherwise be self-fulfilling).
+export function usageKwhByBand(input: {
+  weekdayHourly: HourlySeries;
+  weekendHourly: HourlySeries;
+}): UsageBandSplit {
+  let night = 0;
+  let day = 0;
+  let peak = 0;
+  for (let hour = 0; hour < 24; hour++) {
+    const wd = (input.weekdayHourly[hour] ?? 0) * WEEKDAYS_PER_YEAR;
+    const we = (input.weekendHourly[hour] ?? 0) * WEEKENDS_PER_YEAR;
+    const wdBucket = classifyHour(hour, false);
+    if (wdBucket === "peak") peak += wd;
+    else if (wdBucket === "night") night += wd;
+    else day += wd;
+    if (classifyHour(hour, true) === "night") night += we;
+    else day += we;
+  }
+  return { nightKwh: night, dayKwh: day, peakKwh: peak };
+}
+
 export function gasBreakdown(plan: GasPlan, annualKwh: number): GasBreakdown {
   const unitsEur = (plan.rate_cpkwh / 100) * annualKwh;
   const carbonTaxEur = GAS_CARBON_TAX_EUR_PER_KWH_INC_VAT * annualKwh;

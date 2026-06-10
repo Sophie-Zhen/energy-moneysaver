@@ -13,8 +13,10 @@ import {
   cheapestBandEvDistribution,
   electricityBreakdown,
   gasBreakdown,
+  usageKwhByBand,
   type ElectricityBreakdown,
   type GasBreakdown,
+  type UsageBandSplit,
 } from "./simulator";
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
 import { projectElectricity, projectGas } from "./hikes";
@@ -168,6 +170,16 @@ export function App() {
       cur: cur ? mk(cur) : null,
     };
   }, [ranking, series, currentComboId, hasEv, annualEvKwh, annualGasKwh]);
+
+  // The household's electricity usage shape (night/day/peak) — evidence for
+  // "why this plan wins". Plan-agnostic; excludes EV (see usageKwhByBand).
+  const usageSplit = useMemo<UsageBandSplit | null>(() => {
+    if (!series) return null;
+    return usageKwhByBand({
+      weekdayHourly: series.weekday,
+      weekendHourly: series.weekend,
+    });
+  }, [series]);
 
   const handleFile = (file: File | null) => {
     if (!file) {
@@ -377,6 +389,15 @@ export function App() {
       )}
 
       {breakdowns && <CostBreakdown {...breakdowns} />}
+
+      {usageSplit && breakdowns && (
+        <WhyCheapest
+          split={usageSplit}
+          cheapestLabel={breakdowns.bestCombo.label}
+          mode={mode}
+          hasEv={hasEv}
+        />
+      )}
 
       {ranking && (
         <section>
@@ -602,6 +623,64 @@ function CostBreakdown({
           </>
         )}
       </details>
+    </section>
+  );
+}
+
+function WhyCheapest({
+  split,
+  cheapestLabel,
+  mode,
+  hasEv,
+}: {
+  split: UsageBandSplit;
+  cheapestLabel: string;
+  mode: Mode;
+  hasEv: boolean;
+}) {
+  const total = split.nightKwh + split.dayKwh + split.peakKwh;
+  if (total <= 0) return null;
+  const bands = [
+    { key: "night", label: "Night", pct: (split.nightKwh / total) * 100 },
+    { key: "day", label: "Day", pct: (split.dayKwh / total) * 100 },
+    { key: "peak", label: "Peak", pct: (split.peakKwh / total) * 100 },
+  ];
+  const dominant = bands.reduce((a, b) => (b.pct > a.pct ? b : a));
+  const dom = dominant.label.toLowerCase();
+  return (
+    <section className="why">
+      <h2>Why this is cheapest for you</h2>
+      <div
+        className="why-bar"
+        role="img"
+        aria-label={bands.map((b) => `${b.label} ${b.pct.toFixed(0)}%`).join(", ")}
+      >
+        {bands.map(
+          (b) =>
+            b.pct > 0 && (
+              <div
+                key={b.key}
+                className={`why-seg seg-${b.key}`}
+                style={{ width: `${b.pct}%` }}
+              >
+                {b.pct >= 8 ? `${b.label} ${b.pct.toFixed(0)}%` : ""}
+              </div>
+            ),
+        )}
+      </div>
+      <p>
+        Most of your electricity is used in the <strong>{dom}</strong> window (
+        {dominant.pct.toFixed(0)}%), so plans that price {dom} cheaply — like{" "}
+        <strong>{cheapestLabel}</strong> — come out ahead for you.
+        {hasEv &&
+          " Your EV charging is scheduled to each plan's cheapest band on top of this."}
+      </p>
+      <p className="muted">
+        {mode === "hdf"
+          ? "Based on your uploaded half-hourly data."
+          : "Based on a typical household profile — upload your HDF for your real shape."}{" "}
+        Usage shape excludes EV charging.
+      </p>
     </section>
   );
 }

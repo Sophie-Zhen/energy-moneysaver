@@ -255,11 +255,19 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   per-row integers can visually sum €1 off the total — rounding only; the
   underlying math is exact.)
 
-### v0.3-M4 — "Why cheapest" evidence section
-- One/two cost-weighted usage visuals, each under its claim. HTML/CSS or a light
-  SVG; no heavy chart lib (per v0.2 §4).
-- **Verify:** the highlighted band in the visual matches the band that drives the
-  recommendation.
+### v0.3-M4 — "Why cheapest" evidence section  ✅ done
+- A night/day/peak bar of the household's electricity usage shape, with an auto
+  conclusion linking the dominant band to the recommendation. Pure CSS bar, no
+  chart lib. `usageKwhByBand`, unit-tested (sums to annual kWh).
+- Deviation from the original "cost-weighted" note: the evidence uses
+  **consumption (kWh)** share, not cost. Cost-weighting would price the bar with
+  the chosen plan's rates — baking the answer into its own evidence (circular).
+  kWh share is the plan-agnostic *cause* ("where you use" → which plan's cheap
+  band matters). EV excluded (its schedule would be self-fulfilling).
+- Honest in both modes: form mode is labelled "typical profile — upload your HDF
+  for your real shape"; HDF mode uses the user's data.
+- **Verify (done):** bar segments match the split (Night 33% / Day 60% / Peak
+  8% on the default profile); conclusion names the dominant band; 612/612 pass.
 
 ### v0.3-M5 — Stay-and-negotiate target
 - Retention back-solve module + UI block with two targets.
