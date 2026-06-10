@@ -24,6 +24,7 @@ on branch `v0.3-redesign`. Next action: v0.3-M4 ("why cheapest" evidence).
 - [ ] M6: switch-timing module (submit-on date + FACT/THIRD_PARTY/advisory labelling)
 - [ ] M7: solar export modelling (keep export column, electricity_export.yaml, net revenue, €400 note)
 - [ ] M8: help layer — user manual + FAQ
+- [ ] M9 (after structure done): visual hierarchy / design polish pass — distinguish primary (answer, savings) from secondary (form, ranking, disclosures). Deferred from M3 review (Sophie) to avoid polishing a moving target; run /design-review.
 
 ### Carry-over
 - [ ] Pin `energy-moneysaver` to GitHub profile (manual step — gh CLI doesn't support)
