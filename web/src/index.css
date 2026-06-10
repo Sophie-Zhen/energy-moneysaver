@@ -194,6 +194,23 @@ table.breakdown-table tr.total td {
   background: #fcd9d6;
 }
 
+.negotiate {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #f0f6ff;
+  border: 1px solid #cfe0f5;
+  border-radius: 8px;
+}
+
+.negotiate ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.negotiate li {
+  margin-bottom: 0.4rem;
+}
+
 .mode-toggle {
   margin-top: 1.5rem;
   padding: 0.75rem 1rem;

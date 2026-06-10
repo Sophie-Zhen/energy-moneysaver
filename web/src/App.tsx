@@ -14,9 +14,11 @@ import {
   electricityBreakdown,
   gasBreakdown,
   usageKwhByBand,
+  negotiateTarget,
   type ElectricityBreakdown,
   type GasBreakdown,
   type UsageBandSplit,
+  type NegotiateTarget,
 } from "./simulator";
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
 import { projectElectricity, projectGas } from "./hikes";
@@ -180,6 +182,41 @@ export function App() {
       weekendHourly: series.weekend,
     });
   }, [series]);
+
+  // Stay-and-negotiate: what unit-rate cut would make the current plan match
+  // the cheapest switch — on the ongoing rate, and on the full first-year deal.
+  const negotiate = useMemo(() => {
+    if (!breakdowns?.cur || !breakdowns.curCombo) return null;
+    if (breakdowns.curCombo.id === breakdowns.bestCombo.id) return null;
+    const { cur, best } = breakdowns;
+    const total = (b: ComboBreakdown) => b.elec.totalEur + (b.gas?.totalEur ?? 0);
+    const units =
+      cur.elec.nightEur +
+      cur.elec.dayEur +
+      cur.elec.peakEur +
+      (cur.gas?.unitsEur ?? 0);
+    const fixed =
+      cur.elec.standingEur +
+      cur.elec.psoLevyEur -
+      cur.elec.welcomeCreditEur +
+      (cur.gas
+        ? cur.gas.carbonTaxEur + cur.gas.standingEur - cur.gas.welcomeCreditEur
+        : 0);
+    const cheapestCost = total(best);
+    const currentCost = total(cur);
+    if (currentCost <= cheapestCost + 0.5) return null;
+    const bestWelcome =
+      best.elec.welcomeCreditEur + (best.gas?.welcomeCreditEur ?? 0);
+    return {
+      currentCost,
+      cheapestCost,
+      bestWelcome,
+      firstYearTarget: cheapestCost,
+      ongoingTarget: cheapestCost + bestWelcome,
+      firstYear: negotiateTarget(units, fixed, cheapestCost),
+      ongoing: negotiateTarget(units, fixed, cheapestCost + bestWelcome),
+    };
+  }, [breakdowns]);
 
   const handleFile = (file: File | null) => {
     if (!file) {
@@ -398,6 +435,8 @@ export function App() {
           hasEv={hasEv}
         />
       )}
+
+      {negotiate && <Negotiate {...negotiate} />}
 
       {ranking && (
         <section>
@@ -623,6 +662,74 @@ function CostBreakdown({
           </>
         )}
       </details>
+    </section>
+  );
+}
+
+function Negotiate({
+  currentCost,
+  cheapestCost,
+  bestWelcome,
+  firstYearTarget,
+  ongoingTarget,
+  firstYear,
+  ongoing,
+}: {
+  currentCost: number;
+  cheapestCost: number;
+  bestWelcome: number;
+  firstYearTarget: number;
+  ongoingTarget: number;
+  firstYear: NegotiateTarget;
+  ongoing: NegotiateTarget;
+}) {
+  const saving = currentCost - cheapestCost;
+  const hasBonus = bestWelcome >= 0.5;
+  return (
+    <section className="negotiate">
+      <h2>Best option: stay and negotiate</h2>
+      <p>
+        Switching saves about <strong>€{saving.toFixed(0)}/yr</strong>, but
+        staying is less hassle if your current supplier matches it. What to ask
+        for:
+      </p>
+      <ul>
+        {firstYear.feasible ? (
+          <li>
+            <strong>≈{Math.round(firstYear.reductionPct)}% off your current
+            rates</strong>{" "}
+            matches their first-year deal
+            {hasBonus
+              ? ` including the €${bestWelcome.toFixed(0)} sign-up bonus`
+              : ""}{" "}
+            (≈€{firstYearTarget.toFixed(0)}/yr).
+          </li>
+        ) : (
+          <li>
+            Even free units wouldn't match — your standing charges and other
+            fixed costs alone exceed the cheapest switch. Switching is the only
+            way to save here.
+          </li>
+        )}
+        {hasBonus &&
+          (ongoing.reductionPct > 0.5 ? (
+            <li>
+              <strong>≈{Math.round(ongoing.reductionPct)}% off</strong> matches
+              their ongoing rate once the one-off bonus is gone (≈€
+              {ongoingTarget.toFixed(0)}/yr) — enough to win from year 2.
+            </li>
+          ) : (
+            <li>
+              Your current ongoing rate already beats theirs — their deal only
+              wins in year 1 thanks to the €{bestWelcome.toFixed(0)} bonus.
+              Staying may be cheaper long-term.
+            </li>
+          ))}
+      </ul>
+      <p className="muted">
+        These are targets to aim for on the call, not a promise they'll offer
+        them. Most Irish suppliers have a retention team — ask before you cancel.
+      </p>
     </section>
   );
 }

@@ -269,10 +269,19 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
 - **Verify (done):** bar segments match the split (Night 33% / Day 60% / Peak
   8% on the default profile); conclusion names the dominant band; 612/612 pass.
 
-### v0.3-M5 — Stay-and-negotiate target
-- Retention back-solve module + UI block with two targets.
-- **Verify:** plugging the suggested discount into the current plan yields a
-  projected cost equal to the best switch cost within €1.
+### v0.3-M5 — Stay-and-negotiate target  ✅ done
+- `negotiateTarget(units, fixed, target)` back-solves the unit-rate multiplier
+  (only unit rates move; standing/PSO/carbon tax/welcome credit held fixed).
+  Two targets: ongoing rate (cheapest + their welcome credit added back) and
+  full first-year deal (cheapest cost incl. their bonus). Handles infeasible
+  (fixed charges alone exceed the switch) and "already beats their ongoing rate"
+  cases. Unit-tested.
+- Blue action box after the evidence; hidden when the current plan is already
+  the cheapest or no saving exists. Advisory caveat (target to aim for, not a
+  promise; suppliers have retention teams).
+- **Verify (done):** EI SST current → "≈15% off your rates matches the €2491
+  Energia deal" (units 2401 × 0.85 + fixed 450 = 2491 ✓); section hides when
+  current == cheapest; 617/617 pass.
 
 ### v0.3-M6 — Switch-timing module
 - Timing rule + content, driven by the expiry date.

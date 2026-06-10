@@ -239,6 +239,25 @@ export type GasBreakdown = {
   totalEur: number;
 };
 
+export type NegotiateTarget = {
+  multiplier: number; // unit-rate multiplier m to hit the target cost
+  reductionPct: number; // (1 - m) * 100: how much lower than current rates
+  feasible: boolean; // false if even free units can't match (m <= 0)
+};
+
+// What unit-rate cut would make staying on the current plan as cheap as a
+// target cost? Only unit rates move; standing charge, PSO, carbon tax and
+// welcome credit are held fixed:  unitsCost * m + fixedCost = target.
+export function negotiateTarget(
+  unitsCost: number,
+  fixedCost: number,
+  target: number,
+): NegotiateTarget {
+  if (unitsCost <= 0) return { multiplier: 1, reductionPct: 0, feasible: false };
+  const m = (target - fixedCost) / unitsCost;
+  return { multiplier: m, reductionPct: (1 - m) * 100, feasible: m > 0 };
+}
+
 export type UsageBandSplit = {
   nightKwh: number;
   dayKwh: number;
