@@ -10,18 +10,15 @@ chart and detail there to raise confidence in that answer. Triggered by
 dogfooding energypal.ie (feature-rich but too complex). M1 (answer-first hero +
 current-plan selector), M2 (time-weighted forward projection of announced
 hikes), M3 (cost breakdown current-vs-cheapest + expandable sources), and M4
-("why cheapest" usage-shape evidence bar), and M5 (stay-and-negotiate target)
-shipped on branch `v0.3-redesign`, plus a form-grid reflow fix. Next action:
-v0.3-M6 (switch-timing module).
+("why cheapest" usage-shape evidence bar), M5 (stay-and-negotiate target), and
+M6 (switch-timing + contract-end date as projection anchor) shipped on branch
+`v0.3-redesign`, plus a form-grid reflow fix. Next action: v0.3-M7 (solar).
 
 ## Open Questions / Blockers
-- Retention target: one number (rate-only) or two (incl. welcome credit)? (need-by M5; leaning two)
 - Authoritative per-supplier CEG solar feed-in rates source? (need-by M7)
-- Switch/contract-end date input (anchors the projection window per user, replacing "today") — lands with the ② personalisation block, before/with M6.
 
 ## Todo
 ### v0.3 redesign (per DESIGN-v0.3.md)
-- [ ] M6: switch-timing module (submit-on date + FACT/THIRD_PARTY/advisory labelling)
 - [ ] M7: solar export modelling (keep export column, electricity_export.yaml, net revenue, €400 note)
 - [ ] M8: help layer — user manual + FAQ
 - [ ] M9 (after structure done): visual hierarchy / design polish pass — distinguish primary (answer, savings) from secondary (form, ranking, disclosures). Deferred from M3 review (Sophie) to avoid polishing a moving target; run /design-review.
