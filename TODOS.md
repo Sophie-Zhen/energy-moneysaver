@@ -10,8 +10,9 @@ chart and detail there to raise confidence in that answer. Triggered by
 dogfooding energypal.ie (feature-rich but too complex). M1 (answer-first hero +
 current-plan selector), M2 (time-weighted forward projection of announced
 hikes), M3 (cost breakdown current-vs-cheapest + expandable sources), and M4
-("why cheapest" usage-shape evidence bar) shipped on branch `v0.3-redesign`,
-plus a form-grid reflow fix. Next action: v0.3-M5 (stay-and-negotiate target).
+("why cheapest" usage-shape evidence bar), and M5 (stay-and-negotiate target)
+shipped on branch `v0.3-redesign`, plus a form-grid reflow fix. Next action:
+v0.3-M6 (switch-timing module).
 
 ## Open Questions / Blockers
 - Retention target: one number (rate-only) or two (incl. welcome credit)? (need-by M5; leaning two)
@@ -20,7 +21,6 @@ plus a form-grid reflow fix. Next action: v0.3-M5 (stay-and-negotiate target).
 
 ## Todo
 ### v0.3 redesign (per DESIGN-v0.3.md)
-- [ ] M5: stay-and-negotiate target (retention back-solve, two targets)
 - [ ] M6: switch-timing module (submit-on date + FACT/THIRD_PARTY/advisory labelling)
 - [ ] M7: solar export modelling (keep export column, electricity_export.yaml, net revenue, €400 note)
 - [ ] M8: help layer — user manual + FAQ
