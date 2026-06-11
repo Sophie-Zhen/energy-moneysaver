@@ -1,6 +1,6 @@
 # TODOS
 
-_Last updated: 2026-06-09_
+_Last updated: 2026-06-12_
 
 ## Current Focus
 v0.3 product redesign — direction locked in `web/DESIGN-v0.3.md`. Pivot from
@@ -11,16 +11,19 @@ dogfooding energypal.ie (feature-rich but too complex). M1 (answer-first hero +
 current-plan selector), M2 (time-weighted forward projection of announced
 hikes), M3 (cost breakdown current-vs-cheapest + expandable sources), and M4
 ("why cheapest" usage-shape evidence bar), M5 (stay-and-negotiate target), and
-M6 (switch-timing + contract-end date as projection anchor) shipped on branch
-`v0.3-redesign`, plus a form-grid reflow fix. Next action: v0.3-M7 (solar).
+M6 (switch-timing + contract-end date as projection anchor), and M7 (solar
+export modelling — CEG rates in electricity_export.yaml, HDF export parsing,
+net credit + €400/€800 tax line, solar toggle) shipped on branch
+`v0.3-redesign`, plus a form-grid reflow fix. Next action: v0.3-M8 (help layer).
 
 ## Open Questions / Blockers
-- Authoritative per-supplier CEG solar feed-in rates source? (need-by M7)
+- M7 export rates: 6 of 7 are THIRD_PARTY (only Energia confirmed on its own
+  page). Optional follow-up: confirm the other six on supplier pages → FACT.
 
 ## Todo
 ### v0.3 redesign (per DESIGN-v0.3.md)
-- [ ] M7: solar export modelling (keep export column, electricity_export.yaml, net revenue, €400 note)
 - [ ] M8: help layer — user manual + FAQ
+- [ ] M7 follow-up (optional): per-supplier official confirmation of the 6 THIRD_PARTY CEG rates; re-verify Yuno after its 2026-07-01 rise to 17.16c
 - [ ] M9 (after structure done): visual hierarchy / design polish pass — distinguish primary (answer, savings) from secondary (form, ranking, disclosures). Deferred from M3 review (Sophie) to avoid polishing a moving target; run /design-review.
 
 ### Carry-over

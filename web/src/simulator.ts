@@ -258,6 +258,41 @@ export function negotiateTarget(
   return { multiplier: m, reductionPct: (1 - m) * 100, feasible: m > 0 };
 }
 
+// ------------------------- solar export revenue -------------------------
+// A microgenerator's exported kWh earn the supplier's Clean Export Guarantee
+// (CEG) rate as a bill credit. Import and export must be with the same
+// supplier (CRU rule), so this is netted against that supplier's import cost.
+//
+// The credit is paid GROSS. Export income is tax-free up to a cap per year
+// (€400 per named account holder, €800 for a jointly-named bill, under TCA
+// 1997 s216D). Income above the cap is taxable at the household's marginal
+// rate — which we don't know — so we surface the taxable excess as a warning
+// rather than subtracting an assumed tax. Net ordering between suppliers is
+// unaffected: a higher gross credit is still higher after a flat marginal tax.
+
+export type ExportRevenue = {
+  exportKwh: number;
+  rateCpkwh: number;
+  grossEur: number; // exportKwh * rate / 100, credited to the bill
+  taxFreeCapEur: number; // 400 (single) or 800 (jointly-named)
+  taxableExcessEur: number; // max(0, gross - cap); user owes tax on this
+};
+
+export function exportRevenue(
+  exportKwh: number,
+  rateCpkwh: number,
+  taxFreeCapEur: number,
+): ExportRevenue {
+  const grossEur = (exportKwh * rateCpkwh) / 100;
+  return {
+    exportKwh,
+    rateCpkwh,
+    grossEur,
+    taxFreeCapEur,
+    taxableExcessEur: Math.max(0, grossEur - taxFreeCapEur),
+  };
+}
+
 export type UsageBandSplit = {
   nightKwh: number;
   dayKwh: number;

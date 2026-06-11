@@ -1,0 +1,101 @@
+schema_version: 1
+last_verified: 2026-06-10
+verified_by: sophiezhen
+notes: |
+  Clean Export Guarantee (CEG) microgeneration export rates, c/kWh INC VAT.
+
+  These are each supplier's STANDARD CEG rate paid to domestic microgenerators
+  (e.g. solar PV) for electricity exported to the grid.
+
+  IMPORT AND EXPORT MUST BE WITH THE SAME SUPPLIER (CRU microgeneration scheme
+  rule). The simulator therefore nets export revenue against import cost per
+  supplier and never mixes suppliers. `supplier` is matched by exact name to
+  the import catalogue in electricity.yaml.
+
+  TAX: export income is exempt up to EUR 400/year per named account holder
+  (EUR 800 for a jointly-named bill), under TCA 1997 s216D, in force
+  2024-01-01 to 2028-12-28 (extended in Budget 2026). Income above the
+  threshold is taxed at the microgenerator's marginal rate. The exemption is a
+  cap on the EUR amount received (exported kWh * rate), not on kWh.
+
+  PREMIUM / PARTNER RATES ARE EXCLUDED from the modelled rate. SSE Airtricity's
+  Activ8 tier (~32c year 1, ~27c year 2) and Yuno's ~29c rate require installing
+  through a specific partner installer and do not apply to a customer who simply
+  switches supplier. They are recorded in notes for traceability only.
+
+  CONFIDENCE: Energia is FACT (confirmed on the supplier's own page). The others
+  are THIRD_PARTY (two independent comparison trackers agree: solarinfo.ie
+  verified 2026-05-06 and greentechreview.com June 2026). Confirming each on the
+  supplier's own page is a follow-up before these are treated as FACT.
+
+rates:
+  - supplier: Pinergy
+    rate_cpkwh: 25.0
+    source:
+      url: solarinfo.ie/electricity-providers
+      verified_on: 2026-05-06
+      confidence: THIRD_PARTY
+    notes: |
+      Highest published standard CEG rate. Pinergy gives 30 days' notice of a
+      rate change. Cross-checked on greentechreview.com (June 2026).
+
+  - supplier: Electric Ireland
+    rate_cpkwh: 19.5
+    source:
+      url: solarinfo.ie/electricity-providers
+      verified_on: 2026-05-06
+      confidence: THIRD_PARTY
+    notes: |
+      Variable, paid as a bill credit. Cross-checked on greentechreview.com.
+
+  - supplier: SSE Airtricity
+    rate_cpkwh: 19.5
+    source:
+      url: solarinfo.ie/electricity-providers
+      verified_on: 2026-05-06
+      confidence: THIRD_PARTY
+    notes: |
+      Standard CEG rate for non-Activ8 customers. The Activ8 'Microgen+' premium
+      tier (~32c year 1, ~27c year 2) is restricted to customers who install via
+      SSE's Activ8 solar/battery partner and is NOT modelled here.
+
+  - supplier: Bord Gáis
+    rate_cpkwh: 18.5
+    source:
+      url: solarinfo.ie/electricity-providers
+      verified_on: 2026-05-06
+      confidence: THIRD_PARTY
+    notes: |
+      Paid quarterly (after an initial wait). Cross-checked on greentechreview.com.
+
+  - supplier: Energia
+    rate_cpkwh: 18.5
+    source:
+      url: energia.ie/home-upgrades/energia-and-the-microgeneration-scheme
+      verified_on: 2026-06-10
+      confidence: FACT
+    notes: |
+      Confirmed on Energia's own page: 18.5c/kWh, unlimited export volume,
+      credited bi-monthly. Requires import+export with Energia, a smart meter,
+      and an NC6 form lodged with ESB Networks. (selectra.ie listed 20.0c but it
+      is stale; the supplier page is authoritative.)
+
+  - supplier: Flogas
+    rate_cpkwh: 18.5
+    source:
+      url: solarinfo.ie/electricity-providers
+      verified_on: 2026-05-06
+      confidence: THIRD_PARTY
+    notes: |
+      Bi-monthly credit. Cross-checked on greentechreview.com.
+
+  - supplier: Yuno Energy
+    rate_cpkwh: 15.89
+    source:
+      url: greentechreview.com/clean-export-guarantee-rates-ireland
+      verified_on: 2026-06-01
+      confidence: THIRD_PARTY
+    notes: |
+      Standard rate 15.89c; greentechreview reports it rising to 17.16c from
+      2026-07-01 (re-verify after that date). A ~29c partner rate exists only for
+      PV Generation installer customers and is NOT modelled here.

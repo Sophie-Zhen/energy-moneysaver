@@ -296,11 +296,24 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   makes EI's hike full +8% (€2851 today → €2861), vs time-weighted from today;
   badges render FACT/FORUM/FACT/FACT/CHECK; 617/617 pass.
 
-### v0.3-M7 — Solar export modelling
-- Parser keeps export column; `electricity_export.yaml`; simulator nets export
-  revenue; UI gated behind the solar toggle.
-- **Verify:** an HDF with export rows lowers the bill by exactly
-  Σ(export kWh × feed-in rate); €400 tax-free note shown.
+### v0.3-M7 — Solar export modelling ✅ done
+- HDF parser sums `Active Export Interval (kWh)` rows (not subject to the EV
+  cutoff); `tariffs/electricity_export.yaml` holds per-supplier standard CEG
+  rates (Energia FACT, six others THIRD_PARTY, premium/partner rates excluded);
+  `exportRevenue()` returns gross credit + taxable excess; App nets the credit
+  off the ranking **and** the breakdown total (same `exportEur`, so they stay
+  consistent), keyed by supplier (CRU same-supplier rule). Solar toggle + manual
+  export kWh (form) / HDF-derived (upload) + jointly-named-bill (€800) toggle.
+  A `SolarExport` section shows the credit, the same-supplier note, the rate's
+  confidence badge, and the €400/€800 tax line.
+- **Decision:** the credit is netted **gross** (what hits the bill); income
+  above the cap is flagged as taxable but not deducted (marginal rate unknown,
+  and net ordering between suppliers is unchanged under a flat marginal tax).
+- **Verify (done):** 626/626 tests pass — `exportRevenue` cap logic (5),
+  parser export annualisation + zero-export + EV-cutoff-independence (added to
+  hdfParser), and a real-catalogue integration test proving Pinergy (25c) nets
+  €(25−18.5)/100 × kWh more than Energia (18.5c), reordering the ranking.
+  Browser visual pass still pending (gstack unavailable this session).
 
 ### v0.3-M8 — Help layer
 - User manual + FAQ pages, linked from the app.
@@ -313,7 +326,7 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
 | -------- | ------- | ----- |
 | ~~Forward-projection baseline: generic vs contract-expiry-aware?~~ | ~~M2~~ | RESOLVED: Irish plans are variable → announced hikes pass through. Applied time-weighted from today; the switch/contract date becomes the window anchor when that input lands. |
 | Retention target: show one number (rate-only) or two (incl. welcome credit)? | M5 | Leaning two — the welcome-credit-inclusive target is the honest one for year 1. |
-| Solar feed-in rates: where is the authoritative per-supplier CEG source? | M7 | Needs a catalogue pass like the plan catalogue; CRU + supplier pages. |
+| ~~Solar feed-in rates: where is the authoritative per-supplier CEG source?~~ | ~~M7~~ | RESOLVED: supplier pages (FACT) cross-checked against solarinfo.ie + greentechreview comparison trackers (THIRD_PARTY). One number per supplier; far easier than the plan catalogue. Energia confirmed on its own page; the other six are THIRD_PARTY pending per-supplier confirmation. |
 | User manual format: extend `data_guide.html` or a new in-app page? | M8 | Lean: extend data_guide for "how to get data", new page for "how to read the answer". |
 
 ## 8. Relationship to v0.2 DESIGN.md

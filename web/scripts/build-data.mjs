@@ -65,6 +65,18 @@ function normalizeElectricityPlan(raw) {
   return out;
 }
 
+function normalizeExportRate(raw) {
+  if (typeof raw.rate_cpkwh !== "number") {
+    throw new Error(`export rate for ${raw.supplier}: missing numeric rate_cpkwh`);
+  }
+  return {
+    supplier: raw.supplier,
+    rate_cpkwh: raw.rate_cpkwh,
+    source: raw.source ?? {},
+    notes: raw.notes ?? null,
+  };
+}
+
 function normalizeGasPlan(raw) {
   return {
     id: raw.id,
@@ -85,6 +97,9 @@ function normalizeGasPlan(raw) {
 const electricity = loadYaml(resolve(tariffsDir, "electricity.yaml"));
 const gas = loadYaml(resolve(tariffsDir, "gas.yaml"));
 const hikes = loadYaml(resolve(tariffsDir, "hikes.yaml"));
+const electricityExport = loadYaml(
+  resolve(tariffsDir, "electricity_export.yaml"),
+);
 const profile = loadYaml(
   resolve(tariffsDir, "profiles", "dublin_2person_mixed.yaml"),
 );
@@ -95,10 +110,12 @@ const tariffs = {
     electricity: String(electricity.last_verified),
     gas: String(gas.last_verified),
     hikes: String(hikes.last_verified),
+    electricity_export: String(electricityExport.last_verified),
   },
   electricity: electricity.plans.map(normalizeElectricityPlan),
   gas: gas.plans.map(normalizeGasPlan),
   hikes: hikes.hikes ?? [],
+  export_rates: (electricityExport.rates ?? []).map(normalizeExportRate),
 };
 
 const toHourMap = (obj) =>
@@ -128,5 +145,6 @@ writeFileSync(
 console.log(
   `wrote ${tariffs.electricity.length} electricity plans, ` +
     `${tariffs.gas.length} gas plans, ${tariffs.hikes.length} hike(s), ` +
+    `${tariffs.export_rates.length} export rate(s), ` +
     `${Object.keys(profiles).length} profile(s)`,
 );

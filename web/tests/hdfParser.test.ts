@@ -85,6 +85,26 @@ describe("parseHdfCsv", () => {
     expect(result.stats.rowsKept).toBe(1);
   });
 
+  it("reports zero export when the HDF has no Active Export rows", () => {
+    const lines = [HEADER, row(0.5, "26-05-2025 12:30")];
+    expect(parseHdfCsv(lines.join("\n")).stats.exportAnnualKwh).toBe(0);
+  });
+
+  it("annualises Active Export rows independently of import and EV cutoff", () => {
+    // One weekday (Mon 26 May 2025) with two 0.4 kWh export half-hours = 0.8
+    // kWh on that day → annualised over weekdays only. The EV cutoff would drop
+    // the import row but must NOT touch export.
+    const EXPORT = "Active Export Interval (kWh)";
+    const lines = [
+      HEADER,
+      row(0.5, "26-05-2025 12:30"), // import, keeps the day valid
+      row(0.4, "26-05-2025 12:30", EXPORT),
+      row(0.4, "26-05-2025 13:00", EXPORT),
+    ];
+    const result = parseHdfCsv(lines.join("\n"), new Date(2025, 4, 27, 0, 0));
+    expect(result.stats.exportAnnualKwh).toBeCloseTo(0.8 * (365 * 5) / 7, 6);
+  });
+
   it("throws when required columns are missing", () => {
     const bad = "MPRN,Read Value\n123,0.5";
     expect(() => parseHdfCsv(bad)).toThrow(/missing required column/);

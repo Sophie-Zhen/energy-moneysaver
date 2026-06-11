@@ -219,6 +219,24 @@ table.breakdown-table tr.total td {
   border-radius: 8px;
 }
 
+.solar {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fffbe9;
+  border: 1px solid #f3e4b3;
+  border-radius: 8px;
+}
+
+.solar .timing-list {
+  margin: 0.5rem 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.solar .timing-list li {
+  margin-bottom: 0.5rem;
+}
+
 .timing-list {
   margin: 0.5rem 0 0;
   padding-left: 0;

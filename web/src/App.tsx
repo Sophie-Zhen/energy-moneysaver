@@ -12,6 +12,7 @@ import {
   annualElectricityOnlyCostEur,
   cheapestBandEvDistribution,
   electricityBreakdown,
+  exportRevenue,
   gasBreakdown,
   usageKwhByBand,
   negotiateTarget,
@@ -23,11 +24,33 @@ import {
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
 import { projectElectricity, projectGas } from "./hikes";
 import { parseHdfCsv, type HdfParseResult } from "./hdfParser";
-import type { HourlySeries, MeterType } from "./types";
+import type { ExportRate, HourlySeries, MeterType } from "./types";
 
 type Mode = "form" | "hdf";
-type RankedCombo = { combo: Combo; annualEur: number; hiked: boolean };
-type ComboBreakdown = { elec: ElectricityBreakdown; gas: GasBreakdown | null };
+type RankedCombo = {
+  combo: Combo;
+  annualEur: number; // net of any solar export credit
+  hiked: boolean;
+  exportEur: number; // gross CEG credit netted into annualEur (0 if no solar)
+};
+type ComboBreakdown = {
+  elec: ElectricityBreakdown;
+  gas: GasBreakdown | null;
+  exportEur: number; // gross solar export credit for this combo's supplier
+};
+
+// Gross annual CEG credit for a combo's electricity supplier. Import and export
+// must be with the same supplier (CRU rule), so the rate is looked up by the
+// elec plan's supplier name. 0 if the supplier has no listed rate or no export.
+function exportCreditEur(
+  supplier: string,
+  exportRates: Record<string, ExportRate>,
+  exportKwh: number,
+): number {
+  const rate = exportRates[supplier];
+  if (!rate || exportKwh <= 0) return 0;
+  return (exportKwh * rate.rate_cpkwh) / 100;
+}
 
 export function App() {
   const [snapshot, setSnapshot] = useState<TariffSnapshot | null>(null);
@@ -41,6 +64,9 @@ export function App() {
   const [annualGasKwh, setAnnualGasKwh] = useState(12_000);
   const [hasEv, setHasEv] = useState(false);
   const [annualEvKwh, setAnnualEvKwh] = useState(2_000);
+  const [hasSolar, setHasSolar] = useState(false);
+  const [solarExportKwh, setSolarExportKwh] = useState(2_000);
+  const [jointBill, setJointBill] = useState(false);
   const [meterType, setMeterType] = useState<MeterType>("smart");
 
   const [hdfFileName, setHdfFileName] = useState<string | null>(null);
@@ -104,6 +130,21 @@ export function App() {
     return { weekday, weekend, derivedAnnualKwh: annualElecKwh };
   }, [mode, hdfResult, profile, annualElecKwh]);
 
+  // Annual exported kWh: from the HDF's Active Export rows when uploaded,
+  // otherwise the manual estimate. 0 unless the user has solar.
+  const effectiveExportKwh = useMemo(() => {
+    if (!hasSolar) return 0;
+    if (mode === "hdf") {
+      return hdfResult && "stats" in hdfResult
+        ? hdfResult.stats.exportAnnualKwh
+        : 0;
+    }
+    return solarExportKwh;
+  }, [hasSolar, mode, hdfResult, solarExportKwh]);
+
+  // Tax-free export cap: €400 per named account holder, €800 jointly-named.
+  const taxFreeCapEur = jointBill ? 800 : 400;
+
   const ranking: RankedCombo[] | null = useMemo(() => {
     if (!snapshot || !series) return null;
     const constraints: UserConstraints = { hasGas, hasEv, meterType };
@@ -128,7 +169,7 @@ export function App() {
             : undefined;
         const effectiveEvKwh = hasEv ? annualEvKwh : 0;
 
-        const annualEur = gas
+        const grossCost = gas
           ? annualDualFuelCostEur({
               weekdayHourly: series.weekday,
               weekendHourly: series.weekend,
@@ -145,10 +186,22 @@ export function App() {
               evAnnualKwh: effectiveEvKwh,
               evDistribution: evDist,
             });
-        return { combo: projectedCombo, annualEur, hiked };
+        // Solar export credit is tied to the elec supplier (same-supplier rule)
+        // and netted off, so a generous CEG rate can change the ranking.
+        const exportEur = exportCreditEur(
+          elec.supplier,
+          snapshot.exportRates,
+          effectiveExportKwh,
+        );
+        return {
+          combo: projectedCombo,
+          annualEur: grossCost - exportEur,
+          hiked,
+          exportEur,
+        };
       })
       .sort((a, b) => a.annualEur - b.annualEur);
-  }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType, referenceDate]);
+  }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType, referenceDate, effectiveExportKwh]);
 
   // Per-component breakdown of the cheapest plan (and the current plan, if
   // chosen) for the "where the money goes / where the saving comes from" view.
@@ -168,6 +221,13 @@ export function App() {
           evDistribution: evDist,
         }),
         gas: combo.gas ? gasBreakdown(combo.gas, annualGasKwh) : null,
+        exportEur: snapshot
+          ? exportCreditEur(
+              combo.elec.supplier,
+              snapshot.exportRates,
+              effectiveExportKwh,
+            )
+          : 0,
       };
     };
     const best = ranking[0].combo;
@@ -179,7 +239,7 @@ export function App() {
       curCombo: cur,
       cur: cur ? mk(cur) : null,
     };
-  }, [ranking, series, currentComboId, hasEv, annualEvKwh, annualGasKwh]);
+  }, [ranking, series, snapshot, currentComboId, hasEv, annualEvKwh, annualGasKwh, effectiveExportKwh]);
 
   // The household's electricity usage shape (night/day/peak) — evidence for
   // "why this plan wins". Plan-agnostic; excludes EV (see usageKwhByBand).
@@ -197,16 +257,22 @@ export function App() {
     if (!breakdowns?.cur || !breakdowns.curCombo) return null;
     if (breakdowns.curCombo.id === breakdowns.bestCombo.id) return null;
     const { cur, best } = breakdowns;
-    const total = (b: ComboBreakdown) => b.elec.totalEur + (b.gas?.totalEur ?? 0);
+    const total = (b: ComboBreakdown) =>
+      b.elec.totalEur + (b.gas?.totalEur ?? 0) - b.exportEur;
     const units =
       cur.elec.nightEur +
       cur.elec.dayEur +
       cur.elec.peakEur +
       (cur.gas?.unitsEur ?? 0);
+    // Export credit is tied to the (unchanged) current supplier and doesn't
+    // scale with the import rate, so it's a fixed offset — negotiating can't
+    // move it. The target (best total) already nets the best supplier's higher
+    // export rate, so this asks: how much import cut matches staying put?
     const fixed =
       cur.elec.standingEur +
       cur.elec.psoLevyEur -
-      cur.elec.welcomeCreditEur +
+      cur.elec.welcomeCreditEur -
+      cur.exportEur +
       (cur.gas
         ? cur.gas.carbonTaxEur + cur.gas.standingEur - cur.gas.welcomeCreditEur
         : 0);
@@ -436,6 +502,54 @@ export function App() {
             </label>
           )}
         </div>
+
+        <div className="field">
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={hasSolar}
+              onChange={(e) => setHasSolar(e.target.checked)}
+            />
+            {" "}I have solar panels (export to grid)
+          </label>
+          {hasSolar && mode === "form" && (
+            <label className="subfield">
+              Annual export kWh
+              <input
+                type="number"
+                min={0}
+                max={20000}
+                step={100}
+                value={solarExportKwh}
+                onChange={(e) => setSolarExportKwh(Number(e.target.value))}
+              />
+              <span className="muted">
+                {" "}Upload your HDF to read this from your meter instead.
+              </span>
+            </label>
+          )}
+          {hasSolar && mode === "hdf" && (
+            <span className="subfield muted">
+              {hdfResult && "stats" in hdfResult
+                ? hdfResult.stats.exportAnnualKwh > 0
+                  ? `Export read from your HDF: ~${Math.round(
+                      hdfResult.stats.exportAnnualKwh,
+                    )} kWh/yr.`
+                  : "No Active Export rows found in this HDF — switch to form mode to enter an estimate."
+                : "Upload your HDF above to read your export."}
+            </span>
+          )}
+          {hasSolar && (
+            <label className="subfield check">
+              <input
+                type="checkbox"
+                checked={jointBill}
+                onChange={(e) => setJointBill(e.target.checked)}
+              />
+              {" "}Bill is in two names (raises tax-free export to €800)
+            </label>
+          )}
+        </div>
       </section>
 
       {ranking && ranking.length > 0 && (
@@ -455,6 +569,17 @@ export function App() {
           cheapestLabel={breakdowns.bestCombo.label}
           mode={mode}
           hasEv={hasEv}
+        />
+      )}
+
+      {hasSolar && snapshot && ranking && ranking.length > 0 && (
+        <SolarExport
+          exportKwh={effectiveExportKwh}
+          cheapest={ranking[0]}
+          rate={snapshot.exportRates[ranking[0].combo.elec.supplier]}
+          taxFreeCapEur={taxFreeCapEur}
+          jointBill={jointBill}
+          mode={mode}
         />
       )}
 
@@ -592,7 +717,14 @@ function breakdownRows(b: ComboBreakdown) {
       label: "Welcome credit",
       v: -(e.welcomeCreditEur + (g?.welcomeCreditEur ?? 0)),
     },
-    { label: "Total", v: e.totalEur + (g?.totalEur ?? 0), isTotal: true },
+    ...(b.exportEur > 0
+      ? [{ label: "Solar export credit", v: -b.exportEur }]
+      : []),
+    {
+      label: "Total",
+      v: e.totalEur + (g?.totalEur ?? 0) - b.exportEur,
+      isTotal: true,
+    },
   ];
 }
 
@@ -822,6 +954,94 @@ function Negotiate({
   );
 }
 
+function SolarExport({
+  exportKwh,
+  cheapest,
+  rate,
+  taxFreeCapEur,
+  jointBill,
+  mode,
+}: {
+  exportKwh: number;
+  cheapest: RankedCombo;
+  rate: ExportRate | undefined;
+  taxFreeCapEur: number;
+  jointBill: boolean;
+  mode: Mode;
+}) {
+  if (exportKwh <= 0) {
+    return (
+      <section className="solar">
+        <h2>Your solar export</h2>
+        <p className="muted">
+          {mode === "hdf"
+            ? "No export readings found in your HDF. Switch to form mode to enter an annual export estimate."
+            : "Enter your annual export kWh above to see your export credit."}
+        </p>
+      </section>
+    );
+  }
+  const supplier = cheapest.combo.elec.supplier;
+  const rev = rate
+    ? exportRevenue(exportKwh, rate.rate_cpkwh, taxFreeCapEur)
+    : null;
+  return (
+    <section className="solar">
+      <h2>Your solar export</h2>
+      {rev && rate ? (
+        <>
+          <p>
+            You export ~<strong>{Math.round(exportKwh)} kWh/yr</strong>. The
+            cheapest plan is with <strong>{supplier}</strong>, which pays{" "}
+            <strong>{rate.rate_cpkwh.toFixed(2)} c/kWh</strong> — a{" "}
+            <strong>€{rev.grossEur.toFixed(0)}/yr</strong> credit, already
+            subtracted in the figures above.
+          </p>
+          <p className="muted">
+            Export must be with the same supplier as your import (CRU rule), so
+            the export rate is tied to whichever plan you choose — it's baked
+            into each plan's ranking, not a separate switch.
+          </p>
+          <ul className="timing-list">
+            <li>
+              <span
+                className={`badge confidence-${rate.source.confidence.toLowerCase()}`}
+              >
+                {rate.source.confidence}
+              </span>{" "}
+              {supplier} export rate {rate.rate_cpkwh.toFixed(2)} c/kWh
+              (verified {rate.source.verified_on}).
+            </li>
+            {rev.taxableExcessEur > 0 ? (
+              <li>
+                <span className="badge confidence-third_party">TAX</span> Export
+                income is tax-free up to €{taxFreeCapEur}/yr
+                {jointBill ? " (jointly-named bill)" : ""}. Yours is ~€
+                {rev.grossEur.toFixed(0)}, so ~€
+                {rev.taxableExcessEur.toFixed(0)} is taxable at your marginal
+                rate. The figures above use the gross credit (what hits your
+                bill).
+              </li>
+            ) : (
+              <li>
+                <span className="badge confidence-fact">FACT</span> Export
+                income is tax-free up to €{taxFreeCapEur}/yr
+                {jointBill ? " (jointly-named bill)" : ""}; you're under it, so
+                no tax applies (in force to end-2028).
+              </li>
+            )}
+          </ul>
+        </>
+      ) : (
+        <p className="muted">
+          No published export rate for {supplier} yet, so no credit is applied
+          to the cheapest plan. Other suppliers do publish one — see the ranking.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function WhyCheapest({
   split,
   cheapestLabel,
@@ -1025,6 +1245,13 @@ function ModellingDisclosure() {
         <li>
           <strong>Free Day / weekend-free plans</strong> (SSE Smart Weekends,
           BG Smart Weekend, EI Weekender) are not yet modelled.
+        </li>
+        <li>
+          <strong>Solar export</strong> is netted at each supplier's standard
+          CEG rate (import and export must be the same supplier). The gross
+          credit is shown; income above €400/yr (€800 jointly-named) is taxable
+          and not deducted. Conditional partner rates (e.g. SSE Activ8) are
+          excluded.
         </li>
       </ul>
     </details>

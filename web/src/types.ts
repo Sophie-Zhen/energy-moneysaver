@@ -49,4 +49,11 @@ export type GasPlan = {
   notes?: string | null;
 };
 
+export type ExportRate = {
+  supplier: string;
+  rate_cpkwh: number; // CEG export rate, inc VAT
+  source: PlanSource;
+  notes?: string | null;
+};
+
 export type HourlySeries = number[]; // length 24

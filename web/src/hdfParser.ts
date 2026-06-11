@@ -10,6 +10,7 @@ import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "./constants";
 import type { HourlySeries } from "./types";
 
 const ACTIVE_IMPORT = "Active Import Interval (kWh)";
+const ACTIVE_EXPORT = "Active Export Interval (kWh)";
 const REQUIRED_COLUMNS = [
   "Read Type",
   "Read Value",
@@ -27,6 +28,7 @@ export type HdfStats = {
   rowsKept: number;
   rowsTotal: number;
   rowsAfterEvCutoff: number;
+  exportAnnualKwh: number; // 0 if the HDF has no Active Export rows
 };
 
 export type HdfParseResult = {
@@ -102,13 +104,37 @@ export function parseHdfCsv(
   const weekdayDates = new Set<string>();
   const weekendDates = new Set<string>();
 
+  // Export (microgeneration) is accumulated independently: it is not subject
+  // to the EV cutoff (generation is unrelated to EV charging) and the revenue
+  // is rate-flat, so only the annual total matters — not the hourly shape.
+  let weekdayExportSum = 0;
+  let weekendExportSum = 0;
+  const weekdayExportDates = new Set<string>();
+  const weekendExportDates = new Set<string>();
+
   let firstReading: Date | null = null;
   let lastReading: Date | null = null;
   let rowsKept = 0;
   let rowsAfterEvCutoff = 0;
 
   for (const row of rows) {
-    if (row["Read Type"] !== ACTIVE_IMPORT) continue;
+    const readType = row["Read Type"];
+    if (readType === ACTIVE_EXPORT) {
+      const kwh = Number(row["Read Value"]);
+      if (!Number.isFinite(kwh)) continue;
+      const startTime = new Date(
+        parseEsbDate(row["Read Date and End Time"]).getTime() - 30 * 60 * 1000,
+      );
+      if (isWeekend(startTime)) {
+        weekendExportSum += kwh;
+        weekendExportDates.add(dateKey(startTime));
+      } else {
+        weekdayExportSum += kwh;
+        weekdayExportDates.add(dateKey(startTime));
+      }
+      continue;
+    }
+    if (readType !== ACTIVE_IMPORT) continue;
 
     const endTime = parseEsbDate(row["Read Date and End Time"]);
     const startTime = new Date(endTime.getTime() - 30 * 60 * 1000);
@@ -157,6 +183,12 @@ export function parseHdfCsv(
     weekdayDailyAvgKwh * WEEKDAYS_PER_YEAR +
     weekendDailyAvgKwh * WEEKENDS_PER_YEAR;
 
+  const wdExpDays = weekdayExportDates.size;
+  const weExpDays = weekendExportDates.size;
+  const exportAnnualKwh =
+    (wdExpDays > 0 ? (weekdayExportSum / wdExpDays) * WEEKDAYS_PER_YEAR : 0) +
+    (weExpDays > 0 ? (weekendExportSum / weExpDays) * WEEKENDS_PER_YEAR : 0);
+
   return {
     weekdayHourly,
     weekendHourly,
@@ -171,6 +203,7 @@ export function parseHdfCsv(
       rowsKept,
       rowsTotal: rows.length,
       rowsAfterEvCutoff,
+      exportAnnualKwh,
     },
   };
 }
