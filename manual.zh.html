@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>energy-moneysaver — 如何看懂你的结果</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1d1d1f; --muted: #6e6e73; --line: #e0e0d8;
+    --accent: #0a7d57; --warn: #b94b00; --code-bg: #f4f4ef;
+  }
+  * { box-sizing: border-box; }
+  body { font: 15.5px/1.7 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; margin: 0; background: var(--bg); color: var(--fg); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 28px; }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 20px; margin: 36px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--accent); }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  .meta { color: var(--muted); font-size: 13.5px; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+  details summary { cursor: pointer; font-weight: 600; padding: 2px 0; }
+  details[open] summary { margin-bottom: 8px; }
+  details summary::marker { color: var(--accent); }
+  code, pre { font: 13px/1.5 "SF Mono", Menlo, Consolas, monospace; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+  pre { background: var(--code-bg); padding: 10px 14px; border-radius: 6px; overflow-x: auto; }
+  .field { display: inline-block; background: #e8f3ed; color: #0a5f3f; padding: 1px 6px; border-radius: 3px; font: 12.5px "SF Mono", monospace; font-weight: 600; }
+  blockquote { border-left: 3px solid var(--accent); margin: 12px 0; padding: 4px 14px; color: #2c2c2e; background: #f0f7f3; border-radius: 0 6px 6px 0; }
+  blockquote.warn { border-color: var(--warn); background: #fcf3e7; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; background: #fff; font-size: 14.5px; }
+  th, td { padding: 8px 11px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { background: #f4f4ee; font-weight: 600; }
+  .quick-start { background: #fffbe7; border: 1px solid #ecd97a; border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
+  .quick-start h3 { margin-top: 0; color: #7a4e00; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .b-fact { background: #d4f4dd; color: #1b5e20; }
+  .b-bonkers { background: #d4e7fa; color: #0d3a6e; }
+  .b-third { background: #fef0c7; color: #6b4500; }
+  .b-guess { background: #fcd9d6; color: #781e15; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>如何看懂你的结果</h1>
+  <div class="meta">
+    这个工具不只是把套餐排个名,而是想让你有足够的把握去行动。本指南解释结果里
+    每一部分的含义,以及怎么用它。想知道在哪里找你的用电数字、怎么下载智能电表
+    数据,见<a href="data_guide.zh.html">数据指南</a>。
+  </div>
+</header>
+
+<div class="quick-start">
+  <h3>它依次回答三个问题</h3>
+  <ol>
+    <li><strong>我现在的套餐会变贵吗?</strong> 已经官宣的涨价会被投射到未来 12 个月上。</li>
+    <li><strong>未来一年对我来说最便宜的是哪个?</strong> 按<em>你自己</em>的用电曲线排名,而不是一个笼统的平均值。</li>
+    <li><strong>我该怎么办?</strong> 换供应商(以及什么时候换),或者留下来跟现供应商谈到同样的价。</li>
+  </ol>
+  <p>其余的一切 —— 费用拆解、用电时段条、图表 —— 都是这个答案的证据,让你看到它<em>为什么</em>成立,而不是让你盲信。</p>
+</div>
+
+<h2>60 秒速览</h2>
+<ol>
+  <li>选一种模式:<strong>表单模式</strong>(直接填年用电量 kWh,快)或<strong>上传 HDF</strong>(你的 ESB Networks 半小时数据文件,最准)。你的文件永远不会离开浏览器。</li>
+  <li>勾选适用于你的个性化选项:燃气、电动车、太阳能、电表类型。</li>
+  <li>从下拉框里选<strong>你当前的套餐</strong>,这样工具才能算出你的节省额(可选,但选了才会解锁对比和"谈判目标价")。</li>
+  <li>读那条绿色大标题:那就是你的结论。下面的所有内容都在解释这个数字从哪来。</li>
+</ol>
+
+<h2>逐部分看懂答案</h2>
+
+<details>
+  <summary>绿色大标题 —— "€A → €B,每年省 €C"</summary>
+  <p><strong>€A</strong> 是你当前套餐未来 12 个月的费用(已含任何官宣涨价)。<strong>€B</strong> 是对你最便宜的套餐。<strong>€C</strong> 是两者之差 —— 也就是你换了之后每年省下的钱。</p>
+  <p>如果你没选当前套餐,就只会看到最便宜套餐和它的年费用。如果你已经在最便宜的那个上,它会直接告诉你 —— 什么都不用做。</p>
+</details>
+
+<details>
+  <summary>"你当前的数字里包含了一次官宣涨价" —— 这是什么意思</summary>
+  <p>爱尔兰的套餐几乎全是<strong>浮动价</strong>。所谓"打 8 折"是在供应商标准浮动价基础上的折扣,所以一旦他们官宣涨价,涨幅同样会传导到你头上。如果你的供应商已经官宣涨价(比如 2026 年 7 月那一轮),工具会把涨幅只施加到生效日<em>之后</em>的那部分时间上 —— 所以你"什么都不做"的数字是你真正会付的钱,而不是把今天的价格冻结住。</p>
+  <p>这也是为什么即使你现在的折扣看着不错,换套餐仍可能省钱:折扣百分比没变,但它所打折的那个基准价正在往上走。</p>
+</details>
+
+<details>
+  <summary>费用拆解 —— 逐行明细表</summary>
+  <p>钱花到哪去了,拆成:用电量(夜 Night / 日 Day / 高峰 Peak)、固定费(standing charge)、PSO 税(PSO levy)、燃气(如果有)、迎新返利(welcome credit)、太阳能出口返利(如果有)。<strong>Current</strong>(当前)和 <strong>Cheapest</strong>(最便宜)两列并排,<strong>You save</strong>(你省)是每一行的差额 —— 这样你能精确看到是哪一行在驱动节省(往往是固定费或高峰电量,而不是表面的单位电价)。</p>
+  <p>展开下方的 <em>"Rates &amp; sources for these plans"</em>(这些套餐的费率与来源),可以看到每个数字实际的 c/kWh 费率、来源 URL、核实日期,以及一个可信度标签。</p>
+  <blockquote>取整说明:每一行都四舍五入到整欧元显示,所以可见的几行加起来可能跟总数差 €1。底层运算是精确的。</blockquote>
+</details>
+
+<details>
+  <summary>"为什么这个对你最便宜" —— 彩色用电时段条</summary>
+  <p>这个条显示你的电分别有多大比例用在每个时段:<strong>Night 夜间</strong>(23:00–08:00)、<strong>Day 日间</strong>、<strong>Peak 高峰</strong>(工作日 17:00–19:00,智能电价里最贵的时段)。哪个套餐把<em>你</em>占比最大的那个时段定价定得便宜,往往就赢 —— 这正是"最便宜套餐"之所以对你个人最便宜的根本原因。</p>
+  <p>表单模式下用的是一个典型家庭曲线;上传你的 HDF 才能看到你真实的曲线。电动车充电单独显示(假设它被调度到每个套餐最便宜的时段),所以不会扭曲这个条。</p>
+</details>
+
+<details>
+  <summary>"最佳选择:留下来谈判" —— 挽留目标价</summary>
+  <p>换供应商挺麻烦。如果你现在的供应商愿意把价压到跟最便宜的换法一样,那留下来更省事。这个框告诉你<strong>该要求多大的降价幅度</strong> —— 比如"在你现有费率上再砍约 18%" —— 才能落到同样的年费用。在相关情况下它给两个目标价:一个对标首年优惠(含任何签约奖励),一个对标奖励用完后的长期费率。</p>
+  <p>这些是你打电话时该争取的目标,不是供应商一定会给的承诺。爱尔兰大多数供应商都有挽留团队 —— 在取消之前先问。</p>
+</details>
+
+<details>
+  <summary>"如果你要换:何时、怎么换" —— 时机清单</summary>
+  <p>社区的共识是在你合同/折扣期结束的<strong>第二天</strong>提交换供应商(E+1)。提前换可能触发提前解约费(约 €50);合同一结束这个费就不再适用。换一次大约要 10–15 个工作日,你可以放弃 14 天冷静期来加速。在表单里填上你的合同到期日,能拿到精确的提交日期 —— 它同时也把价格投射锚定到你的换约日。</p>
+</details>
+
+<details>
+  <summary>"你的太阳能出口" —— 出口返利</summary>
+  <p>如果你装了太阳能板,你上网的电会按 Clean Export Guarantee(CEG)清洁出口保障费率以账单返利的形式入账。<strong>进口和出口必须在同一个供应商</strong>(CRU 规定),所以出口费率是跟你选的套餐绑定的 —— 它已经被净算进每个套餐的排名里,不是一次单独的切换。因此一个 CEG 费率慷慨(比如 25 c/kWh)的供应商,可以击败一个进口便宜但出口费率抠门的供应商。</p>
+  <p>显示的返利是毛额(打到你账单上的数)。出口收入每年 €400 以内免税(账单上挂两个名字则 €800);超出部分按你的边际税率计税,会被标出来但不从中扣除。详见下面的 FAQ。</p>
+</details>
+
+<h2>可信度标签是什么意思</h2>
+<p>每个费率都带一个标签,让你知道该信几分:</p>
+<table>
+  <tr><th>标签</th><th>含义</th></tr>
+  <tr><td><span class="badge b-fact">FACT</span></td><td>直接取自供应商自己发布的页面,或你自己的账单。</td></tr>
+  <tr><td><span class="badge b-bonkers">BONKERS</span></td><td>取自 <a href="https://www.bonkers.ie" target="_blank" rel="noopener noreferrer">bonkers.ie</a>,一个经 CRU 认证的比价网站 —— 用于供应商只在报价里(而非公开页面)给出某套餐分时段费率的情况。来源链接指向那个套餐的确切页面。</td></tr>
+  <tr><td><span class="badge b-third">THIRD_PARTY</span></td><td>来自比价网站或聚合方,已交叉核对,但还没在供应商自己的页面上确认。</td></tr>
+  <tr><td><span class="badge b-guess">GUESS</span></td><td>在没有权威数字时的估计或假设。请谨慎对待。</td></tr>
+</table>
+<p>本项目的指导原则:结果的好坏取决于数据的好坏。任何推断或假设出来的数字都会被如实标注,这样你能分清哪是硬事实、哪是最佳猜测。</p>
+
+<h2>常见问题 FAQ</h2>
+
+<details>
+  <summary>这些价格是锁定 12 个月不变的吗?</summary>
+  <p>通常不是。爱尔兰大多数套餐是<strong>浮动价</strong> —— 你看到的"12 个月"指的是折扣保证期 / 解约费期,不是价格冻结期。供应商可以在这期间改动基准费率,而"打 X 折"的折扣是打在变化后的标准价上。真正的固定价套餐基本已经退出市场。所以任何年度数字都该理解成"按今天的费率、加上已官宣的部分",而不是一个锁死的价。</p>
+</details>
+
+<details>
+  <summary>为什么我当前套餐显示了一个我没被通知过的涨价?</summary>
+  <p>因为这次涨价已经<em>官宣</em>但还没生效。工具会把已官宣的涨价投射到未来 12 个月上,这样你"什么都不做"的费用就反映你真正会付的钱。它只把涨幅施加到生效日之后的那部分时间上,而且只针对已公开官宣的供应商 —— 对没官宣的供应商不做任何揣测。</p>
+</details>
+
+<details>
+  <summary>为什么是合同到期<em>第二天</em>换,而不是当天?</summary>
+  <p>两个原因。第一,在到期日之前换可能触发提前解约费(约 €50);等到第二天就避免了任何歧义。第二,有不少人反映在精确到期当天换反而被自动收了费,得去申诉 —— 晚一天单纯更稳妥。不过过了到期日每多待一天,你都按更高的标准价付费,所以也别拖太久。</p>
+</details>
+
+<details>
+  <summary>我的数据会被上传到什么地方吗?隐私如何?</summary>
+  <p>你的 HDF 文件完全是<strong>在你浏览器内部</strong>用 File API 读取的 —— 它从不被上传到任何服务器,也根本没有后端可以接收它。这里的隐私是架构层面的,不是一句承诺:数据物理上离不开你的设备,因为没有任何东西在传输它。页面唯一发起的网络请求是启动时加载套餐目录(一个静态 JSON 文件)。</p>
+</details>
+
+<details>
+  <summary>我有太阳能 —— 为什么出口要跟供应商绑定?</summary>
+  <p>在 CRU 微发电方案下,你的进口和出口必须在<strong>同一个</strong>供应商。你不能从一家买电、再把余电卖给另一家。所以你换供应商时,出口安排会跟着你走,你拿到的是新供应商的 CEG 费率。这就是为什么工具把进口成本和出口收入按每个供应商一起净算,而不是把出口当成单独的附加项 —— 也是为什么一个高出口费率能改变哪个套餐对你最便宜。</p>
+</details>
+
+<details>
+  <summary>那个 €400 太阳能免税是怎么回事?</summary>
+  <p>出口余电得到的收入,在每个名义账户持有人每年 <strong>€400</strong> 以内免征所得税(所以账单挂两个名字是 €800),依据是 TCA 1997 第 216D 条,目前有效至 2028 年底。超过上限的收入按你的边际税率计税。工具显示你的毛出口返利(打到账单上的数),并标出其中有多少(如果有)超过免税上限 —— 但它不替你扣税,因为你的边际税率取决于你更广泛的收入。</p>
+</details>
+
+<details>
+  <summary>表单模式还是 HDF 上传 —— 我该用哪个?</summary>
+  <p><strong>表单模式</strong>快:填上年用电量 kWh,工具用一个典型爱尔兰家庭的用电曲线。适合估个大概。<strong>HDF 上传</strong>用你电表实际的半小时读数,所以夜/日/高峰的拆分 —— 以及由此而来的分时套餐排名 —— 是基于<em>你</em>真实的用电模式。如果你有电动车或智能电价,HDF 会明显更准。怎么下载见<a href="data_guide.zh.html">数据指南</a>。</p>
+</details>
+
+<details>
+  <summary>这个有多准?哪些没被建模?</summary>
+  <p>单位电价(含 VAT)、固定费、PSO 税、燃气碳税、迎新返利、官宣涨价、太阳能出口都被建模了。有些东西是刻意简化的,应用里的 <em>"What's modelled (and what isn't)"</em>(建模了什么、没建模什么)面板会列出来:折扣假设在全年都成立;只用了城市的固定费(农村通常每年高 €60–90);电动车充电假设被调度到最便宜的时段;"Free Day" / 周末免费类套餐还没建模。目录是有日期的 —— 核对每个费率上的核实日期,换之前在你自己的报价上确认最终数字。</p>
+</details>
+
+<details>
+  <summary>为什么我这边的"最便宜"跟别的比价网站不一样?</summary>
+  <p>大多数网站按一个笼统的平均家庭排名。这个工具按<em>你</em>的用电曲线排名(尤其是上传 HDF 时),把官宣涨价向前投射,按供应商净算太阳能出口,并假设电动车充电被调度 —— 所以赢家完全可能不同。重点不是为了不同而不同;而是最便宜的套餐取决于<em>你</em>怎么用、什么时候用电,而费用拆解会把原因精确摆给你看。</p>
+</details>
+
+<footer>
+  发现费率有误、套餐缺失、或有新供应商?<strong>欢迎提 PR。</strong>
+  核实流程见 <code>tariffs/METADATA.md</code>。本指南描述的是网页工具;底层数字
+  跟命令行版本用的是同一份目录。
+</footer>
+
+</div>
+</body>
+</html>

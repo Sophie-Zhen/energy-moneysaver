@@ -21,3 +21,5 @@ public/profiles.json
 # source of truth) so Vite serves them in dev and includes them in the build.
 public/data_guide.html
 public/manual.html
+public/data_guide.zh.html
+public/manual.zh.html

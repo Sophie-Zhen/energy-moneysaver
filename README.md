@@ -1,12 +1,14 @@
 # energy-moneysaver
 
-Compare Irish electricity and gas plans against your actual usage. Outputs a
-self-contained HTML report ranking dual-fuel and single-fuel options by total
-annual cost, factoring in time-of-use bands, announced price hikes, welcome
-credits, and standing charges.
+The Irish energy plan checker — switch with confidence. Compares electricity and
+gas plans against *your* actual usage and leads with a plain answer: will your
+current plan get worse, what's cheapest for you over the next 12 months, and
+what to do about it (switch, and when — or stay and negotiate to the same price).
 
-Built for households on smart meters (MCC12), with Day/Night meter support
-added in v0.2.
+Factors in time-of-use bands, announced price hikes, welcome credits, standing
+charges, and solar export. Built for households on smart meters (MCC12), with
+Day/Night meter support. Also ships a Python CLI that produces the same numbers
+as a self-contained HTML report.
 
 ## Try it online
 
@@ -16,6 +18,12 @@ The web app runs entirely in your browser. Upload your ESB Networks HDF
 half-hour CSV for high-accuracy modelling, or pick form mode and enter your
 annual kWh. Your file never leaves your device.
 
+It leads with the answer — your cost vs the cheapest plan over the next 12
+months — then backs it up: a line-by-line cost breakdown with verified rates and
+sources, a usage-shape chart showing *why* that plan wins, a stay-and-negotiate
+target, switch timing, and solar export if you have panels.
+
+New here? Read [how to read your result](https://sophie-zhen.github.io/energy-moneysaver/manual.html).
 Not sure where to find your inputs? See the
 [data guide](https://sophie-zhen.github.io/energy-moneysaver/data_guide.html).
 
@@ -82,6 +90,15 @@ required fields.
 
 ## Status
 
+v0.3 shipped — answer-first redesign of the web app:
+- [x] Answer-first explanation: will my plan get worse / what's cheapest for me / what to do
+- [x] Time-weighted projection of announced price hikes onto the next 12 months
+- [x] Cost breakdown (current vs cheapest) with expandable verified rates + sources
+- [x] "Why this is cheapest" usage-shape evidence + stay-and-negotiate target
+- [x] Switch timing (when to submit, exit-fee rules)
+- [x] Solar export (CEG) modelling with the €400/€800 tax-free cap
+- [x] In-app user manual + FAQ ("how to read your result")
+
 v0.2 shipped:
 - [x] CLI tool with HTML report generator
 - [x] 32 electricity + 16 gas plans across EI, BG, Energia, SSE, Flogas, Yuno, Pinergy
@@ -91,8 +108,9 @@ v0.2 shipped:
       against the Python reference)
 
 Roadmap:
-- v0.3: "Free Day" plan support (SSE Smart Weekends, BG Smart Weekend, EI
-  Weekender), authoritative CRU residential load profile, smaller suppliers
+- "Free Day" plan support (SSE Smart Weekends, BG Smart Weekend, EI Weekender)
+- Authoritative CRU residential load profile; smaller suppliers
+- Confirm the six third-party CEG export rates against supplier pages
 
 ## License
 

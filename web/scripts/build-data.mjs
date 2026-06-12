@@ -138,7 +138,12 @@ mkdirSync(publicDir, { recursive: true });
 // CLI users). Copy them into public/ so Vite serves them at /data_guide.html
 // and /manual.html in dev AND includes them in the production build — keeping
 // the root copies as the single source of truth. The copies are gitignored.
-for (const page of ["data_guide.html", "manual.html"]) {
+for (const page of [
+  "data_guide.html",
+  "manual.html",
+  "data_guide.zh.html",
+  "manual.zh.html",
+]) {
   copyFileSync(resolve(repoRoot, page), resolve(publicDir, page));
 }
 

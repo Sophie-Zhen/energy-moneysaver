@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>energy-moneysaver — 数据指南</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1d1d1f; --muted: #6e6e73; --line: #e0e0d8;
+    --accent: #0a7d57; --warn: #b94b00; --code-bg: #f4f4ef;
+  }
+  * { box-sizing: border-box; }
+  body { font: 15.5px/1.7 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; margin: 0; background: var(--bg); color: var(--fg); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 28px; }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 20px; margin: 36px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--accent); }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  .meta { color: var(--muted); font-size: 13.5px; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+  details summary { cursor: pointer; font-weight: 600; padding: 2px 0; }
+  details[open] summary { margin-bottom: 8px; }
+  details summary::marker { color: var(--accent); }
+  code, pre { font: 13px/1.5 "SF Mono", Menlo, Consolas, monospace; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+  pre { background: var(--code-bg); padding: 10px 14px; border-radius: 6px; overflow-x: auto; }
+  .field { display: inline-block; background: #e8f3ed; color: #0a5f3f; padding: 1px 6px; border-radius: 3px; font: 12.5px "SF Mono", monospace; font-weight: 600; }
+  blockquote { border-left: 3px solid var(--accent); margin: 12px 0; padding: 4px 14px; color: #2c2c2e; background: #f0f7f3; border-radius: 0 6px 6px 0; }
+  blockquote.warn { border-color: var(--warn); background: #fcf3e7; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; background: #fff; font-size: 14.5px; }
+  th, td { padding: 8px 11px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { background: #f4f4ee; font-weight: 600; }
+  .quick-start { background: #fffbe7; border: 1px solid #ecd97a; border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
+  .quick-start h3 { margin-top: 0; color: #7a4e00; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>数据指南</h1>
+  <div class="meta">
+    点开下面每一节,看工具需要的数据该去哪里找。打开本指南旁边的
+    <code>example_config.yaml</code>,边看边填你的数字。
+  </div>
+</header>
+
+<div class="quick-start">
+  <h3>最小可跑(5 分钟)</h3>
+  <p>如果你只想要个快速估算,你只需要<em>两个</em>数字:</p>
+  <ul>
+    <li><span class="field">electricity.annual_kwh</span> —— 你的年用电量(kWh)。在你最近的账单上找。</li>
+    <li><span class="field">gas.annual_kwh</span> —— 你的年用气量(kWh)。同一张账单上,如果你没有燃气就省略这一节。</li>
+  </ul>
+  <p>其余的一切(HDF 数据、电动车细节、当前套餐 id)都是可选的。没有它们,工具会用一个默认的爱尔兰住宅负荷曲线,并把你的当前套餐当作 Electric Ireland Home Electric+ Saver 28% 这个基线。</p>
+</div>
+
+<h2>电 Electricity</h2>
+
+<details>
+  <summary><span class="field">electricity.annual_kwh</span> —— 你的年用电量(kWh)</summary>
+  <h3>去哪找</h3>
+  <ol>
+    <li><strong>最简单:</strong>看你最近的电费账单。大多数爱尔兰账单会在单位电价拆解附近列出"年度估算用量"(Annual Estimated Consumption)或 12 个月总量。</li>
+    <li><strong>最准:</strong>把过去 12 个月每张账单上的 kWh 加起来(通常 6 张,每 2 个月一张)。</li>
+    <li><strong>从智能电表:</strong>登录你供应商的在线门户 —— 他们会给一张你可以读取的 12 个月图表。</li>
+    <li><strong>从 ESB Networks HDF:</strong>把你的半小时 CSV 里 "Active Import Interval (kWh)" 那一列加总 —— 最准,但设置起来更费时。见下一节。</li>
+  </ol>
+  <h3>合理范围</h3>
+  <p>典型爱尔兰 2–3 人家庭:每年 3,500–4,500 kWh。4–5 口之家:5,000–6,500 kWh。家里给电动车充电:再加 1,500–3,000 kWh。</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.meter_type</span> —— 智能、标准,还是日/夜电表?</summary>
+  <h3>怎么判断</h3>
+  <p>看你最近的账单或电表本身:</p>
+  <ul>
+    <li><strong>smart</strong> —— 账单上提到 "Smart Tariff" / "MCC12" / "MCC16" / "Time of Use"。电表有数字显示屏,显示多个费率时段(Day、Night、Peak)。</li>
+    <li><strong>day_night</strong> —— 账单上有单独的 "Day rate" 和 "Night rate" 行,但没有 Peak。老式 Nightsaver 电表。物理电表有两个数字计数器。</li>
+    <li><strong>standard_24hr</strong> —— 账单上只有单一单位电价。大多数老电表。</li>
+  </ul>
+  <p>不确定的话,看 ESB Networks 的 "My Account" 页面 —— 你的电表类别代码显示在那里。v0 完整支持 <code>smart</code>,并把另外两种当作 smart 的等价处理(扩充到专门的非智能套餐目录在路线图上)。</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.hdf_csv_path</span> —— (可选)ESB Networks 半小时数据</summary>
+  <h3>这是什么</h3>
+  <p>你的智能电表每 30 分钟发一个 kWh 读数。ESB Networks 给你一份这些数据的 2 年 CSV 导出。模拟器有了这个,就会用你<em>实际</em>的每小时用电模式,而不是默认曲线 —— 对分时套餐(尤其有电动车充电时)准得多。</p>
+  <h3>怎么下载</h3>
+  <ol>
+    <li>在 <a href="https://myaccount.esbnetworks.ie/" target="_blank">myaccount.esbnetworks.ie</a> 注册 / 登录(跟你供应商的账户是分开的)。</li>
+    <li>注册时需要你的 MPRN(见下一节)和一张最近的 ESB Networks 账单。</li>
+    <li>菜单 → <strong>My Smart Data Tools</strong> → <strong>Download My Data</strong>。</li>
+    <li>选 <strong>HDF</strong> 格式和日期范围(工具最少用 30 天就行,但 6–12 个月能给出可靠得多的季节模式)。</li>
+    <li>邮件几分钟内就到;下载那个 CSV。</li>
+  </ol>
+  <blockquote class="warn">
+    <strong>延迟:</strong>ESB Networks 发布数据有 2–3 天滞后。如果你刚装智能电表,等至少 2–3 天再去下载。
+  </blockquote>
+  <h3>文件长什么样</h3>
+  <p>文件名大概是 <code>HDF_calckWh_10001234567_31-05-2026.csv</code> 这样(11 位数字是你的 MPRN;日期是导出的截止日)。</p>
+  <p>在你的配置里设 <code>hdf_csv_path: /absolute/path/to/HDF_calckWh_*.csv</code>。模拟器会报告它找到了多少天的数据。</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.ev_start_date</span> —— 你开始在家给电动车充电的日期</summary>
+  <p>只有当你有电动车<em>且</em>你的 HDF 跨越了你开始家充之前和之后两段时间时才相关。模拟器只用家充之前的读数来提取你的基础负荷(这样在它把电动车这一层加回去时,充电不会被重复计算)。</p>
+  <ul>
+    <li>HDF 时段开始之后才买的电动车 → 把 <code>ev_start_date</code> 设成你第一次在家插枪的日期。</li>
+    <li>HDF 开始时就已经有电动车 → 省略或设为 <code>null</code>;整段 HDF 都会被当作"含电动车"模式。</li>
+    <li>没有电动车 → 忽略。</li>
+  </ul>
+</details>
+
+<details>
+  <summary><span class="field">electricity.ev</span> —— 电动车用电细节</summary>
+  <h3>annual_kwh</h3>
+  <p>你每年在家充多少电(kWh)。在这里找:</p>
+  <ul>
+    <li><strong>Tesla:</strong>Tesla app → <strong>Charging Stats</strong>(只看在家充入的能量)。</li>
+    <li><strong>myenergi Zappi:</strong>myenergi app → <strong>Stats</strong> → totals 标签页。</li>
+    <li><strong>Easee:</strong>Easee app → 家用充电桩 → 已用能量。</li>
+    <li><strong>其他智能充电桩:</strong>充电桩 app 给的任何总能量读数。</li>
+    <li><strong>粗略估算:</strong>年里程 × 每百公里 kWh ÷ 家充比例。例:一位 Tesla Model Y 车主一年开 15,000 km、约 17 kWh/100 km、85% 在家充,家里每年约充 3,000 kWh。验证数据集里的样本家庭算出来约 2,022 kWh,因为他们更多在外面公共充电。</li>
+  </ul>
+  <h3>can_schedule_charging</h3>
+  <p>你的充电桩能设定一个固定的每日时段吗(比如 02:00–05:00)?</p>
+  <ul>
+    <li><strong>true</strong> —— myenergi Zappi(Boost Timer)、Tesla(Scheduled Charging)、Easee(Smart Charging),以及大多数现代电动车充电桩。模拟器会跑一个"Shifted"(已调度)场景,把所有电动车 kWh 放进每个套餐最便宜的时段。</li>
+    <li><strong>false</strong> —— 较老的充电桩,或总是到家就充。只计算"Now"(立即充)的成本。</li>
+  </ul>
+</details>
+
+<details>
+  <summary><span class="field">electricity.current_plan.plan_id</span> —— 你现在用的是哪个套餐</summary>
+  <p>用来在报告里构建 BASELINE(基线)行(这样你能看到换套餐省多少)。这个 id 必须匹配 <code>tariffs/electricity.yaml</code> 里的某一条。</p>
+  <h3>怎么找你当前套餐的 id</h3>
+  <ol>
+    <li>看你最近的账单 —— 套餐名通常在顶部(比如 "Home Electric+ Saver"、"Smart Standard Dual Fuel"、"EV Smart")。</li>
+    <li>打开 <code>tariffs/electricity.yaml</code>,搜那个名字。<code>id:</code> 字段就是匹配那条上的 id。</li>
+    <li>如果你的套餐不在目录里,要么 (a) 选最接近的一个,要么 (b) 在配置里加一个自定义套餐 —— 见 <code>example_config.yaml</code> 里的 Example 3。</li>
+  </ol>
+  <p>id 示例:<code>ei_home_electric_saver_28pc</code>、<code>bg_smart_standard_dual_fuel_2026q2</code>、<code>energia_smart_data_mcc12_2026q2</code>、<code>flogas_ev_night_charge_2026q2</code>。</p>
+</details>
+
+<details>
+  <summary><span class="field">electricity.current_plan.discount_expires_on</span> —— 你的折扣到期日</summary>
+  <p>你当前套餐上的迎新折扣什么时候用完。用来给报告里的 "DO-NOTHING"(什么都不做)行建模(如果你让折扣失效、滚回标准价,你会付多少)。</p>
+  <ul>
+    <li>在你供应商的欢迎邮件、最近账单,或 My Account 页面上找。</li>
+    <li>对大多数固定折扣的爱尔兰套餐,正好是签约日起 12 个月。</li>
+    <li>如果你已经在同一供应商的标准价上待了很久,省略它(DO-NOTHING 行就不会显示)。</li>
+  </ul>
+</details>
+
+<h2>燃气 Gas</h2>
+
+<details>
+  <summary>如果你没有管道燃气,整个 <code>gas:</code> 节直接省略</summary>
+  <p>模拟器能正确处理纯电家庭。如果你用热泵或燃油供暖,把 <code>my_config.yaml</code> 里整个 <code>gas:</code> 块删掉即可。</p>
+</details>
+
+<details>
+  <summary><span class="field">gas.annual_kwh</span> —— 年用气量(kWh)</summary>
+  <p>从你最近的燃气账单,或把 12 个月的账单加总。典型爱尔兰 2 居室公寓、只有燃气灶:每年 1,500–3,000 kWh。带燃气中央供暖的普通 3 居室半独立屋:每年 11,000 kWh。更大或保温差的房子:15,000–22,000 kWh。</p>
+  <p>注意:爱尔兰燃气账单有时按 <strong>m³</strong>(立方米)而不是 kWh 报量。换算方法:m³ 乘以约 11.0(换算系数账单上有,通常在 10.8–11.3 之间,取决于热值)。</p>
+</details>
+
+<details>
+  <summary><span class="field">gas.current_plan.plan_id</span> —— 你当前的燃气套餐</summary>
+  <p>跟电一样的做法。看你的账单,找到套餐名,在 <code>tariffs/gas.yaml</code> 里查。如果你用的是双燃料捆绑套餐,燃气套餐 id 通常名字里带着捆绑折扣(比如 <code>ei_gas_dual_plus_8_5pc</code>、<code>energia_gas_27pc_with_smart_data</code>)。</p>
+</details>
+
+<h2>套餐目录 —— 修正错误费率</h2>
+
+<details>
+  <summary>随包发布的目录写的是 X,但我的报价说是 Y</summary>
+  <p>费率一年会变几次。如果你个人报价上的费率跟我们的 YAML 不一致,你有三个应急口子 —— 都不需要改动随包发布的 YAML。</p>
+  <h3>覆盖单个字段</h3>
+<pre>tariff_overrides:
+  flogas_ev_night_charge_2026q2:
+    standing_eur_per_year: 320.00
+    welcome_credit_eur: 50</pre>
+
+  <h3>整体覆盖一张分时费率表</h3>
+<pre>tariff_overrides:
+  energia_smart_data_mcc12_2026q2:
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 34.10, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 16.50, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 16.50, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 30.20, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 30.20, label: Day}</pre>
+
+  <h3>加一个全新套餐并参与排名</h3>
+<pre>custom_electricity_plans:
+  - id: my_personal_energia_quote_2026_06
+    supplier: Energia
+    label: "My Energia quote (10 May 2026)"
+    # ... 完整套餐 schema,见 example_config.yaml 里的 Example 3</pre>
+
+<pre>custom_combos:
+  - electricity_id: my_personal_energia_quote_2026_06
+    gas_id: energia_gas_27pc_with_smart_data
+    label: "My personal Energia quote + Energia Gas 27%"</pre>
+  <p>被覆盖 / 自定义的套餐在报告里会被标上 <code>[USER OVERRIDE]</code>,这样一眼就能看出哪些数字是你的、不是我们的。</p>
+</details>
+
+<h2>去哪找配套的参考数据</h2>
+
+<details>
+  <summary>MPRN(电表点参考号,Meter Point Reference Number)</summary>
+  <p>印在每张电费账单上、以及你电表正面的 11 位数字。注册 ESB Networks(下载 HDF 用)时需要。格式:<code>10001234567</code> —— 在爱尔兰共和国以 1 开头。</p>
+</details>
+
+<details>
+  <summary>GPRN(燃气点参考号,Gas Point Reference Number)</summary>
+  <p>每张燃气账单上的 7 位数字。格式:<code>1234567</code>。你换供应商时需要,但工具不直接问你要。</p>
+</details>
+
+<details>
+  <summary>Eircode(爱尔兰邮编)</summary>
+  <p>在每张水电气账单上。配置要的是那 3 个字符的前缀(比如 <code>D09</code>、<code>K67</code>)—— 将来用于标记区域套餐资格。在 v0 里不起决定作用。</p>
+</details>
+
+<details>
+  <summary>智能电表类型代码(MCC)</summary>
+  <table>
+    <tr><th>代码</th><th>含义</th></tr>
+    <tr><td>MCC01</td><td>标准 24 小时电表(非智能)</td></tr>
+    <tr><td>MCC02</td><td>日/夜电表(非智能,2 时段)</td></tr>
+    <tr><td>MCC12</td><td>智能,30 分钟间隔,<strong>不</strong>向 ESB Networks 数据源发布</td></tr>
+    <tr><td>MCC16</td><td>智能,30 分钟间隔,向数据源发布(你能下载 HDF)</td></tr>
+  </table>
+  <p>有些 Energia 套餐是绑定 MCC 的(他们的 Smart Data 套餐只限 MCC12;Smart Standard 只限 MCC16)。如果你不知道自己的 MCC,看你的电表 —— 爱尔兰智能电表上有贴纸,或打电话给 ESB Networks 客服。</p>
+</details>
+
+<h2>填好 <code>my_config.yaml</code> 之后</h2>
+
+<pre>conda activate energy-moneysaver
+python -m src.cli --config my_config.yaml --output report.html
+open report.html</pre>
+
+<p>想要快速的纯终端视图(不出 HTML):</p>
+<pre>python -m src.cli --config my_config.yaml --text-only</pre>
+
+<p>如果模拟器抱怨某个 plan_id 缺失,拿它跟 <code>tariffs/electricity.yaml</code> / <code>tariffs/gas.yaml</code> 再核对一遍。</p>
+
+<footer>
+  发现数据有误、套餐缺失、或有新供应商?<strong>欢迎提 PR。</strong>核实流程见 <code>tariffs/METADATA.md</code>。
+</footer>
+
+</div>
+</body>
+</html>
