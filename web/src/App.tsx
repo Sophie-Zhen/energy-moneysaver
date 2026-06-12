@@ -382,25 +382,6 @@ export function App() {
           <LangToggle />
         </header>
         <p className="muted">{t.intro(hasGas)}</p>
-        <p className="muted">
-          {t.newHere}
-          <a
-            href={`${base}manual${helpSuffix}.html`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t.howToRead}
-          </a>
-          {t.midDot}
-          {t.dataGuideAsk}
-          <a
-            href={`${base}data_guide${helpSuffix}.html`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t.dataGuide}
-          </a>
-        </p>
 
         {loadError && (
           <div className="result" role="alert">
@@ -503,6 +484,19 @@ export function App() {
                 </span>
               )}
             </label>
+          )}
+
+          {mode === "hdf" && (
+            <p className="muted" style={{ gridColumn: "1 / -1", margin: 0 }}>
+              {t.dataGuideAsk}
+              <a
+                href={`${base}data_guide${helpSuffix}.html`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.dataGuide}
+              </a>
+            </p>
           )}
 
           <label className="field">
@@ -635,6 +629,19 @@ export function App() {
               ranking.find((r) => r.combo.id === currentComboId) ?? null
             }
           />
+        )}
+
+        {ranking && ranking.length > 0 && (
+          <p className="muted">
+            {t.newHere}
+            <a
+              href={`${base}manual${helpSuffix}.html`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t.howToRead}
+            </a>
+          </p>
         )}
 
         {breakdowns && <CostBreakdown {...breakdowns} />}
