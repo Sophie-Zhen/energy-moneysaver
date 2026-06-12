@@ -351,6 +351,29 @@ table.ranking tr.expanded td {
   color: #555;
 }
 
+table.rate-lines {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.85rem;
+}
+
+table.rate-lines td {
+  padding: 0.2rem 0.5rem 0.2rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+table.rate-lines td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rate-note {
+  font-size: 0.8rem;
+  margin: 0.2rem 0 0.4rem;
+}
+
 .source {
   font-size: 0.85rem;
   margin-top: 0.3rem;

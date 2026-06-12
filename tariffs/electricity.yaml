@@ -35,7 +35,7 @@ plans:
       rate_cpkwh: 24.497    # 31.22 ex-VAT * 0.72 * 1.09
     standing_eur_per_year: 250.846   # 0.6303/day * 365 * 1.09
     source:
-      url: electricireland.ie/switch/new-customer/price-plans-bundles
+      url: electricireland.ie/switch/new-customer/price-plans
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -173,7 +173,7 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 35.23, label: Day}
     standing_eur_per_year: 364.59
     source:
-      url: bordgaisenergy.ie/home/electricity-and-gas-plans (quote 2 Jun 2026)
+      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -203,7 +203,7 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 34.67, label: Day}
     standing_eur_per_year: 244.76
     source:
-      url: bordgaisenergy.ie/home/electricity-and-gas-plans (quote 2 Jun 2026)
+      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
 
@@ -224,7 +224,7 @@ plans:
       rate_cpkwh: 32.44
     standing_eur_per_year: 244.76
     source:
-      url: bordgaisenergy.ie/home/electricity-and-gas-plans (quote 2 Jun 2026)
+      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -310,7 +310,7 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 38.93, label: Day}
     standing_eur_per_year: 265.01
     source:
-      url: energia.ie/our-tariffs (browse 2 Jun 2026)
+      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: Effective 1 May 2026.
@@ -337,7 +337,7 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 30.75, label: Day}
     standing_eur_per_year: 265.01
     source:
-      url: energia.ie/our-tariffs (browse 2 Jun 2026)
+      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -478,13 +478,15 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 29.408, label: Day}
     standing_eur_per_year: 348.80
     source:
-      url: bonkers.ie Flogas EV Night Charge detail (3 Jun 2026)
+      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/YL7W79/smart-dual-fuel-ev-night-charge-29pc-electricity-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
       verified_on: 2026-06-03
       confidence: BONKERS
     notes: |
       Cheapest EV super-off-peak rate in Ireland as of Jun 2026.
-      100% renewable electricity. Flogas's own price plans page returns 404
-      so this is sourced via bonkers.ie's plan detail page.
+      100% renewable electricity. Band-level rates come from bonkers.ie (a
+      CRU-accredited comparison site) because Flogas publishes per-band rates
+      only via a quote; their own plan page is
+      flogas.ie/price-plan/smart-dual-fuel-ev-night-29-electricity-loyalty
 
   - id: flogas_smart_standard_2026q2
     supplier: Flogas
@@ -508,9 +510,13 @@ plans:
         - {hours: [19, 23], rate_cpkwh: 28.774, label: Day}
     standing_eur_per_year: 270.46
     source:
-      url: bonkers.ie Flogas Smart Standard detail (3 Jun 2026)
+      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/HR6TEX/dual-fuel-smart-29pc-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
       verified_on: 2026-06-03
       confidence: BONKERS
+    notes: |
+      Band-level rates via bonkers.ie (CRU-accredited) — Flogas publishes
+      per-band rates only by quote. Supplier plan page:
+      flogas.ie/price-plan/dual-fuel-smart-29-28-gas-loyalty-discount
 
   - id: flogas_standard_variable_2026q2
     supplier: Flogas

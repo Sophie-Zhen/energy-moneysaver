@@ -24,14 +24,23 @@ import {
 import { buildCombos, type Combo, type UserConstraints } from "./planner";
 import { projectElectricity, projectGas } from "./hikes";
 import { parseHdfCsv, type HdfParseResult } from "./hdfParser";
-import type { ExportRate, HourlySeries, MeterType } from "./types";
+import type {
+  ElectricityPlan,
+  ExportRate,
+  GasPlan,
+  HourlySeries,
+  MeterType,
+} from "./types";
 
 type Mode = "form" | "hdf";
 type RankedCombo = {
-  combo: Combo;
+  combo: Combo; // projected (post-hike) — drives the modelled cost and label
+  orig: Combo; // original catalogue plans — the verified rates to check sources
   annualEur: number; // net of any solar export credit
   hiked: boolean;
   exportEur: number; // gross CEG credit netted into annualEur (0 if no solar)
+  elecHikePct: number | null; // announced % applied in the projection, if any
+  gasHikePct: number | null;
 };
 type ComboBreakdown = {
   elec: ElectricityBreakdown;
@@ -195,9 +204,12 @@ export function App() {
         );
         return {
           combo: projectedCombo,
+          orig: combo,
           annualEur: grossCost - exportEur,
           hiked,
           exportEur,
+          elecHikePct: elecProj.hikePct,
+          gasHikePct: gasProj?.hikePct ?? null,
         };
       })
       .sort((a, b) => a.annualEur - b.annualEur);
@@ -230,14 +242,16 @@ export function App() {
           : 0,
       };
     };
-    const best = ranking[0].combo;
-    const cur =
-      ranking.find((r) => r.combo.id === currentComboId)?.combo ?? null;
+    const bestRanked = ranking[0];
+    const curRanked =
+      ranking.find((r) => r.combo.id === currentComboId) ?? null;
     return {
-      bestCombo: best,
-      best: mk(best),
-      curCombo: cur,
-      cur: cur ? mk(cur) : null,
+      bestCombo: bestRanked.combo,
+      best: mk(bestRanked.combo),
+      curCombo: curRanked?.combo ?? null,
+      cur: curRanked ? mk(curRanked.combo) : null,
+      bestRanked,
+      curRanked,
     };
   }, [ranking, series, snapshot, currentComboId, hasEv, annualEvKwh, annualGasKwh, effectiveExportKwh]);
 
@@ -741,24 +755,101 @@ function eur(v: number): string {
   return v < 0 ? `−€${Math.abs(v).toFixed(0)}` : `€${v.toFixed(0)}`;
 }
 
-function ComboRates({ combo }: { combo: Combo }) {
+// The verified catalogue rates (pre-hike) behind a combo, so a user can check
+// each number against the linked source. Uses `orig`, not the projected plans,
+// because the source page shows today's published rate; any announced increase
+// is noted separately and applied only in the modelled cost.
+function ComboRateDetail({ ranked }: { ranked: RankedCombo }) {
+  const { orig, elecHikePct, gasHikePct } = ranked;
   return (
     <div className="drawer">
-      <PlanDetail
-        title={`Electricity: ${combo.elec.supplier}`}
-        label={combo.elec.label}
-        source={combo.elec.source}
-        notes={combo.elec.notes}
-      />
-      {combo.gas && (
-        <PlanDetail
-          title={`Gas: ${combo.gas.supplier}`}
-          label={combo.gas.label}
-          source={combo.gas.source}
-          notes={combo.gas.notes}
-        />
+      <PlanDetail kind="electricity" plan={orig.elec} hikePct={elecHikePct} />
+      {orig.gas && (
+        <PlanDetail kind="gas" plan={orig.gas} hikePct={gasHikePct} />
       )}
     </div>
+  );
+}
+
+function fmtHour(h: number): string {
+  return `${String(h).padStart(2, "0")}:00`;
+}
+
+function ElectricityRateLines({ plan }: { plan: ElectricityPlan }) {
+  return (
+    <>
+      <table className="rate-lines">
+        <tbody>
+          {plan.kind === "flat" ? (
+            <tr>
+              <td>Unit rate (24 hr)</td>
+              <td className="num">{(plan.rate_cpkwh ?? 0).toFixed(2)} c/kWh</td>
+            </tr>
+          ) : (
+            (plan.bands ?? []).map((b, i) => (
+              <tr key={i}>
+                <td>
+                  {b.label ? `${b.label} ` : ""}
+                  {fmtHour(b.hours[0])}–{fmtHour(b.hours[1])}
+                </td>
+                <td className="num">{b.rate_cpkwh.toFixed(2)} c/kWh</td>
+              </tr>
+            ))
+          )}
+          <tr>
+            <td>Standing charge</td>
+            <td className="num">
+              €{plan.standing_eur_per_year.toFixed(2)}/yr
+            </td>
+          </tr>
+          {plan.welcome_credit_eur > 0 && (
+            <tr>
+              <td>Welcome credit</td>
+              <td className="num">−€{plan.welcome_credit_eur.toFixed(0)} once</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <p className="rate-note muted">
+        Inc VAT
+        {plan.discount_pct > 0
+          ? ` and the ${plan.discount_pct}% discount (both already in the rates above)`
+          : ""}
+        . PSO levy (€19.10/yr) is added by the model, not the supplier.
+      </p>
+    </>
+  );
+}
+
+function GasRateLines({ plan }: { plan: GasPlan }) {
+  return (
+    <>
+      <table className="rate-lines">
+        <tbody>
+          <tr>
+            <td>Unit rate</td>
+            <td className="num">{plan.rate_cpkwh.toFixed(2)} c/kWh</td>
+          </tr>
+          <tr>
+            <td>Standing charge</td>
+            <td className="num">
+              €{plan.standing_eur_per_year.toFixed(2)}/yr
+            </td>
+          </tr>
+          {plan.welcome_credit_eur > 0 && (
+            <tr>
+              <td>Welcome credit</td>
+              <td className="num">−€{plan.welcome_credit_eur.toFixed(0)} once</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <p className="rate-note muted">
+        Inc VAT
+        {plan.discount_pct > 0 ? `, ${plan.discount_pct}% discount included` : ""}
+        ; carbon tax (1.25 c/kWh) is added by the model.
+      </p>
+    </>
   );
 }
 
@@ -767,11 +858,15 @@ function CostBreakdown({
   best,
   curCombo,
   cur,
+  bestRanked,
+  curRanked,
 }: {
   bestCombo: Combo;
   best: ComboBreakdown;
   curCombo: Combo | null;
   cur: ComboBreakdown | null;
+  bestRanked: RankedCombo;
+  curRanked: RankedCombo | null;
 }) {
   const bestRows = breakdownRows(best);
   const curRows = cur ? breakdownRows(cur) : null;
@@ -823,11 +918,11 @@ function CostBreakdown({
       <details className="modelling">
         <summary>Rates &amp; sources for these plans</summary>
         <h3 className="rates-heading">Cheapest: {bestLabel}</h3>
-        <ComboRates combo={bestCombo} />
-        {curCombo && (
+        <ComboRateDetail ranked={bestRanked} />
+        {curRanked && (
           <>
             <h3 className="rates-heading">Current: {curLabel}</h3>
-            <ComboRates combo={curCombo} />
+            <ComboRateDetail ranked={curRanked} />
           </>
         )}
       </details>
@@ -1150,22 +1245,7 @@ function RankingRow({
       {isExpanded && (
         <tr className="drawer-row">
           <td colSpan={4}>
-            <div className="drawer">
-              <PlanDetail
-                title={`Electricity: ${combo.elec.supplier}`}
-                label={combo.elec.label}
-                source={combo.elec.source}
-                notes={combo.elec.notes}
-              />
-              {combo.gas && (
-                <PlanDetail
-                  title={`Gas: ${combo.gas.supplier}`}
-                  label={combo.gas.label}
-                  source={combo.gas.source}
-                  notes={combo.gas.notes}
-                />
-              )}
-            </div>
+            <ComboRateDetail ranked={row} />
           </td>
         </tr>
       )}
@@ -1174,17 +1254,17 @@ function RankingRow({
 }
 
 function PlanDetail({
-  title,
-  label,
-  source,
-  notes,
+  kind,
+  plan,
+  hikePct,
 }: {
-  title: string;
-  label: string;
-  source: { url: string; verified_on: string; confidence: string };
-  notes?: string | null;
+  kind: "electricity" | "gas";
+  plan: ElectricityPlan | GasPlan;
+  hikePct: number | null;
 }) {
+  const { source, label, supplier, notes } = plan;
   const href = extractHref(source.url);
+  const title = `${kind === "electricity" ? "Electricity" : "Gas"}: ${supplier}`;
   return (
     <div className="plan-detail">
       <h3>{title}</h3>
@@ -1197,6 +1277,19 @@ function PlanDetail({
           verified {source.verified_on}
         </span>
       </div>
+      {kind === "electricity" ? (
+        <ElectricityRateLines plan={plan as ElectricityPlan} />
+      ) : (
+        <GasRateLines plan={plan as GasPlan} />
+      )}
+      {hikePct != null && (
+        <p className="notes muted">
+          ⚠️ {supplier} announced a +{hikePct}% increase. These are the verified
+          pre-increase rates (check them against the source); the ranking applies
+          the increase, time-weighted, on top — so your modelled annual cost is
+          higher than these rates alone.
+        </p>
+      )}
       <div className="source">
         Source:{" "}
         {href ? (

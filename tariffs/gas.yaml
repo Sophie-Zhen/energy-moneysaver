@@ -29,7 +29,7 @@ plans:
     rate_cpkwh_inc_vat: 8.048    # 10.255 ex VAT * 0.72 * 1.09
     standing_eur_per_year: 149.711   # 0.3763 * 365 * 1.09
     source:
-      url: electricireland.ie/switch/new-customer/price-plans-bundles
+      url: electricireland.ie/switch/new-customer/price-plans
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -121,7 +121,7 @@ plans:
     rate_cpkwh_inc_vat: 8.83
     standing_eur_per_year: 131.69
     source:
-      url: bordgaisenergy.ie/home/electricity-and-gas-plans (quote 2 Jun 2026)
+      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
 
@@ -140,7 +140,7 @@ plans:
     rate_cpkwh_inc_vat: 9.50
     standing_eur_per_year: 131.69
     source:
-      url: bordgaisenergy.ie/home/electricity-and-gas-plans (quote 2 Jun 2026)
+      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -181,7 +181,7 @@ plans:
     rate_cpkwh_inc_vat: 10.13     # 11.26 - 10%
     standing_eur_per_year: 141.60
     source:
-      url: energia.ie/our-tariffs (browse 2 Jun 2026)
+      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
 
@@ -200,7 +200,7 @@ plans:
     rate_cpkwh_inc_vat: 8.22      # 11.26 - 27%
     standing_eur_per_year: 141.60
     source:
-      url: energia.ie/our-tariffs (browse 2 Jun 2026)
+      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
@@ -286,10 +286,13 @@ plans:
     rate_cpkwh_inc_vat: 8.091
     standing_eur_per_year: 151.19
     source:
-      url: bonkers.ie Flogas plans detail (3 Jun 2026)
+      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/HR6TEX/dual-fuel-smart-29pc-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
       verified_on: 2026-06-03
       confidence: BONKERS
-    notes: Cheapest gas unit rate in the market as of Jun 2026 for a typical Dublin household.
+    notes: |
+      Cheapest gas unit rate in the market as of Jun 2026 for a typical Dublin
+      household. Rate via bonkers.ie (CRU-accredited); Flogas's dual-fuel page:
+      flogas.ie/price-plan/dual-fuel-smart-29-28-gas-loyalty-discount
 
   # ----------------- SSE Airtricity -----------------
   - id: sse_gas_20pc
