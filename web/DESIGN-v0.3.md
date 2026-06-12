@@ -315,10 +315,20 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   €(25−18.5)/100 × kWh more than Energia (18.5c), reordering the ranking.
   Browser visual pass still pending (gstack unavailable this session).
 
-### v0.3-M8 — Help layer
-- User manual + FAQ pages, linked from the app.
-- **Verify:** a first-time reader can follow the manual end to end without the
-  code.
+### v0.3-M8 — Help layer ✅ done
+- New `manual.html` at repo root (same self-contained house style as
+  `data_guide.html`): "How to read your result" — what the tool answers, a
+  60-second how-to, an accordion explaining every answer section (headline,
+  hike note, breakdown, why-cheapest bar, negotiate, switch timing, solar),
+  the confidence-label key, and a 9-item FAQ (variable-rate reality, projected
+  hikes, E+1 switch, browser-only privacy, solar same-supplier, €400/€800 tax,
+  form-vs-HDF, what's-not-modelled, why-we-differ-from-other-sites). Split of
+  responsibility: `data_guide.html` = how to get your data; `manual.html` = how
+  to read the answer. Linked from the app header ("How to read your result →"
+  next to "Data guide →"); copied in `pages.yml` alongside data_guide.
+- **Verify (done):** tag-balanced (16/16 accordions); typecheck/build/626 tests
+  green. Self-contained — `open manual.html` works standalone and its relative
+  link to data_guide.html resolves (same directory).
 
 ## 7. Open questions (decide before the milestone that needs them)
 
@@ -327,7 +337,7 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
 | ~~Forward-projection baseline: generic vs contract-expiry-aware?~~ | ~~M2~~ | RESOLVED: Irish plans are variable → announced hikes pass through. Applied time-weighted from today; the switch/contract date becomes the window anchor when that input lands. |
 | Retention target: show one number (rate-only) or two (incl. welcome credit)? | M5 | Leaning two — the welcome-credit-inclusive target is the honest one for year 1. |
 | ~~Solar feed-in rates: where is the authoritative per-supplier CEG source?~~ | ~~M7~~ | RESOLVED: supplier pages (FACT) cross-checked against solarinfo.ie + greentechreview comparison trackers (THIRD_PARTY). One number per supplier; far easier than the plan catalogue. Energia confirmed on its own page; the other six are THIRD_PARTY pending per-supplier confirmation. |
-| User manual format: extend `data_guide.html` or a new in-app page? | M8 | Lean: extend data_guide for "how to get data", new page for "how to read the answer". |
+| ~~User manual format: extend `data_guide.html` or a new in-app page?~~ | ~~M8~~ | RESOLVED: kept data_guide for "how to get data"; added a new `manual.html` for "how to read the answer" + FAQ. Both static HTML, copied at deploy, linked from the app header. |
 
 ## 8. Relationship to v0.2 DESIGN.md
 

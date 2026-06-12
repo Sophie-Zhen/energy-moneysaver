@@ -314,6 +314,15 @@ export function App() {
         export for higher accuracy. Files never leave your browser.
       </p>
       <p className="muted">
+        New here?{" "}
+        <a
+          href={`${import.meta.env.BASE_URL}manual.html`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          How to read your result →
+        </a>
+        {"  ·  "}
         Not sure where to find your annual kWh or how to download an HDF?{" "}
         <a
           href={`${import.meta.env.BASE_URL}data_guide.html`}

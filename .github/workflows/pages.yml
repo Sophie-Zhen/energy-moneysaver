@@ -39,6 +39,7 @@ jobs:
           mkdir -p _site
           cp -R web/dist/. _site/
           cp data_guide.html _site/
+          cp manual.html _site/
 
       - uses: actions/configure-pages@v5
 

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>energy-moneysaver — How to read your result</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1d1d1f; --muted: #6e6e73; --line: #e0e0d8;
+    --accent: #0a7d57; --warn: #b94b00; --code-bg: #f4f4ef;
+  }
+  * { box-sizing: border-box; }
+  body { font: 15.5px/1.55 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; margin: 0; background: var(--bg); color: var(--fg); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 28px; }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 20px; margin: 36px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--accent); }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  .meta { color: var(--muted); font-size: 13.5px; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+  details summary { cursor: pointer; font-weight: 600; padding: 2px 0; }
+  details[open] summary { margin-bottom: 8px; }
+  details summary::marker { color: var(--accent); }
+  code, pre { font: 13px/1.5 "SF Mono", Menlo, Consolas, monospace; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+  pre { background: var(--code-bg); padding: 10px 14px; border-radius: 6px; overflow-x: auto; }
+  .field { display: inline-block; background: #e8f3ed; color: #0a5f3f; padding: 1px 6px; border-radius: 3px; font: 12.5px "SF Mono", monospace; font-weight: 600; }
+  blockquote { border-left: 3px solid var(--accent); margin: 12px 0; padding: 4px 14px; color: #2c2c2e; background: #f0f7f3; border-radius: 0 6px 6px 0; }
+  blockquote.warn { border-color: var(--warn); background: #fcf3e7; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; background: #fff; font-size: 14.5px; }
+  th, td { padding: 8px 11px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { background: #f4f4ee; font-weight: 600; }
+  .quick-start { background: #fffbe7; border: 1px solid #ecd97a; border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
+  .quick-start h3 { margin-top: 0; color: #7a4e00; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .b-fact { background: #d4f4dd; color: #1b5e20; }
+  .b-bonkers { background: #d4e7fa; color: #0d3a6e; }
+  .b-third { background: #fef0c7; color: #6b4500; }
+  .b-guess { background: #fcd9d6; color: #781e15; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>How to read your result</h1>
+  <div class="meta">
+    This tool doesn't just rank plans — it tries to make you confident enough to
+    act. This guide explains what each part of the answer means and how to use
+    it. For where to find your usage numbers and how to download your meter
+    data, see the <a href="data_guide.html">Data guide</a>.
+  </div>
+</header>
+
+<div class="quick-start">
+  <h3>What it answers, in order</h3>
+  <ol>
+    <li><strong>Will my current plan get worse?</strong> Announced price increases are projected onto the next 12 months.</li>
+    <li><strong>What's cheapest for me over the next year?</strong> Ranked on <em>your</em> usage shape, not a generic average.</li>
+    <li><strong>What should I do about it?</strong> Switch (and when), or stay and negotiate to the same number.</li>
+  </ol>
+  <p>Everything else — the breakdown, the usage bar, the charts — is evidence for that answer, so you can see <em>why</em> it's true rather than take it on faith.</p>
+</div>
+
+<h2>The 60-second version</h2>
+<ol>
+  <li>Pick a mode: <strong>Form</strong> (type your annual kWh — quick) or <strong>Upload HDF</strong> (your ESB Networks half-hour file — most accurate). Your file never leaves your browser.</li>
+  <li>Confirm the personalisation toggles that apply to you: gas, EV, solar, meter type.</li>
+  <li>Select <strong>your current plan</strong> from the dropdown so the tool can show your saving (optional, but it unlocks the comparison and the negotiate target).</li>
+  <li>Read the green headline: it's your bottom line. Everything below it explains where that number comes from.</li>
+</ol>
+
+<h2>How to read each part of the answer</h2>
+
+<details>
+  <summary>The green headline — "€A → €B, save €C/yr"</summary>
+  <p><strong>€A</strong> is what your current plan costs over the next 12 months (including any announced increase). <strong>€B</strong> is the cheapest plan for you. <strong>€C</strong> is the difference — your annual saving if you switch.</p>
+  <p>If you haven't picked a current plan, you'll just see the cheapest plan and its yearly cost. If you're already on the cheapest, it says so — nothing to do.</p>
+</details>
+
+<details>
+  <summary>"Your current figure includes an announced increase" — what that means</summary>
+  <p>Irish plans are almost all <strong>variable-rate</strong>. A "20% off" deal is a discount off the supplier's standard variable rate, so when they announce a hike, it passes through to you too. If your supplier has announced an increase (e.g. the July 2026 round), the tool applies it to the part of the year <em>after</em> it takes effect — so your "do nothing" number is what you'll really pay, not today's rate frozen.</p>
+  <p>This is why switching can save even if your current discount looks good: the discount % stays, but the rate it's applied to is going up.</p>
+</details>
+
+<details>
+  <summary>Cost breakdown — the line-by-line table</summary>
+  <p>Where the money goes, split into units (Night / Day / Peak), standing charge, PSO levy, gas (if any), welcome credit, and solar export credit (if any). The <strong>Current</strong> and <strong>Cheapest</strong> columns sit side by side, and <strong>You save</strong> is the per-line difference — so you can see exactly which line drives the saving (often standing charge or peak units, not the headline unit rate).</p>
+  <p>Open <em>"Rates &amp; sources for these plans"</em> underneath to see the actual c/kWh rates, the source URL, the verification date, and a confidence label for every number.</p>
+  <blockquote>Rounding note: each line is shown to the nearest euro, so the visible lines can look €1 off the total. The underlying maths is exact.</blockquote>
+</details>
+
+<details>
+  <summary>"Why this is cheapest for you" — the coloured usage bar</summary>
+  <p>The bar shows what share of your electricity you use in each window: <strong>Night</strong> (23:00–08:00), <strong>Day</strong>, and <strong>Peak</strong> (weekday 17:00–19:00, the most expensive window on smart tariffs). The plan that prices <em>your</em> dominant window cheaply tends to win — that's the whole reason the cheapest plan is cheapest for you specifically.</p>
+  <p>In form mode this uses a typical household shape; upload your HDF to see your real one. EV charging is shown separately (it's assumed scheduled to each plan's cheapest band), so it doesn't distort this bar.</p>
+</details>
+
+<details>
+  <summary>"Best option: stay and negotiate" — the retention target</summary>
+  <p>Switching is hassle. If your current supplier will match the cheapest switch, staying is easier. This box tells you <strong>what rate cut to ask for</strong> — e.g. "≈18% off your current rates" — to land on the same yearly cost. It gives two targets where relevant: one matching the first-year deal (including any sign-up bonus) and one matching the ongoing rate after the bonus is gone.</p>
+  <p>These are targets to aim for on the call, not a promise the supplier will offer them. Most Irish suppliers have a retention team — ask before you cancel.</p>
+</details>
+
+<details>
+  <summary>"If you switch: when and how" — the timing list</summary>
+  <p>The community consensus is to submit your switch <strong>the day after</strong> your contract/discount ends (E+1). Switching earlier can trigger an early-exit fee (≈€50); that fee stops applying once the contract ends. Switching takes ~10–15 working days, and you can waive the 14-day cooling-off period to speed it up. Enter your contract-end date in the form to get an exact submit date — it also anchors the price projection to your switch date.</p>
+</details>
+
+<details>
+  <summary>"Your solar export" — the export credit</summary>
+  <p>If you have panels, the electricity you export earns a Clean Export Guarantee (CEG) rate as a bill credit. <strong>Import and export must be with the same supplier</strong> (a CRU rule), so the export rate is tied to whichever plan you pick — it's already netted into each plan's ranking, not a separate switch. A supplier with a generous CEG rate (e.g. 25 c/kWh) can therefore beat one with cheaper import but a stingy export rate.</p>
+  <p>The credit shown is gross (what hits your bill). Export income is tax-free up to €400/year (€800 on a jointly-named bill); anything above that is taxable at your marginal rate and is flagged but not deducted. See the FAQ below.</p>
+</details>
+
+<h2>What the confidence labels mean</h2>
+<p>Every rate carries a label so you know how much to trust it:</p>
+<table>
+  <tr><th>Label</th><th>Meaning</th></tr>
+  <tr><td><span class="badge b-fact">FACT</span></td><td>Taken directly from the supplier's own published page or your own bill.</td></tr>
+  <tr><td><span class="badge b-bonkers">BONKERS</span></td><td>A fixed regulatory or scheme value (e.g. the PSO levy, carbon tax) — not supplier-set.</td></tr>
+  <tr><td><span class="badge b-third">THIRD_PARTY</span></td><td>From a comparison site or aggregator, cross-checked but not yet confirmed on the supplier's own page.</td></tr>
+  <tr><td><span class="badge b-guess">GUESS</span></td><td>An estimate or assumption where no authoritative figure was available. Treat with caution.</td></tr>
+</table>
+<p>The guiding rule for this project: the result is only as good as the data. Anything inferred or assumed is labelled as such, so you can tell a hard fact from a best guess.</p>
+
+<h2>FAQ</h2>
+
+<details>
+  <summary>Are these prices fixed for 12 months?</summary>
+  <p>Usually no. Most Irish plans are <strong>variable-rate</strong> — the "12 months" you see refers to the discount-guarantee / exit-fee period, not a price freeze. The supplier can change the underlying rate during that period, and a "X% off" discount is applied to whatever the standard rate becomes. True fixed-rate plans have largely been pulled from the market. So treat any annual figure as "at today's rates, plus anything already announced", not a locked-in price.</p>
+</details>
+
+<details>
+  <summary>Why does my current plan show a price increase I haven't been told about?</summary>
+  <p>Because the increase has been <em>announced</em> but hasn't taken effect yet. The tool projects announced hikes onto the next 12 months so your "do nothing" cost reflects what you'll actually pay. It only applies the hike to the portion of the year after its effective date, and only for suppliers that have publicly announced one — it doesn't speculate about suppliers that haven't.</p>
+</details>
+
+<details>
+  <summary>Why switch the day <em>after</em> my contract ends, not on the day?</summary>
+  <p>Two reasons. First, switching before the end date can trigger an early-exit fee (≈€50); waiting until the day after avoids any ambiguity. Second, several people report that switching on the exact end date got them auto-charged the fee anyway and they had to dispute it — a day later is simply safer. Every day past your end date you sit on the higher standard rate, though, so don't drag it out beyond that.</p>
+</details>
+
+<details>
+  <summary>Is my data uploaded anywhere? Is it private?</summary>
+  <p>Your HDF file is read entirely <strong>inside your browser</strong> using the File API — it is never uploaded to any server, and there is no backend to send it to. Privacy here is architectural, not a promise: the data physically can't leave your device because nothing transmits it. The only network requests the page makes are to load the plan catalogue (a static JSON file) when it starts.</p>
+</details>
+
+<details>
+  <summary>I have solar — why is the export tied to my supplier?</summary>
+  <p>Under the CRU microgeneration scheme, your electricity import and export must be with the <strong>same</strong> supplier. You can't buy from one supplier and sell your surplus to another. So when you switch supplier, your export arrangement moves with you and you get the new supplier's CEG rate. That's why the tool nets import cost and export revenue together per supplier rather than treating export as a separate add-on — and why a high export rate can change which plan is cheapest for you.</p>
+</details>
+
+<details>
+  <summary>What's the €400 solar tax thing?</summary>
+  <p>Income from exporting your surplus electricity is exempt from income tax up to <strong>€400 per year per named account holder</strong> (so €800 on a jointly-named bill), under TCA 1997 s216D, currently in force until the end of 2028. Income above the cap is taxable at your marginal rate. The tool shows your gross export credit (what hits your bill) and flags how much, if any, is above the tax-free cap — it doesn't deduct the tax, because your marginal rate depends on your wider income.</p>
+</details>
+
+<details>
+  <summary>Form mode or HDF upload — which should I use?</summary>
+  <p><strong>Form mode</strong> is quick: type your annual kWh and the tool uses a typical Irish household usage shape. Good for a ballpark. <strong>HDF upload</strong> uses your meter's actual half-hourly readings, so the night/day/peak split — and therefore the ranking of time-of-use plans — is based on <em>your</em> real pattern. If you have an EV or a smart tariff, the HDF is materially more accurate. See the <a href="data_guide.html">Data guide</a> for how to download it.</p>
+</details>
+
+<details>
+  <summary>How accurate is this? What's not modelled?</summary>
+  <p>Unit rates (inc VAT), standing charges, the PSO levy, gas carbon tax, welcome credits, announced hikes, and solar export are all modelled. Some things are deliberately simplified, and the app's <em>"What's modelled (and what isn't)"</em> panel lists them: the discount is assumed to hold for the full year; only urban standing charges are used (rural is typically €60–90/yr higher); EV charging is assumed scheduled to the cheapest band; and "Free Day" / weekend-free plans aren't modelled yet. The catalogue is dated — check the verification date on each rate, and confirm the final number on your own quote before switching.</p>
+</details>
+
+<details>
+  <summary>Why is my "cheapest" different from another comparison site?</summary>
+  <p>Most sites rank on a generic average household. This one ranks on <em>your</em> usage shape (especially with an HDF), projects announced hikes forward, nets solar export per supplier, and assumes EV charging is scheduled — so the winner can legitimately differ. The point isn't to disagree for its own sake; it's that the cheapest plan depends on how and when <em>you</em> use electricity, and the breakdown shows you exactly why.</p>
+</details>
+
+<footer>
+  Spotted a wrong rate, a missing plan, or a new supplier? <strong>Open a PR.</strong>
+  See <code>tariffs/METADATA.md</code> for the verification procedure. This guide
+  describes the web tool; the underlying figures come from the same catalogue
+  the command-line version uses.
+</footer>
+
+</div>
+</body>
+</html>
