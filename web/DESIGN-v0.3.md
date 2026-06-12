@@ -330,6 +330,27 @@ dependency; the first increment fixes "too complex" using mostly existing parts.
   green. Self-contained — `open manual.html` works standalone and its relative
   link to data_guide.html resolves (same directory).
 
+### Source verifiability patch (post-M8, from live dogfooding) ✅ done
+- Expanding a plan now shows its verified band-level c/kWh, standing charge and
+  welcome credit (the original pre-hike catalogue rates, matching source +
+  verified_on), so a user can check our numbers. Fixed 3 dead source URLs and
+  replaced 3 bare-label Flogas sources with exact bonkers.ie deep links
+  (Flogas publishes band rates only via quote). All 16 source URLs HTTP-checked
+  200. Corrected the BONKERS confidence-label description in manual.html.
+
+### v0.3-M9 — Visual hierarchy / design polish ✅ done
+- One filled focal point (the green answer hero — larger type, lifted with a
+  shadow); supporting sections (breakdown, why, solar, negotiate, timing)
+  unified as white cards with a thin semantic left spine instead of five
+  competing fills; the input form and the full ranking subdued (smaller, muted)
+  as secondary. New masthead: euro-with-sunburst logo (money + general energy,
+  not electricity-only) + tagline "The Irish energy plan checker — switch with
+  confidence."
+- **Verify (done):** driven in a real headless browser (gstack `/browse`);
+  desktop + mobile screenshots reviewed, no console errors; typecheck/build/626
+  tests green. (Earlier "gstack unavailable" note resolved — it lives at
+  `~/.claude/skills/gstack/browse/dist/browse`, just not on PATH.)
+
 ## 7. Open questions (decide before the milestone that needs them)
 
 | Question | Need-by | Notes |

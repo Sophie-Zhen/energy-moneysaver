@@ -7,8 +7,33 @@ body {
   color: #1a1a1a;
 }
 
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.masthead .logo {
+  flex: none;
+  display: inline-flex;
+  filter: drop-shadow(0 2px 5px rgba(10, 125, 87, 0.25));
+}
+
+.masthead h1 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.tagline {
+  margin: 0.2rem 0 0;
+  color: #4a4a4a;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 h1 {
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   margin-bottom: 0.25rem;
 }
 
@@ -23,21 +48,25 @@ h2 {
   font-size: 0.9rem;
 }
 
+/* Secondary: the input controls. Subdued so the answer below is what draws the
+   eye, not the form above it. */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0.5rem 1.5rem;
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: #f8f8f8;
-  border-radius: 6px;
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  background: #fbfbfb;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .field input[type="number"],
@@ -60,6 +89,18 @@ h2 {
   flex-direction: column;
   gap: 0.25rem;
   margin-top: 0.5rem;
+}
+
+/* Secondary: the full ranking is supporting detail, not the answer. Muted,
+   smaller heading so it reads as "the long list" below the conclusion. */
+.all-plans {
+  margin-top: 2.5rem;
+}
+
+.all-plans h2 {
+  font-size: 1.05rem;
+  color: #555;
+  font-weight: 600;
 }
 
 table.ranking {
@@ -96,19 +137,23 @@ table.ranking tr.best {
   border-radius: 4px;
 }
 
+/* Primary focal point: the answer. Deliberately the heaviest block on the page
+   — larger type, lifted with a shadow — so the eye lands here first. */
 .answer {
-  margin-top: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  background: #effbef;
-  border: 1px solid #cdeccd;
-  border-radius: 8px;
+  margin-top: 2.5rem;
+  padding: 1.75rem 2rem;
+  background: #e9f8ec;
+  border: 1px solid #bfe3bf;
+  border-radius: 12px;
+  box-shadow: 0 3px 16px rgba(16, 94, 50, 0.12);
 }
 
 .answer-headline {
-  margin: 0.25rem 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.3;
+  margin: 0.35rem 0;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .answer-num {
@@ -117,18 +162,43 @@ table.ranking tr.best {
 }
 
 .answer-save {
+  display: inline-block;
+  margin-left: 0.25rem;
   color: #1b5e20;
+  font-weight: 700;
 }
 
-.breakdown {
-  margin-top: 2rem;
+/* Supporting evidence: uniform white cards with a thin semantic left spine, so
+   the filled green answer above is the only "solid" block. Calmer than five
+   competing fills. */
+.breakdown,
+.why,
+.solar,
+.negotiate,
+.timing {
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.4rem;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-left-width: 4px;
+  border-radius: 10px;
 }
+
+.breakdown h2,
+.why h2,
+.solar h2,
+.negotiate h2,
+.timing h2 {
+  margin-top: 0;
+}
+
+.breakdown { border-left-color: #2e9e63; }
 
 table.breakdown-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 table.breakdown-table th,
@@ -159,9 +229,7 @@ table.breakdown-table tr.total td {
   color: #b00020;
 }
 
-.why {
-  margin-top: 2rem;
-}
+.why { border-left-color: #2e9e63; }
 
 .why-bar {
   display: flex;
@@ -194,13 +262,7 @@ table.breakdown-table tr.total td {
   background: #fcd9d6;
 }
 
-.negotiate {
-  margin-top: 2rem;
-  padding: 1.25rem 1.5rem;
-  background: #f0f6ff;
-  border: 1px solid #cfe0f5;
-  border-radius: 8px;
-}
+.negotiate { border-left-color: #4a90d9; }
 
 .negotiate ul {
   margin: 0.5rem 0;
@@ -211,21 +273,9 @@ table.breakdown-table tr.total td {
   margin-bottom: 0.4rem;
 }
 
-.timing {
-  margin-top: 2rem;
-  padding: 1.25rem 1.5rem;
-  background: #fafafa;
-  border: 1px solid #eee;
-  border-radius: 8px;
-}
+.timing { border-left-color: #9e9e9e; }
 
-.solar {
-  margin-top: 2rem;
-  padding: 1.25rem 1.5rem;
-  background: #fffbe9;
-  border: 1px solid #f3e4b3;
-  border-radius: 8px;
-}
+.solar { border-left-color: #e0a93b; }
 
 .solar .timing-list {
   margin: 0.5rem 0 0;

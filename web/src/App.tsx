@@ -321,7 +321,47 @@ export function App() {
 
   return (
     <main>
-      <h1>energy-moneysaver</h1>
+      <header className="masthead">
+        <span className="logo" aria-hidden="true">
+          <svg width="42" height="42" viewBox="0 0 42 42" role="img">
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#16a35f" />
+                <stop offset="1" stopColor="#0a7d57" />
+              </linearGradient>
+            </defs>
+            <rect width="42" height="42" rx="11" fill="url(#logo-grad)" />
+            <g stroke="#fff" strokeWidth="2.1" strokeLinecap="round">
+              <line x1="21" y1="9" x2="21" y2="5.5" />
+              <line x1="21" y1="33" x2="21" y2="36.5" />
+              <line x1="33" y1="21" x2="36.5" y2="21" />
+              <line x1="9" y1="21" x2="5.5" y2="21" />
+              <line x1="29.5" y1="12.5" x2="32" y2="10" />
+              <line x1="12.5" y1="29.5" x2="10" y2="32" />
+              <line x1="29.5" y1="29.5" x2="32" y2="32" />
+              <line x1="12.5" y1="12.5" x2="10" y2="10" />
+            </g>
+            <text
+              x="21"
+              y="22"
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontFamily="system-ui, sans-serif"
+              fontSize="17"
+              fontWeight="700"
+              fill="#fff"
+            >
+              €
+            </text>
+          </svg>
+        </span>
+        <div>
+          <h1>energy-moneysaver</h1>
+          <p className="tagline">
+            The Irish energy plan checker — switch with confidence.
+          </p>
+        </div>
+      </header>
       <p className="muted">
         Compare Irish electricity {hasGas ? "& gas " : ""}plans. Pick a mode:
         a form-only quick estimate, or upload your ESB Networks half-hour
@@ -615,7 +655,7 @@ export function App() {
         )}
 
       {ranking && (
-        <section>
+        <section className="all-plans">
           <h2>
             All plans ({ranking.length} combos
             {series && `, modelled at ${Math.round(series.derivedAnnualKwh)} kWh elec`})
