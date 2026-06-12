@@ -6,7 +6,7 @@
 //
 // Run via `npm run build:data` or implicitly via pre{dev,build,test} hooks.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -133,6 +133,15 @@ const profiles = {
 };
 
 mkdirSync(publicDir, { recursive: true });
+
+// The two help pages live at the repo root (next to example_config.yaml, for
+// CLI users). Copy them into public/ so Vite serves them at /data_guide.html
+// and /manual.html in dev AND includes them in the production build — keeping
+// the root copies as the single source of truth. The copies are gitignored.
+for (const page of ["data_guide.html", "manual.html"]) {
+  copyFileSync(resolve(repoRoot, page), resolve(publicDir, page));
+}
+
 writeFileSync(
   resolve(publicDir, "tariffs.json"),
   JSON.stringify(tariffs, null, 2) + "\n",

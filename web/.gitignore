@@ -16,3 +16,8 @@ src/**/*.d.ts
 # Source of truth is the YAML; do not edit JSON by hand.
 public/tariffs.json
 public/profiles.json
+
+# Copied into public/ by build-data.mjs from the repo-root originals (the
+# source of truth) so Vite serves them in dev and includes them in the build.
+public/data_guide.html
+public/manual.html
