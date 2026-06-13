@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { fetchTariffSnapshot, type TariffSnapshot } from "./tariffLoader";
+import { fetchTariffSnapshot, type TariffSnapshot } from "./data/tariffLoader";
 import {
   fetchProfiles,
   scaleProfileToAnnualKwh,
   DEFAULT_PROFILE_ID,
   type Profile,
-} from "./profiles";
+} from "./data/profiles";
 import {
   annualDualFuelCostEur,
   annualElectricityOnlyCostEur,
@@ -17,10 +17,10 @@ import {
   usageKwhByBand,
   negotiateTarget,
   type UsageBandSplit,
-} from "./simulator";
-import { buildCombos, type Combo, type UserConstraints } from "./planner";
-import { projectElectricity, projectGas } from "./hikes";
-import { parseHdfCsv, type HdfParseResult } from "./hdfParser";
+} from "./domain/simulator";
+import { buildCombos, type Combo, type UserConstraints } from "./domain/planner";
+import { projectElectricity, projectGas } from "./domain/hikes";
+import { parseHdfCsv, type HdfParseResult } from "./data/hdfParser";
 import {
   LangContext,
   STRINGS,
@@ -31,7 +31,7 @@ import {
 import type {
   HourlySeries,
   MeterType,
-} from "./types";
+} from "./domain/types";
 import type { ComboBreakdown, Mode, RankedCombo } from "./viewModel";
 import { AnswerHero } from "./components/AnswerHero";
 import { CostBreakdown } from "./components/CostBreakdown";

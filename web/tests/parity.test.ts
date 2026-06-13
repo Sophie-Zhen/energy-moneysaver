@@ -20,14 +20,14 @@ import parityFixture from "./fixtures/parity.json";
 import {
   annualDualFuelCostEur,
   cheapestBandEvDistribution,
-} from "../src/simulator";
-import { toSnapshot, type RawTariffData } from "../src/tariffLoader";
+} from "../src/domain/simulator";
+import { toSnapshot, type RawTariffData } from "../src/data/tariffLoader";
 import {
   DEFAULT_PROFILE_ID,
   scaleProfileToAnnualKwh,
   toProfiles,
   type RawProfilesData,
-} from "../src/profiles";
+} from "../src/data/profiles";
 
 type Scenario = {
   label: string;

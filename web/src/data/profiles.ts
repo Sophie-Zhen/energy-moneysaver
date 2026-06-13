@@ -1,8 +1,8 @@
 // Loads the residential load profile JSON produced by build-data.mjs and
 // provides the same scale-to-annual-kWh utility as src/profiles.py.
 
-import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "./constants";
-import type { HourlySeries } from "./types";
+import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "../domain/constants";
+import type { HourlySeries } from "../domain/types";
 
 export type Profile = {
   label: string;

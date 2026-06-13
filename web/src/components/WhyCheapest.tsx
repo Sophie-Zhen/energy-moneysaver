@@ -1,5 +1,5 @@
 import { useT } from "../i18n";
-import type { UsageBandSplit } from "../simulator";
+import type { UsageBandSplit } from "../domain/simulator";
 import type { Mode } from "../viewModel";
 
 export function WhyCheapest({

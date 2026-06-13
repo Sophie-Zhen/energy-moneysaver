@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { negotiateTarget } from "../src/simulator";
+import { negotiateTarget } from "../src/domain/simulator";
 
 describe("negotiateTarget", () => {
   // current plan: units 1000, fixed 400 -> total 1400.

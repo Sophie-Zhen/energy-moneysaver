@@ -3,7 +3,7 @@
 // load_all() but works off pre-normalized JSON (the YAML→JSON conversion
 // happens at build time, not browser load time).
 
-import type { ElectricityPlan, ExportRate, GasPlan } from "./types";
+import type { ElectricityPlan, ExportRate, GasPlan } from "../domain/types";
 
 export type Hike = {
   supplier: string;

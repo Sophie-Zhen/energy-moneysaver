@@ -14,7 +14,7 @@
 // at their current rate — we do not speculate about future increases.
 
 import type { ElectricityPlan, GasPlan } from "./types";
-import type { Hike } from "./tariffLoader";
+import type { Hike } from "../data/tariffLoader";
 
 export function applyElectricityHike(
   plan: ElectricityPlan,

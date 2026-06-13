@@ -1,6 +1,6 @@
 import { useT } from "../i18n";
-import { exportRevenue } from "../simulator";
-import type { ExportRate } from "../types";
+import { exportRevenue } from "../domain/simulator";
+import type { ExportRate } from "../domain/types";
 import type { Mode, RankedCombo } from "../viewModel";
 
 export function SolarExport({

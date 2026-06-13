@@ -1,5 +1,5 @@
 import { useT } from "../i18n";
-import type { NegotiateTarget } from "../simulator";
+import type { NegotiateTarget } from "../domain/simulator";
 
 export function Negotiate({
   currentCost,

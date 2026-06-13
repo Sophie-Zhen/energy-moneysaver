@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { exportRevenue } from "../src/simulator";
+import { exportRevenue } from "../src/domain/simulator";
 
 describe("exportRevenue", () => {
   it("computes gross credit as kWh * rate / 100", () => {

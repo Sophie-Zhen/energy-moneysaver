@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { parseEsbDate, parseHdfCsv } from "../src/hdfParser";
+import { parseEsbDate, parseHdfCsv } from "../src/data/hdfParser";
 
 const HEADER = "MPRN,Meter Serial Number,Read Value,Read Type,Read Date and End Time";
 const PREFIX = "10001234567,000000000099999999";

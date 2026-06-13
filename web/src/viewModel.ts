@@ -3,8 +3,8 @@
 // this module imports from them — keep it out of ./types, which is a leaf that
 // planner/simulator depend on (would create a cycle).
 
-import type { Combo } from "./planner";
-import type { ElectricityBreakdown, GasBreakdown } from "./simulator";
+import type { Combo } from "./domain/planner";
+import type { ElectricityBreakdown, GasBreakdown } from "./domain/simulator";
 
 export type Mode = "form" | "hdf";
 
