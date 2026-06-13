@@ -204,6 +204,15 @@ def _override_electricity(base: dict, patch: dict) -> dict:
         else:
             out[k] = v
     out["label"] = out["label"] + " [USER OVERRIDE]"
+    # A direct {"kind": "bands"} override skips the rates_inc_vat reshaping above
+    # and can leave kind without matching bands. Fail here with a clear message
+    # instead of a cryptic KeyError deep in the simulator.
+    if out.get("kind") == "bands" and not out.get("bands"):
+        raise ValueError(
+            f"tariff_overrides for {base.get('id', '?')!r}: kind='bands' but no "
+            f"'bands'. Change rates through a full 'rates_inc_vat' block, not by "
+            f"setting 'kind' directly."
+        )
     return out
 
 
