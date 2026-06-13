@@ -16,8 +16,6 @@ import {
   gasBreakdown,
   usageKwhByBand,
   negotiateTarget,
-  type ElectricityBreakdown,
-  type GasBreakdown,
   type UsageBandSplit,
   type NegotiateTarget,
 } from "./simulator";
@@ -40,22 +38,7 @@ import type {
   HourlySeries,
   MeterType,
 } from "./types";
-
-type Mode = "form" | "hdf";
-type RankedCombo = {
-  combo: Combo; // projected (post-hike) — drives the modelled cost and label
-  orig: Combo; // original catalogue plans — the verified rates to check sources
-  annualEur: number; // net of any solar export credit
-  hiked: boolean;
-  exportEur: number; // gross CEG credit netted into annualEur (0 if no solar)
-  elecHikePct: number | null; // announced % applied in the projection, if any
-  gasHikePct: number | null;
-};
-type ComboBreakdown = {
-  elec: ElectricityBreakdown;
-  gas: GasBreakdown | null;
-  exportEur: number; // gross solar export credit for this combo's supplier
-};
+import type { ComboBreakdown, Mode, RankedCombo } from "./viewModel";
 
 // Gross annual CEG credit for a combo's electricity supplier. Import and export
 // must be with the same supplier (CRU rule), so the rate is looked up by the
