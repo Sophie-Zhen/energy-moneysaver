@@ -180,7 +180,7 @@ def build_combos(config: UserConfig, snapshot: tl.TariffSnapshot) -> list[Combo]
 
     # User-supplied custom combos (from config.custom_combos). Lets users
     # rank their own plans / pairings alongside the curated list.
-    for entry in getattr(config, "custom_combos", []):
+    for entry in config.custom_combos:
         e = snapshot.electricity.get(entry["electricity_id"])
         if e is None:
             raise ValueError(
