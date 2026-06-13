@@ -17,6 +17,10 @@ const REQUIRED_COLUMNS = [
   "Read Date and End Time",
 ] as const;
 
+// ESB HDF rows are timestamped at the END of a 30-minute interval; subtract this
+// to recover the interval's start time for weekday/weekend + EV-cutoff bucketing.
+const HALF_HOUR_MS = 30 * 60 * 1000;
+
 export type HdfStats = {
   weekdayDays: number;
   weekendDays: number;
@@ -123,7 +127,7 @@ export function parseHdfCsv(
       const kwh = Number(row["Read Value"]);
       if (!Number.isFinite(kwh)) continue;
       const startTime = new Date(
-        parseEsbDate(row["Read Date and End Time"]).getTime() - 30 * 60 * 1000,
+        parseEsbDate(row["Read Date and End Time"]).getTime() - HALF_HOUR_MS,
       );
       if (isWeekend(startTime)) {
         weekendExportSum += kwh;
@@ -137,7 +141,7 @@ export function parseHdfCsv(
     if (readType !== ACTIVE_IMPORT) continue;
 
     const endTime = parseEsbDate(row["Read Date and End Time"]);
-    const startTime = new Date(endTime.getTime() - 30 * 60 * 1000);
+    const startTime = new Date(endTime.getTime() - HALF_HOUR_MS);
 
     if (evStartDate && startTime >= evStartDate) {
       rowsAfterEvCutoff++;
