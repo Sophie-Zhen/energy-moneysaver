@@ -75,6 +75,19 @@ export function cheapestBandEvDistribution(
   return Object.fromEntries(hours.map((h) => [h, share]));
 }
 
+// The EV distribution to feed the cost functions for a given plan: a cheapest-
+// band schedule when the household has an EV, otherwise undefined (no EV load).
+// Works for flat plans too — cheapestBandEvDistribution returns { 0: 1.0 } for
+// them, so their EV kWh is charged at the flat rate. Callers must NOT special-
+// case plan.kind: guarding this on kind === "bands" once left flat plans with
+// no distribution, silently dropping their EV cost.
+export function evDistributionFor(
+  plan: ElectricityPlan,
+  hasEv: boolean,
+): Record<number, number> | undefined {
+  return hasEv ? cheapestBandEvDistribution(plan) : undefined;
+}
+
 export type DualFuelInput = {
   weekdayHourly: HourlySeries; // length 24, kWh/day at each hour
   weekendHourly: HourlySeries;
