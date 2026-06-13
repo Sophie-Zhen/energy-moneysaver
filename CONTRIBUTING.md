@@ -136,7 +136,7 @@ For non-trivial code changes (new simulator logic, schema fields, output formats
 Style guidance:
 
 - Match the existing style; surgical diffs over refactors.
-- No new dependencies without discussion — the lean install (`pandas`, `PyYAML`, `Jinja2`) is intentional.
+- No new dependencies without discussion — the lean install (`pandas`, `PyYAML`) is intentional.
 - Tests should run without network access and without a real HDF.
 
 ## Reporting bad data without a PR

@@ -1,7 +1,11 @@
 """energy-moneysaver CLI entry point.
 
 Usage:
-    python -m src.cli --config my_config.yaml [--output report.html]
+    python -m src.cli --config my_config.yaml
+
+Prints the ranked comparison to the terminal. The user-facing report is the web
+app (web/); this CLI is the reference implementation the TS port is parity-tested
+against, plus a quick terminal check.
 """
 from __future__ import annotations
 
@@ -74,10 +78,6 @@ def _run_combo(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="energy-moneysaver")
     parser.add_argument("--config", required=True, type=Path)
-    parser.add_argument("--output", type=Path, default=None,
-                        help="Override output HTML path from config.")
-    parser.add_argument("--text-only", action="store_true",
-                        help="Skip HTML rendering, print results table.")
     args = parser.parse_args(argv)
 
     config = cfg_mod.load_config(args.config)
@@ -153,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
     do_nothings = [r for r in results if r.combo.is_do_nothing]
     ordered = switchable + baselines + do_nothings
 
-    # Always print a text summary for terminal visibility.
+    # Print the ranked comparison to the terminal.
     print()
     print(f"Baseload source: {baseload_source}")
     if config.electricity.ev.enabled:
@@ -177,20 +177,6 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{tag:<5} {r.combo.label[:51]:<52} "
               f"{r.cost_now_eur:>8.0f} {r.cost_shifted_eur:>11.0f}")
 
-    if args.text_only:
-        return 0
-
-    # HTML rendering — separate module so terminal users can skip it.
-    from .report_renderer import render_html
-    out_path = args.output or config.output.html_path
-    render_html(
-        results=ordered,
-        config=config,
-        snapshot=snapshot,
-        baseload_source=baseload_source,
-        out_path=out_path,
-    )
-    print(f"\nWrote report: {out_path}")
     return 0
 
 

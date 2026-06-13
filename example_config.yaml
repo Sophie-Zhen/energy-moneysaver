@@ -55,11 +55,6 @@ gas:
     plan_id: ei_gas_saver_28pc
     discount_expires_on: 2026-07-03
 
-output:
-  html_path: ./report.html
-  title: "My Energy Switch Recommendation"
-
-
 # -----------------------------------------------------------------------
 # OPTIONAL: User corrections to the shipped tariff catalogue.
 #

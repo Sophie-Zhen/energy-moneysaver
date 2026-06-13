@@ -176,7 +176,7 @@ web/
       sample_hdf.csv         ← small synthetic HDF for unit tests
 ```
 
-The Python `src/cli.py` and `src/report_renderer.py` have no TS counterparts — their roles are subsumed by `ui/App.tsx`.
+The Python `src/cli.py` has no TS counterpart — the web app (`ui/App.tsx`) is the user-facing report; the CLI is the parity reference and a terminal check.
 
 ## 7. Data flow
 

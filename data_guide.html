@@ -245,11 +245,10 @@ custom_combos:
 <h2>Once you've filled in <code>my_config.yaml</code></h2>
 
 <pre>conda activate energy-moneysaver
-python -m src.cli --config my_config.yaml --output report.html
-open report.html</pre>
+python -m src.cli --config my_config.yaml</pre>
 
-<p>For a quick terminal-only view (no HTML):</p>
-<pre>python -m src.cli --config my_config.yaml --text-only</pre>
+<p>This prints a ranked comparison to the terminal. For the full report — cost
+breakdown, methodology, and source links — use the web app.</p>
 
 <p>If the simulator complains about a missing plan_id, double-check it against <code>tariffs/electricity.yaml</code> / <code>tariffs/gas.yaml</code>.</p>
 

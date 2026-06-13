@@ -245,11 +245,10 @@
 <h2>填好 <code>my_config.yaml</code> 之后</h2>
 
 <pre>conda activate energy-moneysaver
-python -m src.cli --config my_config.yaml --output report.html
-open report.html</pre>
+python -m src.cli --config my_config.yaml</pre>
 
-<p>想要快速的纯终端视图(不出 HTML):</p>
-<pre>python -m src.cli --config my_config.yaml --text-only</pre>
+<p>这会把排名结果打印到终端。想看完整报告 —— 费用拆解、方法说明、来源链接 ——
+请用网页端。</p>
 
 <p>如果模拟器抱怨某个 plan_id 缺失,拿它跟 <code>tariffs/electricity.yaml</code> / <code>tariffs/gas.yaml</code> 再核对一遍。</p>
 
