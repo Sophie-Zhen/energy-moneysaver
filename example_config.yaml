@@ -68,8 +68,8 @@ gas:
 #   3. Replace a stale rate band (override `rates_inc_vat` wholesale)
 #
 # All three only affect your run — they never modify the shipped YAML.
-# Each overridden / custom plan shows up in the report tagged
-# [USER OVERRIDE] so it's obvious which numbers came from you.
+# Each overridden / custom plan is tagged [USER OVERRIDE] in the output so
+# it's obvious which numbers came from you.
 # -----------------------------------------------------------------------
 
 # Example 1: nudge an existing plan's standing charge or welcome credit.

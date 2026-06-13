@@ -17,7 +17,6 @@ my_config.yaml
 my_*.yaml
 *.csv
 HDF_*
-report*.html
 
 # IDE
 .vscode/

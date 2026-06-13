@@ -138,7 +138,7 @@
 
 <details>
   <summary><span class="field">electricity.current_plan.plan_id</span> —— 你现在用的是哪个套餐</summary>
-  <p>用来在报告里构建 BASELINE(基线)行(这样你能看到换套餐省多少)。这个 id 必须匹配 <code>tariffs/electricity.yaml</code> 里的某一条。</p>
+  <p>用来在结果里构建 BASELINE(基线)行(这样你能看到换套餐省多少)。这个 id 必须匹配 <code>tariffs/electricity.yaml</code> 里的某一条。</p>
   <h3>怎么找你当前套餐的 id</h3>
   <ol>
     <li>看你最近的账单 —— 套餐名通常在顶部(比如 "Home Electric+ Saver"、"Smart Standard Dual Fuel"、"EV Smart")。</li>
@@ -150,7 +150,7 @@
 
 <details>
   <summary><span class="field">electricity.current_plan.discount_expires_on</span> —— 你的折扣到期日</summary>
-  <p>你当前套餐上的迎新折扣什么时候用完。用来给报告里的 "DO-NOTHING"(什么都不做)行建模(如果你让折扣失效、滚回标准价,你会付多少)。</p>
+  <p>你当前套餐上的迎新折扣什么时候用完。用来给结果里的 "DO-NOTHING"(什么都不做)行建模(如果你让折扣失效、滚回标准价,你会付多少)。</p>
   <ul>
     <li>在你供应商的欢迎邮件、最近账单,或 My Account 页面上找。</li>
     <li>对大多数固定折扣的爱尔兰套餐,正好是签约日起 12 个月。</li>
@@ -210,7 +210,7 @@
   - electricity_id: my_personal_energia_quote_2026_06
     gas_id: energia_gas_27pc_with_smart_data
     label: "My personal Energia quote + Energia Gas 27%"</pre>
-  <p>被覆盖 / 自定义的套餐在报告里会被标上 <code>[USER OVERRIDE]</code>,这样一眼就能看出哪些数字是你的、不是我们的。</p>
+  <p>被覆盖 / 自定义的套餐会在输出里被标上 <code>[USER OVERRIDE]</code>,这样一眼就能看出哪些数字是你的、不是我们的。</p>
 </details>
 
 <h2>去哪找配套的参考数据</h2>
