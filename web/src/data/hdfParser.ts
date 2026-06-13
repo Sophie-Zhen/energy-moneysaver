@@ -6,8 +6,8 @@
 
 import Papa from "papaparse";
 
-import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "./constants";
-import type { HourlySeries } from "./types";
+import { WEEKDAYS_PER_YEAR, WEEKENDS_PER_YEAR } from "../domain/constants";
+import type { HourlySeries } from "../domain/types";
 
 const ACTIVE_IMPORT = "Active Import Interval (kWh)";
 const ACTIVE_EXPORT = "Active Export Interval (kWh)";

@@ -6,8 +6,8 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-import { annualElectricityOnlyCostEur, exportRevenue } from "../src/simulator";
-import type { ElectricityPlan, ExportRate } from "../src/types";
+import { annualElectricityOnlyCostEur, exportRevenue } from "../src/domain/simulator";
+import type { ElectricityPlan, ExportRate } from "../src/domain/types";
 
 const tariffs = JSON.parse(
   readFileSync(

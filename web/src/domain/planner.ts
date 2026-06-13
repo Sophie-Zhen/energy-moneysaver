@@ -6,7 +6,7 @@
 // or tariffs/gas.yaml).
 
 import type { ElectricityPlan, GasPlan, MeterType } from "./types";
-import type { TariffSnapshot } from "./tariffLoader";
+import type { TariffSnapshot } from "../data/tariffLoader";
 
 export type Combo = {
   id: string;

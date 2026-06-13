@@ -1,6 +1,6 @@
 import { useT } from "../i18n";
 import { extractHref, fmtHour } from "../format";
-import type { ElectricityPlan, GasPlan } from "../types";
+import type { ElectricityPlan, GasPlan } from "../domain/types";
 import type { RankedCombo } from "../viewModel";
 
 function ElectricityRateLines({ plan }: { plan: ElectricityPlan }) {

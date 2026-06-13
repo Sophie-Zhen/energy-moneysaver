@@ -17,14 +17,14 @@ import { describe, expect, it } from "vitest";
 import tariffsJson from "../public/tariffs.json";
 import profilesJson from "../public/profiles.json";
 
-import { annualDualFuelCostEur } from "../src/simulator";
-import { toSnapshot, type RawTariffData } from "../src/tariffLoader";
+import { annualDualFuelCostEur } from "../src/domain/simulator";
+import { toSnapshot, type RawTariffData } from "../src/data/tariffLoader";
 import {
   DEFAULT_PROFILE_ID,
   scaleProfileToAnnualKwh,
   toProfiles,
   type RawProfilesData,
-} from "../src/profiles";
+} from "../src/data/profiles";
 
 const snapshot = toSnapshot(tariffsJson as unknown as RawTariffData);
 const profiles = toProfiles(profilesJson as unknown as RawProfilesData);

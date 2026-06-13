@@ -12,8 +12,8 @@ import { describe, expect, it } from "vitest";
 import {
   annualElectricityOnlyCostEur,
   evDistributionFor,
-} from "../src/simulator";
-import type { ElectricityPlan } from "../src/types";
+} from "../src/domain/simulator";
+import type { ElectricityPlan } from "../src/domain/types";
 
 const tariffs = JSON.parse(
   readFileSync(

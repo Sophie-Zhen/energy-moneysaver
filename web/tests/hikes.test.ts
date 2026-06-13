@@ -4,9 +4,9 @@ import {
   postHikeFraction,
   projectElectricity,
   projectGas,
-} from "../src/hikes";
-import type { Hike } from "../src/tariffLoader";
-import type { ElectricityPlan, GasPlan } from "../src/types";
+} from "../src/domain/hikes";
+import type { Hike } from "../src/data/tariffLoader";
+import type { ElectricityPlan, GasPlan } from "../src/domain/types";
 
 const EI_HIKE: Hike = {
   supplier: "Electric Ireland",

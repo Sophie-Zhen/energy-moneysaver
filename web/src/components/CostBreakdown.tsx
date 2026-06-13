@@ -1,6 +1,6 @@
 import { useT, type Strings } from "../i18n";
 import { eur } from "../format";
-import type { Combo } from "../planner";
+import type { Combo } from "../domain/planner";
 import type { ComboBreakdown, RankedCombo } from "../viewModel";
 import { ComboRateDetail } from "./PlanRateDetail";
 
