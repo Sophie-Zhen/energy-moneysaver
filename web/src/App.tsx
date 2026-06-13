@@ -13,6 +13,7 @@ import {
   evDistributionFor,
   electricityBreakdown,
   exportRevenue,
+  exportCreditEur,
   gasBreakdown,
   usageKwhByBand,
   negotiateTarget,
@@ -39,19 +40,6 @@ import type {
   MeterType,
 } from "./types";
 import type { ComboBreakdown, Mode, RankedCombo } from "./viewModel";
-
-// Gross annual CEG credit for a combo's electricity supplier. Import and export
-// must be with the same supplier (CRU rule), so the rate is looked up by the
-// elec plan's supplier name. 0 if the supplier has no listed rate or no export.
-function exportCreditEur(
-  supplier: string,
-  exportRates: Record<string, ExportRate>,
-  exportKwh: number,
-): number {
-  const rate = exportRates[supplier];
-  if (!rate || exportKwh <= 0) return 0;
-  return (exportKwh * rate.rate_cpkwh) / 100;
-}
 
 export function App() {
   const [lang, setLang] = useState<Lang>(detectLang);
