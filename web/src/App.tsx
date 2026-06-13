@@ -10,7 +10,7 @@ import {
 import {
   annualDualFuelCostEur,
   annualElectricityOnlyCostEur,
-  cheapestBandEvDistribution,
+  evDistributionFor,
   electricityBreakdown,
   exportRevenue,
   gasBreakdown,
@@ -188,10 +188,7 @@ export function App() {
         const hiked = elecProj.hikePct != null || gasProj?.hikePct != null;
         const projectedCombo: Combo = { ...combo, elec, gas };
 
-        // cheapestBandEvDistribution handles flat plans too (all EV at the flat
-        // rate), so don't guard on kind === "bands" — that wrongly gave flat
-        // plans a zero EV distribution, leaving their EV kWh uncharged.
-        const evDist = hasEv ? cheapestBandEvDistribution(elec) : undefined;
+        const evDist = evDistributionFor(elec, hasEv);
         const effectiveEvKwh = hasEv ? annualEvKwh : 0;
 
         const grossCost = gas
@@ -236,9 +233,7 @@ export function App() {
   const breakdowns = useMemo(() => {
     if (!ranking || ranking.length === 0 || !series) return null;
     const mk = (combo: Combo): ComboBreakdown => {
-      const evDist = hasEv
-        ? cheapestBandEvDistribution(combo.elec)
-        : undefined;
+      const evDist = evDistributionFor(combo.elec, hasEv);
       return {
         elec: electricityBreakdown({
           weekdayHourly: series.weekday,
