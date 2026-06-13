@@ -88,7 +88,7 @@ export type DualFuelInput = {
   evDistribution?: Record<number, number>; // hour -> share of EV kWh
 };
 
-export function annualElectricityCostEur(input: DualFuelInput): number {
+export function annualElectricityCostEur(input: ElectricityOnlyInput): number {
   const {
     weekdayHourly,
     weekendHourly,
@@ -142,19 +142,10 @@ export type ElectricityOnlyInput = {
 export function annualElectricityOnlyCostEur(
   input: ElectricityOnlyInput,
 ): number {
-  // annualElectricityCostEur is the units-only piece; the same
-  // overhead (standing + PSO - welcome credit) applies whether or not
-  // there's a paired gas plan.
-  const dummyDualFuelInput: DualFuelInput = {
-    weekdayHourly: input.weekdayHourly,
-    weekendHourly: input.weekendHourly,
-    elecPlan: input.elecPlan,
-    gasPlan: undefined as never,
-    gasAnnualKwh: 0,
-    evAnnualKwh: input.evAnnualKwh,
-    evDistribution: input.evDistribution,
-  };
-  const units = annualElectricityCostEur(dummyDualFuelInput);
+  // annualElectricityCostEur is the units-only piece; the same overhead
+  // (standing + PSO - welcome credit) applies whether or not there's a paired
+  // gas plan. It only reads the electricity fields, so pass input straight in.
+  const units = annualElectricityCostEur(input);
   const overhead =
     input.elecPlan.standing_eur_per_year +
     ANNUAL_PSO_LEVY_INC_VAT -
