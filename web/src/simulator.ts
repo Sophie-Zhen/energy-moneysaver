@@ -45,16 +45,6 @@ export function rateForHourAware(
   return rateForHour(plan, hour);
 }
 
-export function cheapestBandHour(plan: ElectricityPlan): number {
-  if (plan.kind === "flat") return 0;
-  if (!plan.bands) throw new Error(`banded plan ${plan.id} missing bands`);
-  const cheapestRate = Math.min(...plan.bands.map((b) => b.rate_cpkwh));
-  for (const band of plan.bands) {
-    if (band.rate_cpkwh === cheapestRate) return band.hours[0];
-  }
-  throw new Error("unreachable");
-}
-
 export function cheapestBandEvDistribution(
   plan: ElectricityPlan,
 ): Record<number, number> {

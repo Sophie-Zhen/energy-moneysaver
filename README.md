@@ -41,7 +41,7 @@ default consumption profile.
    kWh, smart-meter type, current supplier and plan, EV details if any.
 2. Optional: ingest an ESB Networks half-hourly data (HDF) CSV for accurate
    time-of-use cost modelling. Without it, the tool uses the SEAI residential
-   standard load profile (see `docs/profile_source.md`).
+   standard load profile.
 3. Apply each plan's rates against your usage, handling:
    - CRU time-of-use bands (Peak applies Mon-Fri 17:00-19:00 only)
    - Announced price hikes (`tariffs/hikes.yaml`)

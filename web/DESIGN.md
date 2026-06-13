@@ -213,7 +213,7 @@ The single biggest risk is **silent cost-calc drift** between the Python CLI (te
 
 ### Layer 1 — TS unit tests (Vitest, runs on every PR)
 
-- One test per ported function: `rateForHour`, `rateForHourAware`, `cheapestBandHour`, `evDistributionInCheapestBand`, `annualElectricityCostEur`, `annualGasCostEur`, `annualDualFuelCostEur`.
+- One test per ported function: `rateForHour`, `rateForHourAware`, `cheapestBandEvDistribution`, `annualElectricityCostEur`, `annualGasCostEur`, `annualDualFuelCostEur`.
 - Each test uses small hand-crafted plans with hand-computed expected values.
 
 ### Layer 2 — Parity snapshot test

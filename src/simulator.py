@@ -102,16 +102,6 @@ def rate_for_hour_aware(plan: dict, hour: int, is_weekend: bool) -> float:
 
 # --------------------------- EV scheduling ---------------------------
 
-def cheapest_band_hour(plan: dict) -> int:
-    if plan["kind"] == "flat":
-        return 0
-    cheapest_rate = min(r for _, r in plan["bands"])
-    for (lo, _), rate in plan["bands"]:
-        if rate == cheapest_rate:
-            return lo
-    raise RuntimeError("unreachable")
-
-
 def ev_distribution_in_cheapest_band(plan: dict) -> dict[int, float]:
     """All EV kWh distributed evenly across hours in the plan's cheapest
     band. Useful for the 'shifted' scenario (Zappi scheduled to off-peak)."""
