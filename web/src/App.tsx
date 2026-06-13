@@ -188,10 +188,10 @@ export function App() {
         const hiked = elecProj.hikePct != null || gasProj?.hikePct != null;
         const projectedCombo: Combo = { ...combo, elec, gas };
 
-        const evDist =
-          hasEv && elec.kind === "bands"
-            ? cheapestBandEvDistribution(elec)
-            : undefined;
+        // cheapestBandEvDistribution handles flat plans too (all EV at the flat
+        // rate), so don't guard on kind === "bands" — that wrongly gave flat
+        // plans a zero EV distribution, leaving their EV kWh uncharged.
+        const evDist = hasEv ? cheapestBandEvDistribution(elec) : undefined;
         const effectiveEvKwh = hasEv ? annualEvKwh : 0;
 
         const grossCost = gas
@@ -236,10 +236,9 @@ export function App() {
   const breakdowns = useMemo(() => {
     if (!ranking || ranking.length === 0 || !series) return null;
     const mk = (combo: Combo): ComboBreakdown => {
-      const evDist =
-        hasEv && combo.elec.kind === "bands"
-          ? cheapestBandEvDistribution(combo.elec)
-          : undefined;
+      const evDist = hasEv
+        ? cheapestBandEvDistribution(combo.elec)
+        : undefined;
       return {
         elec: electricityBreakdown({
           weekdayHourly: series.weekday,
