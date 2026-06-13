@@ -110,6 +110,22 @@ h2 {
   vertical-align: middle;
 }
 
+/* Checkbox toggles (have gas / EV / solar / joint bill): the .check label had no
+   rule, so the box and text only roughly lined up and the tick used the
+   browser-default blue — off-brand. Align them and tint the tick brand-green. */
+.check {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.check input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: #0a7d57;
+  cursor: pointer;
+}
+
 /* A dependent input that appears under its checkbox, inside the same grid cell
    so toggling never re-packs the grid (no horizontal shift of neighbours). */
 .field .subfield {
