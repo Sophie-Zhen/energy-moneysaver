@@ -138,7 +138,7 @@
 
 <details>
   <summary><span class="field">electricity.current_plan.plan_id</span> — Which plan you're on now</summary>
-  <p>Used to build the BASELINE row in your report (so you can see how much switching saves). The id must match an entry in <code>tariffs/electricity.yaml</code>.</p>
+  <p>Used to build the BASELINE row in your result (so you can see how much switching saves). The id must match an entry in <code>tariffs/electricity.yaml</code>.</p>
   <h3>How to find your current plan id</h3>
   <ol>
     <li>Look at your most recent bill — the plan name is usually at the top (e.g. "Home Electric+ Saver", "Smart Standard Dual Fuel", "EV Smart").</li>
@@ -150,7 +150,7 @@
 
 <details>
   <summary><span class="field">electricity.current_plan.discount_expires_on</span> — Your discount end date</summary>
-  <p>When the introductory discount on your current plan runs out. Used to model the "DO-NOTHING" row in the report (what you'd pay if you let your discount lapse and rolled onto the standard rate).</p>
+  <p>When the introductory discount on your current plan runs out. Used to model the "DO-NOTHING" row in the result (what you'd pay if you let your discount lapse and rolled onto the standard rate).</p>
   <ul>
     <li>Look on your supplier's welcome email, latest bill, or My Account page.</li>
     <li>It is exactly 12 months from your sign-up date for most fixed-discount Irish plans.</li>
@@ -210,7 +210,7 @@ custom_combos:
   - electricity_id: my_personal_energia_quote_2026_06
     gas_id: energia_gas_27pc_with_smart_data
     label: "My personal Energia quote + Energia Gas 27%"</pre>
-  <p>Overridden / custom plans are tagged <code>[USER OVERRIDE]</code> in the report so it's obvious which numbers are yours, not ours.</p>
+  <p>Overridden / custom plans are tagged <code>[USER OVERRIDE]</code> in the output so it's obvious which numbers are yours, not ours.</p>
 </details>
 
 <h2>Where to find supporting reference data</h2>
@@ -245,11 +245,10 @@ custom_combos:
 <h2>Once you've filled in <code>my_config.yaml</code></h2>
 
 <pre>conda activate energy-moneysaver
-python -m src.cli --config my_config.yaml --output report.html
-open report.html</pre>
+python -m src.cli --config my_config.yaml</pre>
 
-<p>For a quick terminal-only view (no HTML):</p>
-<pre>python -m src.cli --config my_config.yaml --text-only</pre>
+<p>This prints a ranked comparison to the terminal. For the full report — cost
+breakdown, methodology, and source links — use the web app.</p>
 
 <p>If the simulator complains about a missing plan_id, double-check it against <code>tariffs/electricity.yaml</code> / <code>tariffs/gas.yaml</code>.</p>
 

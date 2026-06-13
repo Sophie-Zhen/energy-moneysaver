@@ -46,17 +46,10 @@ class HouseholdConfig:
 
 
 @dataclass
-class OutputConfig:
-    html_path: Path = Path("report.html")
-    title: str = "Energy Switch Recommendation"
-
-
-@dataclass
 class UserConfig:
     household: HouseholdConfig
     electricity: ElectricityConfig
     gas: Optional[GasConfig]
-    output: OutputConfig
     # Optional: user-supplied corrections to the shipped tariff catalogue.
     # tariff_overrides: dict of plan_id -> partial plan dict (top-level
     # fields are replaced). E.g. {"flogas_ev_night_charge_2026q2":
@@ -121,17 +114,10 @@ def load_config(path: Path) -> UserConfig:
             current_plan=_parse_current_plan(g_raw["current_plan"]),
         )
 
-    o_raw = raw.get("output", {}) or {}
-    output = OutputConfig(
-        html_path=Path(o_raw.get("html_path", "report.html")),
-        title=o_raw.get("title", "Energy Switch Recommendation"),
-    )
-
     return UserConfig(
         household=household,
         electricity=electricity,
         gas=gas,
-        output=output,
         tariff_overrides=raw.get("tariff_overrides", {}) or {},
         custom_electricity_plans=raw.get("custom_electricity_plans", []) or [],
         custom_gas_plans=raw.get("custom_gas_plans", []) or [],

@@ -24,14 +24,13 @@ from src.simulator import annual_dual_fuel_cost_eur
 
 
 def test_modules_import():
-    from src import cli, config, constants, planner, report_renderer, simulator
+    from src import cli, config, constants, planner, simulator
     assert simulator.WEEKDAYS_PER_YEAR > 0
     assert constants.VAT_RESIDENTIAL == 1.09
     # Touch each module so a removed/renamed top-level symbol surfaces here.
     assert callable(cli.main)
     assert hasattr(config, "UserConfig")
     assert hasattr(planner, "build_combos")
-    assert hasattr(report_renderer, "render_html")
 
 
 def test_snapshot_loads_with_required_fields():

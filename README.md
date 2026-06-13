@@ -7,8 +7,8 @@ what to do about it (switch, and when — or stay and negotiate to the same pric
 
 Factors in time-of-use bands, announced price hikes, welcome credits, standing
 charges, and solar export. Built for households on smart meters (MCC12), with
-Day/Night meter support. Also ships a Python CLI that produces the same numbers
-as a self-contained HTML report.
+Day/Night meter support. Also ships a Python CLI — the reference implementation
+the web simulator is parity-tested against, and a quick terminal check.
 
 ## Try it online
 
@@ -46,7 +46,8 @@ default consumption profile.
    - CRU time-of-use bands (Peak applies Mon-Fri 17:00-19:00 only)
    - Announced price hikes (`tariffs/hikes.yaml`)
    - Plan-specific requirements (dual-fuel-only discounts, EV bands, etc.)
-4. Generate an HTML report with rankings, methodology notes, and source links.
+4. Print a ranked comparison to the terminal. (The user-facing report with
+   methodology notes and source links is the web app.)
 
 ## Quick start
 
@@ -64,12 +65,8 @@ cp example_config.yaml my_config.yaml
 # Open data_guide.html in your browser for help finding each input
 # Edit my_config.yaml with your numbers
 
-# Run
-python -m src.cli --config my_config.yaml --output report.html
-open report.html
-
-# Optional: terminal-only output (no HTML)
-python -m src.cli --config my_config.yaml --text-only
+# Run — prints a ranked comparison to the terminal
+python -m src.cli --config my_config.yaml
 ```
 
 ## Tariff data
@@ -100,7 +97,7 @@ v0.3 shipped — answer-first redesign of the web app:
 - [x] In-app user manual + FAQ ("how to read your result")
 
 v0.2 shipped:
-- [x] CLI tool with HTML report generator
+- [x] CLI tool (terminal ranking; reference implementation for the web port)
 - [x] 32 electricity + 16 gas plans across EI, BG, Energia, SSE, Flogas, Yuno, Pinergy
 - [x] Smart meter + Day/Night meter support
 - [x] Web app at [sophie-zhen.github.io/energy-moneysaver](https://sophie-zhen.github.io/energy-moneysaver/)
