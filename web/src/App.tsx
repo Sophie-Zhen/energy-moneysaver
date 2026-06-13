@@ -486,18 +486,20 @@ export function App() {
             </label>
           )}
 
-          {mode === "hdf" && (
-            <p className="muted" style={{ gridColumn: "1 / -1", margin: 0 }}>
-              {t.dataGuideAsk}
-              <a
-                href={`${base}data_guide${helpSuffix}.html`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t.dataGuide}
-              </a>
-            </p>
-          )}
+          {/* One data-guide link, always shown. It sits right after the input
+              field, which is the annual-kWh field in form mode and the HDF file
+              field in HDF mode, so it's adjacent to the input in both — no need
+              to duplicate it per mode. The text covers both cases. */}
+          <p className="muted" style={{ gridColumn: "1 / -1", margin: 0 }}>
+            {t.dataGuideAsk}
+            <a
+              href={`${base}data_guide${helpSuffix}.html`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t.dataGuide}
+            </a>
+          </p>
 
           <label className="field">
             {t.meterType}
