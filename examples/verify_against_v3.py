@@ -33,7 +33,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src import tariff_loader as tl
 from src.simulator import (
     annual_dual_fuel_cost_eur,
-    cheapest_band_hour,
     ev_distribution_in_cheapest_band,
     load_hdf_baseload_pattern,
 )
