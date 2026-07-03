@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-06-03
+last_verified: 2026-07-03
 verified_by: sophiezhen
 notes: |
   Announced supplier price changes with future effective dates.
@@ -36,11 +36,28 @@ hikes:
       url: thejournal.ie / rte.ie / irishtimes.com (29 May 2026 coverage)
       confidence: PRESS
 
+  - supplier: Flogas
+    effective_date: 2026-07-20
+    electricity_pct: 10.9
+    gas_pct: 11.8
+    announced_on: 2026-06-19
+    source:
+      url: Flogas official price sheet ("PRICES FROM 20 JULY 2026") + rte.ie/news/business/2026/0619/1579301 (19 Jun 2026)
+      confidence: FACT
+    notes: |
+      Headline bill-average figures. The official price sheet shows the increase
+      is NOT uniform across bands: the 2-5am EV Night Charge super-off-peak band
+      jumps +30% (7.66 -> 9.96c), the Day/Peak/Night bands rise ~+8%, and the gas
+      unit rate + standing charge rise ~+13%. The uniform electricity_pct/gas_pct
+      model applies the announced average, so it slightly understates cost for EV
+      plans that lean on the 2-5am band (~+EUR70/yr on the EV Night Charge plan
+      for a heavy-gas Dublin household). Per-band accuracy would need a schema
+      change.
+
 # Suppliers with no announced hike as of last_verified. Listed for
 # transparency so the absence is intentional, not an oversight.
 no_hike_announced:
   - Bord Gáis
   - SSE Airtricity
   - Energia
-  - Flogas
   - Pinergy
