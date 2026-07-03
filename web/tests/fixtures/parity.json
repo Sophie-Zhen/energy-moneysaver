@@ -840,43 +840,43 @@
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 2993.877307
+      "expected_eur": 2855.154544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3253.558307
+      "expected_eur": 3114.835544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 3109.057307
+      "expected_eur": 2970.334544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 3136.947307
+      "expected_eur": 2998.224544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
-      "gas_id": "sse_gas_20pc",
-      "expected_eur": 2881.277307
+      "gas_id": "sse_gas_30pc",
+      "expected_eur": 2606.954544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 2827.037307
+      "expected_eur": 2688.314544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 2866.275307
+      "expected_eur": 2727.552544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
@@ -2022,43 +2022,43 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 3608.093307
+      "expected_eur": 3392.643544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3867.774307
+      "expected_eur": 3652.324544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 3723.273307
+      "expected_eur": 3507.823544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 3751.163307
+      "expected_eur": 3535.713544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
-      "gas_id": "sse_gas_20pc",
-      "expected_eur": 3495.493307
+      "gas_id": "sse_gas_30pc",
+      "expected_eur": 3144.443544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 3441.253307
+      "expected_eur": 3225.803544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 3480.491307
+      "expected_eur": 3265.041544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
@@ -3204,43 +3204,43 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 3271.077307
+      "expected_eur": 3097.754544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3530.758307
+      "expected_eur": 3357.435544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 3386.257307
+      "expected_eur": 3212.934544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 3414.147307
+      "expected_eur": 3240.824544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
-      "gas_id": "sse_gas_20pc",
-      "expected_eur": 3158.477307
+      "gas_id": "sse_gas_30pc",
+      "expected_eur": 2849.554544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 3104.237307
+      "expected_eur": 2930.914544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "sse_smart_ev_max_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 3143.475307
+      "expected_eur": 2970.152544
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
