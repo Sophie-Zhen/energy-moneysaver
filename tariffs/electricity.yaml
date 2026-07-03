@@ -569,30 +569,32 @@ plans:
   # ----------------- SSE Airtricity -----------------
   - id: sse_smart_ev_max_2026q2
     supplier: SSE Airtricity
-    label: Smart EV Max (20% off, 11pm-5am @ 13.86c)
+    label: Smart EV Max (30% off, 11pm-5am @ 12.13c)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: false
     requires_ev: true
     contract_months: 12
-    discount_pct: 20
+    discount_pct: 30
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [23, 24], rate_cpkwh: 13.86, label: EV Overnight}
-        - {hours: [0, 5],   rate_cpkwh: 13.86, label: EV Overnight}
-        - {hours: [5, 23],  rate_cpkwh: 38.58, label: Day}
+        - {hours: [23, 24], rate_cpkwh: 12.13, label: EV Overnight}
+        - {hours: [0, 5],   rate_cpkwh: 12.13, label: EV Overnight}
+        - {hours: [5, 23],  rate_cpkwh: 33.76, label: Day}
     standing_eur_per_year: 357.23
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-20-20-EVMax.pdf (4 Jun 2026)
-      verified_on: 2026-06-04
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-30-30-EVMax.pdf (3 Jul 2026)
+      verified_on: 2026-07-03
       confidence: FACT
     notes: |
       6-hour overnight window 23:00-05:00 (longest in market). No Peak
-      surcharge on this plan. Rates from SSE official tariff table PDF.
+      surcharge on this plan. SSE upgraded this offer from 20%/20% to 30%/30%
+      (Direct Debit + eBilling); net rates are 30% off the standard variable
+      base (overnight 17.33c, day 48.22c inc VAT). Pairs with sse_gas_30pc.
 
   - id: sse_smart_electricity_3band_2026q2
     supplier: SSE Airtricity
