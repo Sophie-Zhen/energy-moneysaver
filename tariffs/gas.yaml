@@ -331,17 +331,17 @@ plans:
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 7.96
+    rate_cpkwh_inc_vat: 7.97
     standing_eur_per_year: 152.31
     source:
       url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-30-30-EVMax.pdf (3 Jul 2026)
       verified_on: 2026-07-03
-      confidence: GUESS
+      confidence: FACT
     notes: |
-      The EV Max card is 30% elec + 30% gas. The exact 30% gas cent rate is
-      not itemised on the fetched card, so derived from the 20%-card base
-      (9.10 / 0.80 * 0.70 = 7.96c inc VAT). Standing charge assumed unchanged.
-      Refine when the exact 30-30 gas line is confirmed.
+      Confirmed from SSE's official 1YR-DF-30-30-EVMax card (DD & eBill column):
+      gas 30% off = 7.97c inc VAT, gas standing EUR152.31/yr (standard gas base
+      11.38c inc VAT). Card also confirms the paired elec rates: overnight 12.13c,
+      day 33.76c, elec standing EUR357.23/yr.
 
   # ----------------- Yuno Energy -----------------
   - id: yuno_gas_official_quote
