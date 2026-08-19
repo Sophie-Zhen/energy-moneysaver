@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-06-06
+last_verified: 2026-08-17
 verified_by: sophiezhen
 notes: |
   All rates are c/kWh INC 9% residential VAT.
@@ -62,29 +62,54 @@ plans:
       Post-1-Jul-2026 hike rate: 11.016 c/kWh inc VAT (standing unchanged).
       EI quotes an EAB of €1,394 at 11,000 kWh CRU reference usage.
 
-  - id: ei_gas_dual_plus_8_5pc
+  - id: ei_gas_saver_18pc_2026q3
     supplier: Electric Ireland
-    label: Gas EnergySaver (8.5% off, paired with Home Dual+ smart plans)
+    label: Gas EnergySaver (18% off, paired with the Saver 18% dual-fuel plans)
     category: new_customer_offer
     requires_dual_fuel: true
     requires_dual_fuel_with:
       - ei_home_dual_plus_sst_2026q2
       - ei_home_dual_plus_24hour_2026q2
+    contract_months: 12
+    discount_pct: 18
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rate_cpkwh_inc_vat: 10.037
+    standing_eur_per_year: 149.71
+    source:
+      url: electricireland.ie/switch/new-customer/price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Post-1-Jul-2026 hike. EI's dual-fuel discount tier moved from 8.5% to
+      18% between June and August 2026. Standing charge is not published on
+      EI's price-plan pages; €149.71 is derived from a 2026 EI gas bill
+      (0.3763/day ex VAT) and may be slightly stale.
+
+  - id: ei_gas_dual_plus_8_5pc
+    supplier: Electric Ireland
+    label: Gas EnergySaver (8.5% off, paired with Home Dual+ Night Boost)
+    category: new_customer_offer
+    requires_dual_fuel: true
+    requires_dual_fuel_with:
       - ei_home_dual_plus_night_boost_2026q2
     contract_months: 12
     discount_pct: 8.5
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 10.228
+    rate_cpkwh_inc_vat: 11.199
     standing_eur_per_year: 149.71
     source:
-      url: electricireland.ie/switch/new-customer/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
+      url: electricireland.ie/switch/new-customer/price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Current 8.5% off rate for Home Dual+ smart-meter customers. Note this
-      is materially different from the historical 28% promo (see ei_gas_saver_28pc).
+      Post-1-Jul-2026 hike (10.228 -> 11.199). As of Aug 2026 the 8.5% tier
+      only pairs with Night Boost and the Green plans; the mainstream Saver
+      plans now get 18% (see ei_gas_saver_18pc_2026q3). This is the hidden
+      cost of Night Boost's 2-hour EV window.
 
   - id: ei_gas_standard_post_jul_2026
     supplier: Electric Ireland
@@ -107,23 +132,27 @@ plans:
   # ----------------- Bord Gáis -----------------
   - id: bg_gas_21pc_with_nonev_smart_plans
     supplier: Bord Gáis
-    label: Gas (21% off, paired with Smart Standard / Smart All Day)
+    label: Gas (17% off, paired with Smart Standard / Smart All Day)
     category: new_customer_offer
     requires_dual_fuel: true
     requires_dual_fuel_with:
       - bg_smart_standard_dual_fuel_2026q2
       - bg_smart_all_day_dual_fuel_2026q2
     contract_months: 12
-    discount_pct: 21
+    discount_pct: 17
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 8.83
+    rate_cpkwh_inc_vat: 9.27
     standing_eur_per_year: 131.69
     source:
-      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: bordgaisenergy.ie/home/compare-dual-fuel-price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
+    notes: |
+      Discount cut 21% -> 17% between June and August 2026 (8.83 -> 9.27c).
+      Plan id kept as-is to avoid breaking existing references; the "21pc" in
+      the id is historical. 9.27c is 17% off BG's standard 11.17c.
 
   - id: bg_gas_15pc_with_ev_smart
     supplier: Bord Gáis
@@ -168,11 +197,10 @@ plans:
   # ----------------- Energia -----------------
   - id: energia_gas_10pc_with_ev_smart_drive
     supplier: Energia
-    label: Gas (10% off, paired with EV Smart Drive Plus)
+    label: Gas (10% off — Energia's standalone rate, no dual-fuel bundle)
     category: new_customer_offer
-    requires_dual_fuel: true
-    requires_dual_fuel_with:
-      - energia_ev_smart_drive_plus_2026q2
+    requires_dual_fuel: false
+    requires_dual_fuel_with: null
     contract_months: 12
     discount_pct: 10
     discount_duration_months: 12
@@ -181,31 +209,41 @@ plans:
     rate_cpkwh_inc_vat: 10.13     # 11.26 - 10%
     standing_eur_per_year: 141.60
     source:
-      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
+    notes: |
+      Rate re-confirmed 17 Aug 2026. This is the fallback whenever the
+      electricity side is NOT one of Energia's dual-fuel tariffs — i.e. with
+      EV Smart Drive Plus, EV Duo, or the 30% electricity-only Smart Data
+      tier. requires_dual_fuel flipped to false: it is Energia's standalone
+      gas offer, not a bundle-only rate.
 
-  - id: energia_gas_27pc_with_smart_data
+  - id: energia_gas_23pc_with_dual_fuel_data
     supplier: Energia
-    label: Gas (27% off, paired with Smart Data Dual Fuel only)
+    label: Gas (23% off, paired with Smart Dual Fuel Data MCC12)
     category: new_customer_offer
     requires_dual_fuel: true
     requires_dual_fuel_with:
-      - energia_smart_data_mcc12_2026q2
+      - energia_smart_dual_fuel_data_23pc_2026q3
     contract_months: 12
-    discount_pct: 27
+    discount_pct: 23
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 8.22      # 11.26 - 27%
+    rate_cpkwh_inc_vat: 8.67      # 11.26 - 23%
     standing_eur_per_year: 141.60
     source:
-      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      The "killer gas discount" — jumps from 10% (standalone or with EV
-      Smart Drive) to 27% only when bundled with Smart Data Dual Fuel.
+      REPLACES energia_gas_27pc_with_smart_data. Energia withdrew the
+      27%-elec + 27%-gas (8.22c) bundle; from 24 Jul 2026 the dual-fuel tier
+      is 23% on both fuels. Still the single most important number for a
+      gas-heavy household on Energia: taking the 30% electricity-only tier
+      instead drops gas all the way back to 10% (10.13c), which costs far
+      more than the extra 7 points on electricity save.
 
   - id: energia_gas_25pc_with_day_night_df
     supplier: Energia
@@ -214,6 +252,7 @@ plans:
     requires_dual_fuel: true
     requires_dual_fuel_with:
       - energia_day_night_df_25pc_2026q2
+      - energia_24hr_dual_fuel_25pc_2026q2
     contract_months: 12
     discount_pct: 25
     discount_duration_months: 12
@@ -233,12 +272,11 @@ plans:
 
   - id: energia_gas_15pc_with_smart_standard
     supplier: Energia
-    label: Gas (15% off, paired with Smart Standard MCC16 or 24hr Dual Fuel)
+    label: Gas (15% off, paired with Smart Standard MCC16 dual fuel)
     category: new_customer_offer
     requires_dual_fuel: true
     requires_dual_fuel_with:
       - energia_smart_standard_mcc16_2026q2
-      - energia_24hr_dual_fuel_25pc_2026q2
     contract_months: 12
     discount_pct: 15
     discount_duration_months: 12
@@ -247,9 +285,13 @@ plans:
     rate_cpkwh_inc_vat: 9.57
     standing_eur_per_year: 141.60
     source:
-      url: energia.ie/about-energia/our-tariffs (browse 4 Jun 2026)
-      verified_on: 2026-06-04
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
+    notes: |
+      Rate re-confirmed 17 Aug 2026. The 24hr Dual Fuel plan was previously
+      listed here by mistake — Energia's tariff page pairs it with the 25%
+      gas rate (8.45c), so it now sits under energia_gas_25pc_with_day_night_df.
 
   # ----------------- Flogas -----------------
   - id: flogas_gas_standard_variable
@@ -278,32 +320,61 @@ plans:
     requires_dual_fuel_with:
       - flogas_ev_night_charge_2026q2
       - flogas_smart_standard_2026q2
+      - flogas_dual_fuel_24hr_smart_2026q3
     contract_months: 12
     discount_pct: 28
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 8.091
-    standing_eur_per_year: 151.19
+    rate_cpkwh_inc_vat: 9.14        # post-20-Jul-2026 (was 8.091, +13%)
+    standing_eur_per_year: 170.84   # post-20-Jul-2026 (was 151.19)
     source:
-      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/HR6TEX/dual-fuel-smart-29pc-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
-      verified_on: 2026-06-03
-      confidence: BONKERS
+      url: Flogas official price sheet "PRICES FROM 20 JULY 2026" (urban, inc VAT; issued 19 Jun 2026)
+      verified_on: 2026-07-20
+      confidence: FACT
     notes: |
-      Cheapest gas unit rate in the market as of Jun 2026 for a typical Dublin
-      household. Rate via bonkers.ie (CRU-accredited); Flogas's dual-fuel page:
-      flogas.ie/price-plan/dual-fuel-smart-29-28-gas-loyalty-discount
+      Exact post-hike gas rate + standing from Flogas's official price sheet
+      (effective 20 Jul 2026): unit rate 8.09 -> 9.14c (inc VAT, ex carbon tax)
+      and standing 151.18 -> 170.84. Baked in directly (not scaled by the
+      hikes.yaml +11.8% average) and EXCLUDED from planner.HIKE_APPLICATIONS;
+      verified_on set to the effective date so the web engine skips it too.
+      Shared by the EV Night Charge and Smart Standard dual-fuel combos.
 
   # ----------------- SSE Airtricity -----------------
+  # NOTE: the "20pc"/"30pc" in these two ids is historical. SSE re-cut its
+  # tiers in Jul 2026 (dual fuel 25/20 -> 28/23, EV Max 30/30 -> 20/20); the
+  # ids are kept stable so existing references and fixtures do not break.
   - id: sse_gas_20pc
     supplier: SSE Airtricity
-    label: Gas (20% off, paired with SSE smart dual-fuel plans)
+    label: Gas (23% off, paired with SSE 28%/23% smart dual-fuel plans)
     category: new_customer_offer
     requires_dual_fuel: true
     requires_dual_fuel_with:
       - sse_smart_electricity_3band_2026q2
       - sse_smart_24hr_dual_fuel_2026q2
       - sse_smart_nightsaver_dual_fuel_2026q2
+    contract_months: 12
+    discount_pct: 23
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rate_cpkwh_inc_vat: 8.76
+    standing_eur_per_year: 152.31
+    source:
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-28-23.pdf (card 1YR-DF-28-23-V1, start 6 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      SSE moved its dual-fuel offer from 25%/20% to 28%/23% on 6 Jul 2026,
+      so gas fell 9.10 -> 8.76c (23% off the 11.38c standard base).
+
+  - id: sse_gas_30pc
+    supplier: SSE Airtricity
+    label: Gas (20% off, paired with SSE Smart EV Max)
+    category: new_customer_offer
+    requires_dual_fuel: true
+    requires_dual_fuel_with:
+      - sse_smart_ev_max_2026q2
     contract_months: 12
     discount_pct: 20
     discount_duration_months: 12
@@ -312,42 +383,142 @@ plans:
     rate_cpkwh_inc_vat: 9.10
     standing_eur_per_year: 152.31
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-25-20.pdf (4 Jun 2026)
-      verified_on: 2026-06-04
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-20-20-EVMax.pdf (card 1YR-DF-20-20-EVMax-V4)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Earlier YAML had 9.919c from selectra (was ex-VAT mislabeled as inc).
-      PDF confirms actual 9.10c inc VAT, 8.35c ex VAT.
+      REVERTED from 30% (7.97c) to 20% (9.10c). The 1YR-DF-30-30-EVMax card
+      this entry was built from on 3 Jul 2026 is no longer published; SSE's
+      current-offers page lists only "1 Year Smart EV Max Dual Fuel 20%/20%".
+      Gas standing EUR152.31/yr, standard gas base 11.38c inc VAT.
 
-  - id: sse_gas_30pc
+  - id: sse_gas_16pc_standalone
     supplier: SSE Airtricity
-    label: Gas (30% off, paired with SSE Smart EV Max)
+    label: Gas (16% off, standalone — pairs with the 30% electricity-only plan)
     category: new_customer_offer
-    requires_dual_fuel: true
-    requires_dual_fuel_with:
-      - sse_smart_ev_max_2026q2
+    requires_dual_fuel: false
+    requires_dual_fuel_with: null
     contract_months: 12
-    discount_pct: 30
+    discount_pct: 16
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 7.97
+    rate_cpkwh_inc_vat: 9.56
     standing_eur_per_year: 152.31
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-30-30-EVMax.pdf (3 Jul 2026)
-      verified_on: 2026-07-03
+      url: sseairtricity.com/ie/home/help-centre/our-tariffs/current-offers -> 1YR-GAS-16 (start 6 May 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Confirmed from SSE's official 1YR-DF-30-30-EVMax card (DD & eBill column):
-      gas 30% off = 7.97c inc VAT, gas standing EUR152.31/yr (standard gas base
-      11.38c inc VAT). Card also confirms the paired elec rates: overnight 12.13c,
-      day 33.76c, elec standing EUR357.23/yr.
+      SSE's standalone gas tier. What you fall back to if you take the 30%
+      electricity-only plan instead of the 28%/23% dual fuel: 9.56c vs 8.76c.
 
   # ----------------- Yuno Energy -----------------
+  # Full refresh 17 Aug 2026 from yunoenergy.ie/pricing-page (rates stamped
+  # "valid from 15th July 2026", already post the 1 Jul +11% gas hike, so all
+  # Yuno gas plans are EXCLUDED from planner.HIKE_APPLICATIONS).
+  # Yuno gas comes in three prices depending on which electricity product it
+  # is attached to: 8.22c on a Discount dual fuel, 9.41c on a Bonus dual fuel
+  # (the EUR200 welcome credit is paid for here), 9.49c standalone.
+  - id: yuno_gas_dual_fuel_discount
+    supplier: Yuno Energy
+    label: Gas (8.22c, paired with any Yuno Dual Fuel Discount plan)
+    category: new_customer_offer
+    requires_dual_fuel: true
+    requires_dual_fuel_with:
+      - yuno_dual_fuel_smart_discount_2026q3
+      - yuno_dual_fuel_24hr_2026q3
+      - yuno_dual_fuel_day_night_2026q3
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rate_cpkwh_inc_vat: 8.22
+    standing_eur_per_year: 150.03
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Discount" / "Dual Fuel Smart Discount"
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Cheapest gas unit rate found in the 17 Aug 2026 market sweep. Verified
+      against Yuno's own published EAB: 11,000 x (8.22 + 1.251)/100 + 150.03
+      = EUR1,191.84 vs the EUR1,191.72 Yuno prints (12c of rounding on the
+      carbon-tax figure).
+      CAUTION: read from the tariff page's accordion panels. A plain text
+      scrape of that page interleaves the panels and will pair this rate with
+      the wrong electricity plan — the Bonus plans use 9.41c, not 8.22c.
+
+  - id: yuno_gas_bonus
+    supplier: Yuno Energy
+    label: Gas (9.41c, paired with Yuno Bonus dual-fuel plans)
+    category: new_customer_offer
+    requires_dual_fuel: true
+    requires_dual_fuel_with:
+      - yuno_dual_fuel_smart_bonus_2026q3
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rate_cpkwh_inc_vat: 9.41
+    standing_eur_per_year: 150.03
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Smart Bonus"
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      This is where the EUR200 welcome credit on the Bonus plans is actually
+      paid for: 1.19c/kWh more than the Discount version. At the Irish CRU
+      reference of 11,000 kWh that is EUR131/yr; at 23,000 kWh it is EUR274,
+      so the credit is consumed inside the first year for most gas-heated
+      homes.
+
+  - id: yuno_gas_variable_discount
+    supplier: Yuno Energy
+    label: Gas Variable Discount (9.49c, standalone)
+    category: new_customer_offer
+    requires_dual_fuel: false
+    requires_dual_fuel_with: null
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rate_cpkwh_inc_vat: 9.49
+    standing_eur_per_year: 150.03
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Variable Gas Discount Plan"
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Yuno's standalone gas rate — what you pay alongside an
+      electricity-only Yuno plan such as EV Variable Smart.
+
+  - id: yuno_gas_standard
+    supplier: Yuno Energy
+    label: Gas Standard (11.72c, no discount - do-nothing trap)
+    category: post_hike_standard
+    requires_dual_fuel: false
+    requires_dual_fuel_with: null
+    contract_months: 0
+    discount_pct: 0
+    discount_duration_months: 0
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rate_cpkwh_inc_vat: 11.72
+    standing_eur_per_year: 150.03
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Standard Gas Plan"
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      What a Yuno gas customer rolls onto after the 12-month discount period.
+
   - id: yuno_gas_official_quote
     supplier: Yuno Energy
-    label: Gas (from customer quote, €60 cashback)
-    category: new_customer_offer
+    label: Gas (Jun 2026 customer quote, EUR60 cashback - SUPERSEDED)
+    category: discontinued
     requires_dual_fuel: false
     requires_dual_fuel_with: null
     contract_months: 12
@@ -362,13 +533,14 @@ plans:
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
-      Variable rate; Yuno announced +11% gas hike effective 1 Jul 2026
-      (see hikes.yaml).
+      KEPT FOR HISTORICAL REPRODUCIBILITY ONLY. Superseded by the three
+      Aug 2026 rates above; the EUR60 cashback does not appear on Yuno's
+      current pricing page.
 
   - id: yuno_gas_estimated
     supplier: Yuno Energy
-    label: Gas (€60 cashback, third-party estimate)
-    category: new_customer_offer
+    label: Gas (EUR60 cashback, third-party estimate - SUPERSEDED)
+    category: discontinued
     requires_dual_fuel: false
     requires_dual_fuel_with: null
     contract_months: 12
@@ -383,5 +555,5 @@ plans:
       verified_on: 2026-06-03
       confidence: THIRD_PARTY
     notes: |
-      Older selectra-sourced estimate. Use yuno_gas_official_quote where
-      available. Variable rate; +11% Jul 2026 hike applies.
+      KEPT FOR HISTORICAL REPRODUCIBILITY ONLY. Superseded by
+      yuno_gas_variable_discount (9.49c, read from Yuno's own tariff page).

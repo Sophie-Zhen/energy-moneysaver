@@ -25,6 +25,28 @@ function loadYaml(path) {
   return yaml.load(readFileSync(path, "utf8"), { schema: yaml.CORE_SCHEMA });
 }
 
+const AVAILABILITY_VALUES = new Set([
+  "self_serve",
+  "agent_only",
+  "unverified",
+  "existing_customers_only",
+]);
+
+// Whether a household can ACTUALLY sign up for a plan, as opposed to whether
+// its rate is published. Mirrors src/constants.py; validated rather than
+// passed through so a typo cannot silently mark an unobtainable plan as
+// obtainable.
+function normalizeAvailability(raw) {
+  const value = raw.availability ?? "self_serve";
+  if (!AVAILABILITY_VALUES.has(value)) {
+    throw new Error(
+      `plan ${raw.id}: unknown availability ${value}; expected one of ` +
+        [...AVAILABILITY_VALUES].join(", "),
+    );
+  }
+  return value;
+}
+
 function normalizeElectricityPlan(raw) {
   const rates = raw.rates_inc_vat;
   if (!rates || !rates.kind) {
@@ -35,6 +57,7 @@ function normalizeElectricityPlan(raw) {
     supplier: raw.supplier,
     label: raw.label,
     category: raw.category ?? "new_customer_offer",
+    availability: normalizeAvailability(raw),
     meter_type: raw.meter_type,
     kind: rates.kind,
     standing_eur_per_year: raw.standing_eur_per_year,
@@ -83,6 +106,7 @@ function normalizeGasPlan(raw) {
     supplier: raw.supplier,
     label: raw.label,
     category: raw.category ?? "new_customer_offer",
+    availability: normalizeAvailability(raw),
     rate_cpkwh: raw.rate_cpkwh_inc_vat,
     standing_eur_per_year: raw.standing_eur_per_year,
     welcome_credit_eur: raw.welcome_credit_eur ?? 0,

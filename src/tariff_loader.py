@@ -14,6 +14,8 @@ from typing import Any
 
 import yaml
 
+from .constants import AVAILABILITY_SELF_SERVE, AVAILABILITY_VALUES
+
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 ELECTRICITY_YAML = _REPO_ROOT / "tariffs" / "electricity.yaml"
 GAS_YAML = _REPO_ROOT / "tariffs" / "gas.yaml"
@@ -22,6 +24,22 @@ HIKES_YAML = _REPO_ROOT / "tariffs" / "hikes.yaml"
 
 # --------------------------- electricity ---------------------------
 
+def _availability(raw: dict) -> str:
+    """Read a plan's availability, defaulting to self-serve.
+
+    Validated rather than passed through: a typo here would silently mark an
+    unobtainable plan as obtainable, which is exactly the failure this field
+    exists to prevent.
+    """
+    value = raw.get("availability", AVAILABILITY_SELF_SERVE)
+    if value not in AVAILABILITY_VALUES:
+        raise ValueError(
+            f"plan {raw['id']!r}: unknown availability {value!r}; "
+            f"expected one of {', '.join(AVAILABILITY_VALUES)}"
+        )
+    return value
+
+
 def _convert_electricity_plan(raw: dict) -> dict:
     rates = raw["rates_inc_vat"]
     out: dict[str, Any] = {
@@ -29,6 +47,7 @@ def _convert_electricity_plan(raw: dict) -> dict:
         "label": raw["label"],
         "supplier": raw["supplier"],
         "category": raw.get("category", "new_customer_offer"),
+        "availability": _availability(raw),
         "kind": rates["kind"],
         "standing_eur_per_year": raw["standing_eur_per_year"],
         "welcome_credit_eur": raw.get("welcome_credit_eur", 0),
@@ -57,6 +76,7 @@ def _convert_gas_plan(raw: dict) -> dict:
         "label": raw["label"],
         "supplier": raw["supplier"],
         "category": raw.get("category", "new_customer_offer"),
+        "availability": _availability(raw),
         "rate_cpkwh": raw["rate_cpkwh_inc_vat"],
         "standing_eur_per_year": raw["standing_eur_per_year"],
         "welcome_credit_eur": raw.get("welcome_credit_eur", 0),

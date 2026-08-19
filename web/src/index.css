@@ -147,6 +147,39 @@ h2 {
   font-weight: 600;
 }
 
+/* Published rates the user cannot sign up for. Visually subordinate to the
+   ranking on purpose: informative, never the answer. */
+.excluded-plans {
+  margin-top: 2.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+}
+
+.excluded-plans h2 {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-top: 0;
+}
+
+.excluded-plans ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.9rem 0;
+}
+
+.excluded-plans li {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-border);
+  line-height: 1.5;
+}
+
+.excluded-plans li .num {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 table.ranking {
   width: 100%;
   border-collapse: collapse;

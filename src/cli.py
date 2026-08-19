@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import config as cfg_mod
+from . import constants
 from . import profiles
 from . import simulator
 from . import tariff_loader as tl
@@ -146,12 +147,20 @@ def main(argv: list[str] | None = None) -> int:
 
     # Sort: switchable combos by cheapest shifted cost ascending, then
     # baseline, then do-nothing.
+    #
+    # Combos the user cannot actually sign up for are pulled OUT of the ranking
+    # rather than ranked and footnoted. A cheaper number at rank 1 reads as
+    # "switch to this"; if the user then cannot switch to it, the whole table
+    # loses credibility. They are still reported, below, as leads to chase.
     switchable = [r for r in results
                   if not r.combo.is_baseline and not r.combo.is_do_nothing]
-    switchable.sort(key=lambda r: r.cost_shifted_eur)
+    obtainable = [r for r in switchable if r.combo.is_obtainable]
+    unobtainable = [r for r in switchable if not r.combo.is_obtainable]
+    obtainable.sort(key=lambda r: r.cost_shifted_eur)
+    unobtainable.sort(key=lambda r: r.cost_shifted_eur)
     baselines = [r for r in results if r.combo.is_baseline]
     do_nothings = [r for r in results if r.combo.is_do_nothing]
-    ordered = switchable + baselines + do_nothings
+    ordered = obtainable + baselines + do_nothings
 
     # Print the ranked comparison to the terminal.
     print()
@@ -176,6 +185,27 @@ def main(argv: list[str] | None = None) -> int:
             rank += 1
         print(f"{tag:<5} {r.combo.label[:51]:<52} "
               f"{r.cost_now_eur:>8.0f} {r.cost_shifted_eur:>11.0f}")
+
+    if unobtainable:
+        best_obtainable = obtainable[0].cost_shifted_eur if obtainable else None
+        print()
+        print("NOT RANKED — published rates you cannot sign up for online:")
+        print("-" * 80)
+        for r in unobtainable:
+            delta = ""
+            if best_obtainable is not None:
+                diff = best_obtainable - r.cost_shifted_eur
+                delta = (f"  (would save €{diff:.0f}/yr)" if diff > 0
+                         else f"  (€{-diff:.0f}/yr worse anyway)")
+            print(f"{'?':<5} {r.combo.label[:51]:<52} "
+                  f"{r.cost_now_eur:>8.0f} {r.cost_shifted_eur:>11.0f}")
+            reason = constants.AVAILABILITY_NOTE.get(r.combo.availability, "")
+            print(f"{'':<5} -> {reason}{delta}")
+        print()
+        print("These are excluded from the ranking on purpose: a rate you "
+              "cannot switch to is\nnot a saving. Chase one only if you are "
+              "willing to ring the supplier and get the\nrate confirmed in "
+              "writing before you commit.")
 
     return 0
 

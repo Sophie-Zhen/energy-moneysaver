@@ -7,6 +7,8 @@
 
 import { createContext, useContext } from "react";
 
+import type { PlanAvailability } from "./domain/types";
+
 export type Lang = "en" | "zh";
 
 const en = {
@@ -21,6 +23,22 @@ const en = {
     "Not sure where to find your annual kWh or how to download an HDF? ",
   dataGuide: "Data guide →",
   loadError: (msg: string) => `Could not load catalogue: ${msg}`,
+
+  // plans published but not obtainable
+  excludedHeading: "Published, but you cannot sign up for these online",
+  excludedIntro:
+    "These rates appear on the supplier's own tariff page, but they are not offered in its online sign-up flow. They are deliberately left out of the ranking above — a rate you cannot switch to is not a saving.",
+  excludedCost: (eur: number) => `€${eur.toLocaleString("en-IE")}/yr`,
+  excludedWouldSave: (eur: number) =>
+    `It would save €${eur.toLocaleString("en-IE")}/yr if you could get it.`,
+  excludedFootnote:
+    "Chase one only if you are willing to ring the supplier and get the rate confirmed in writing before you commit.",
+  availabilityReason: (a: PlanAvailability): string =>
+    a === "agent_only"
+      ? "Published rate, but not in the online sign-up flow — you would have to ring them."
+      : a === "existing_customers_only"
+        ? "Offered only to the supplier's existing customers."
+        : "Published rate, but we could not confirm a new customer can actually get it.",
 
   // input mode
   inputMode: "Input mode",
@@ -264,6 +282,22 @@ const zh: Strings = {
   dataGuideAsk: "不知道年用电量在哪查、HDF 怎么下载？",
   dataGuide: "数据指南 →",
   loadError: (msg: string) => `无法加载套餐数据：${msg}`,
+
+  // plans published but not obtainable
+  excludedHeading: "官网有公示，但线上办不了的费率",
+  excludedIntro:
+    "这些费率出现在供应商自己的资费页上，但没有出现在它的线上注册流程里。它们被刻意排除在上面的排名之外——一个你换不过去的费率，不算省钱。",
+  excludedCost: (eur: number) => `€${eur.toLocaleString("en-IE")}/年`,
+  excludedWouldSave: (eur: number) =>
+    `如果能办到，每年可省 €${eur.toLocaleString("en-IE")}。`,
+  excludedFootnote:
+    "只有在你愿意打电话给供应商、并在签约前拿到书面费率确认的前提下，才值得去争取。",
+  availabilityReason: (a: PlanAvailability): string =>
+    a === "agent_only"
+      ? "费率已公示，但线上注册流程里没有——需要打电话办理。"
+      : a === "existing_customers_only"
+        ? "只面向该供应商的现有客户。"
+        : "费率已公示，但无法确认新客户是否真能拿到。",
 
   // input mode
   inputMode: "输入方式",
