@@ -684,43 +684,43 @@
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 2820.878492
+      "expected_eur": 2927.989227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3080.559492
+      "expected_eur": 3187.670227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 2936.058492
+      "expected_eur": 3043.169227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 2963.948492
+      "expected_eur": 3071.059227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 2586.078492
+      "expected_eur": 2838.719227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 2654.038492
+      "expected_eur": 2761.149227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 2693.276492
+      "expected_eur": 2800.387227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
@@ -750,7 +750,7 @@
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
       "electricity_id": "flogas_smart_standard_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 2492.192197
+      "expected_eur": 2637.722197
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_no_ev",
@@ -1866,43 +1866,43 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 3369.62463
+      "expected_eur": 3522.322322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3629.30563
+      "expected_eur": 3782.003322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 3484.80463
+      "expected_eur": 3637.502322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 3512.69463
+      "expected_eur": 3665.392322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 3134.82463
+      "expected_eur": 3433.052322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 3202.78463
+      "expected_eur": 3355.482322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 3242.02263
+      "expected_eur": 3394.720322
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
@@ -1932,7 +1932,7 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
       "electricity_id": "flogas_smart_standard_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 3027.636192
+      "expected_eur": 3173.166192
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_current",
@@ -3048,43 +3048,43 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_saver_10pc_2026q2",
-      "expected_eur": 2974.118492
+      "expected_eur": 3127.189227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "ei_gas_standard_post_jul_2026",
-      "expected_eur": 3233.799492
+      "expected_eur": 3386.870227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "bg_gas_standard_variable",
-      "expected_eur": 3089.298492
+      "expected_eur": 3242.369227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_standard_variable",
-      "expected_eur": 3117.188492
+      "expected_eur": 3270.259227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 2739.318492
+      "expected_eur": 3037.919227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_official_quote",
-      "expected_eur": 2807.278492
+      "expected_eur": 2960.349227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_ev_night_charge_2026q2",
       "gas_id": "yuno_gas_estimated",
-      "expected_eur": 2846.516492
+      "expected_eur": 2999.587227
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
@@ -3114,7 +3114,7 @@
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",
       "electricity_id": "flogas_smart_standard_2026q2",
       "gas_id": "flogas_gas_28pc_with_smart",
-      "expected_eur": 2907.612197
+      "expected_eur": 3053.142197
     },
     {
       "scenario_id": "form_3500_elec_12000_gas_2000_ev_shifted",

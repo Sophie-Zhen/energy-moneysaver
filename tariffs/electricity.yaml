@@ -456,7 +456,7 @@ plans:
   # ----------------- Flogas -----------------
   - id: flogas_ev_night_charge_2026q2
     supplier: Flogas
-    label: Smart Dual Fuel EV Night Charge (29%/28%, 2-5am @ 7.66c)
+    label: Smart Dual Fuel EV Night Charge (29%/28%, 2-5am @ 9.96c post-20-Jul)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
@@ -469,24 +469,29 @@ plans:
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [2, 5],   rate_cpkwh: 7.662,  label: EV Super Off-Peak}
-        - {hours: [17, 19], rate_cpkwh: 37.921, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 22.83,  label: Night}
-        - {hours: [0, 2],   rate_cpkwh: 22.83,  label: Night}
-        - {hours: [5, 8],   rate_cpkwh: 22.83,  label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 29.408, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 29.408, label: Day}
-    standing_eur_per_year: 348.80
+        - {hours: [2, 5],   rate_cpkwh: 9.96,  label: EV Super Off-Peak}
+        - {hours: [17, 19], rate_cpkwh: 40.95, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 24.66, label: Night}
+        - {hours: [0, 2],   rate_cpkwh: 24.66, label: Night}
+        - {hours: [5, 8],   rate_cpkwh: 24.66, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 31.76, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 31.76, label: Day}
+    standing_eur_per_year: 376.70
     source:
-      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/YL7W79/smart-dual-fuel-ev-night-charge-29pc-electricity-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
-      verified_on: 2026-06-03
-      confidence: BONKERS
+      url: Flogas official price sheet "PRICES FROM 20 JULY 2026" (urban, inc VAT; issued 19 Jun 2026)
+      verified_on: 2026-07-20
+      confidence: FACT
     notes: |
-      Cheapest EV super-off-peak rate in Ireland as of Jun 2026.
-      100% renewable electricity. Band-level rates come from bonkers.ie (a
-      CRU-accredited comparison site) because Flogas publishes per-band rates
-      only via a quote; their own plan page is
-      flogas.ie/price-plan/smart-dual-fuel-ev-night-29-electricity-loyalty
+      Exact post-hike per-band rates from Flogas's official price sheet
+      (effective 20 Jul 2026). The 2-5am EV super-off-peak band rises +30%
+      (7.66 -> 9.96c) while Day/Peak/Night rise only +8% — a non-uniform
+      increase the blanket hikes.yaml average (+10.9%) cannot express, so these
+      are baked in directly and this plan is EXCLUDED from planner.HIKE_APPLICATIONS.
+      verified_on is set to the 20 Jul effective date so the web engine's
+      supplier-hike projection also skips it (no double-count). Standing charge
+      is not itemised on the sheet; scaled +8% (348.80 -> 376.70) to match the
+      non-EV band rise and the sheet's ~+9% electricity EAB increase.
+      100% renewable electricity.
 
   - id: flogas_smart_standard_2026q2
     supplier: Flogas

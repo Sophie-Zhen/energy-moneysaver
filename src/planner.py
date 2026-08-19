@@ -80,14 +80,14 @@ HIKE_APPLICATIONS = {
     "yuno_smart_dual_fuel_official_2026q2": ("elec", 9.5),
     "yuno_gas_official_quote":              ("gas", 11.0),
     # Flogas announced +10.9% elec / +11.8% gas from 20 Jul 2026 (see hikes.yaml).
-    # All Flogas YAML rates were collected 3-5 Jun 2026 (pre-hike), so scale them.
-    # NOTE: uniform pct — the real EV 2-5am band rose +30%, so this slightly
-    # understates the EV Night Charge plan. See hikes.yaml notes.
-    "flogas_ev_night_charge_2026q2":         ("elec", 10.9),
+    # The EV Night Charge plan + its paired gas (flogas_gas_28pc_with_smart) are
+    # deliberately NOT listed here: their real increase is non-uniform (the 2-5am
+    # EV band rose +30%, other bands +8%), so exact post-hike rates are baked
+    # into the YAML directly (verified_on 2026-07-20). The remaining Flogas
+    # variable plans below have no EV band, so the announced average is accurate.
     "flogas_smart_standard_2026q2":          ("elec", 10.9),
     "flogas_standard_variable_2026q2":       ("elec", 10.9),
     "flogas_standard_dual_fuel_28pc_2026q2": ("elec", 10.9),
-    "flogas_gas_28pc_with_smart":            ("gas", 11.8),
     "flogas_gas_standard_variable":          ("gas", 11.8),
 }
 

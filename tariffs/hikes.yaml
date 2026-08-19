@@ -48,11 +48,13 @@ hikes:
       Headline bill-average figures. The official price sheet shows the increase
       is NOT uniform across bands: the 2-5am EV Night Charge super-off-peak band
       jumps +30% (7.66 -> 9.96c), the Day/Peak/Night bands rise ~+8%, and the gas
-      unit rate + standing charge rise ~+13%. The uniform electricity_pct/gas_pct
-      model applies the announced average, so it slightly understates cost for EV
-      plans that lean on the 2-5am band (~+EUR70/yr on the EV Night Charge plan
-      for a heavy-gas Dublin household). Per-band accuracy would need a schema
-      change.
+      unit rate + standing charge rise ~+13%. Because a single electricity_pct/
+      gas_pct cannot express that, the EV Night Charge plan and its paired gas
+      (flogas_gas_28pc_with_smart) now carry EXACT post-hike per-band rates in
+      the YAML (verified_on 2026-07-20) and are excluded from
+      planner.HIKE_APPLICATIONS; the web engine skips them via the same
+      verified_on. The uniform pct below still applies to the remaining Flogas
+      variable plans, which have no EV band.
 
 # Suppliers with no announced hike as of last_verified. Listed for
 # transparency so the absence is intentional, not an oversight.

@@ -283,16 +283,19 @@ plans:
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
-    rate_cpkwh_inc_vat: 8.091
-    standing_eur_per_year: 151.19
+    rate_cpkwh_inc_vat: 9.14        # post-20-Jul-2026 (was 8.091, +13%)
+    standing_eur_per_year: 170.84   # post-20-Jul-2026 (was 151.19)
     source:
-      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/HR6TEX/dual-fuel-smart-29pc-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
-      verified_on: 2026-06-03
-      confidence: BONKERS
+      url: Flogas official price sheet "PRICES FROM 20 JULY 2026" (urban, inc VAT; issued 19 Jun 2026)
+      verified_on: 2026-07-20
+      confidence: FACT
     notes: |
-      Cheapest gas unit rate in the market as of Jun 2026 for a typical Dublin
-      household. Rate via bonkers.ie (CRU-accredited); Flogas's dual-fuel page:
-      flogas.ie/price-plan/dual-fuel-smart-29-28-gas-loyalty-discount
+      Exact post-hike gas rate + standing from Flogas's official price sheet
+      (effective 20 Jul 2026): unit rate 8.09 -> 9.14c (inc VAT, ex carbon tax)
+      and standing 151.18 -> 170.84. Baked in directly (not scaled by the
+      hikes.yaml +11.8% average) and EXCLUDED from planner.HIKE_APPLICATIONS;
+      verified_on set to the effective date so the web engine skips it too.
+      Shared by the EV Night Charge and Smart Standard dual-fuel combos.
 
   # ----------------- SSE Airtricity -----------------
   - id: sse_gas_20pc
