@@ -86,8 +86,8 @@ plans:
       the welcome bonus €120 -> €135. Day 08:00-23:00, Night 23:00-08:00,
       Peak 17:00-19:00. Pairs with ei_gas_saver_18pc_2026q3 (10.037c).
       Urban smart meter standing; EI does not publish standing charges on its
-      price-plan pages, so the €250.77 figure is carried over from the owner's
-      own EI bill (0.6303/day ex VAT) and may be slightly stale.
+      price-plan pages, so the €250.77 figure is derived from a 2026 EI
+      electricity bill (0.6303/day ex VAT) and may be slightly stale.
 
   - id: ei_home_dual_plus_24hour_2026q2
     supplier: Electric Ireland

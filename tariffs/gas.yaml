@@ -84,8 +84,8 @@ plans:
     notes: |
       Post-1-Jul-2026 hike. EI's dual-fuel discount tier moved from 8.5% to
       18% between June and August 2026. Standing charge is not published on
-      EI's price-plan pages; €149.71 is carried over from the owner's own EI
-      bill (0.3763/day ex VAT) and may be slightly stale.
+      EI's price-plan pages; €149.71 is derived from a 2026 EI gas bill
+      (0.3763/day ex VAT) and may be slightly stale.
 
   - id: ei_gas_dual_plus_8_5pc
     supplier: Electric Ireland
