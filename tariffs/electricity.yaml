@@ -12,6 +12,19 @@ notes: |
     post_hike_standard  - the "do nothing past discount expiry" trap
     discontinued        - kept for traceability, not offered for new sign-ups
 
+  Each plan's `availability` field says whether a household can ACTUALLY get
+  onto it. This is a separate axis from `category`, and only `self_serve`
+  plans are eligible to be the headline recommendation:
+    self_serve              - can be signed up for online today (DEFAULT)
+    agent_only              - published, but only via phone / retention desk
+    unverified              - published, but we could not confirm a new
+                              customer can get it; treated as unobtainable
+    existing_customers_only - not open to switchers
+  A published rate is not the same as an obtainable one: suppliers publish
+  full tariff tables to satisfy CRU transparency rules while exposing only a
+  subset in their sign-up flow. Ranking a rate the user cannot sign up for
+  produces a recommendation they cannot act on.
+
   v0 catalogue covers the big six (EI, BG, Energia, SSE, Flogas, Yuno) plus
   Pinergy. Catalogue expansion to full smart-meter plan range is in progress.
 
@@ -843,8 +856,9 @@ plans:
   # that same product. Both axes are modelled as separate plan ids below.
   - id: yuno_dual_fuel_smart_discount_2026q3
     supplier: Yuno Energy
-    label: Dual Fuel Smart Discount (3-band ToU, cheapest dual fuel in market)
+    label: Dual Fuel Smart Discount (3-band ToU, cheapest published dual fuel)
     category: new_customer_offer
+    availability: unverified
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false

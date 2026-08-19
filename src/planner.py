@@ -16,6 +16,13 @@ from typing import Optional
 
 from . import tariff_loader as tl
 from .config import UserConfig
+from .constants import (
+    AVAILABILITY_AGENT_ONLY,
+    AVAILABILITY_EXISTING_ONLY,
+    AVAILABILITY_OBTAINABLE,
+    AVAILABILITY_SELF_SERVE,
+    AVAILABILITY_UNVERIFIED,
+)
 
 
 # v0 curated electricity-only options (no gas pairing required).
@@ -124,6 +131,33 @@ class Combo:
     gas: Optional[dict]
     is_baseline: bool = False
     is_do_nothing: bool = False
+
+    @property
+    def availability(self) -> str:
+        """The combo is only as obtainable as its least obtainable half.
+
+        A dual-fuel bundle needs both plans, so if either side cannot be
+        signed up for, neither can the pairing.
+        """
+        values = [self.elec.get("availability", AVAILABILITY_SELF_SERVE)]
+        if self.gas is not None:
+            values.append(self.gas.get("availability", AVAILABILITY_SELF_SERVE))
+        for level in (AVAILABILITY_EXISTING_ONLY, AVAILABILITY_UNVERIFIED,
+                      AVAILABILITY_AGENT_ONLY):
+            if level in values:
+                return level
+        return AVAILABILITY_SELF_SERVE
+
+    @property
+    def is_obtainable(self) -> bool:
+        """True when a new customer can sign up for this combo online.
+
+        The baseline and do-nothing rows are always 'obtainable' — the user is
+        already on them, so the question does not arise.
+        """
+        if self.is_baseline or self.is_do_nothing:
+            return True
+        return self.availability in AVAILABILITY_OBTAINABLE
 
 
 def _apply_hike_if_needed(plan_id: str, plan: dict, fuel: str) -> dict:

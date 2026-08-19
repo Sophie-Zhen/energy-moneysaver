@@ -18,7 +18,13 @@ import {
   negotiateTarget,
   type UsageBandSplit,
 } from "./domain/simulator";
-import { buildCombos, type Combo, type UserConstraints } from "./domain/planner";
+import {
+  buildCombos,
+  comboAvailability,
+  isComboObtainable,
+  type Combo,
+  type UserConstraints,
+} from "./domain/planner";
 import { projectElectricity, projectGas } from "./domain/hikes";
 import { parseHdfCsv, type HdfParseResult } from "./data/hdfParser";
 import {
@@ -143,7 +149,10 @@ export function App() {
   // Tax-free export cap: €400 per named account holder, €800 jointly-named.
   const taxFreeCapEur = jointBill ? 800 : 400;
 
-  const ranking: RankedCombo[] | null = useMemo(() => {
+  // Every combo priced, obtainable or not. Split below — nothing downstream
+  // (headline answer, breakdowns, solar, negotiate) should ever see a plan the
+  // user cannot actually sign up for, so the filter happens once, here.
+  const allPriced: RankedCombo[] | null = useMemo(() => {
     if (!snapshot || !series) return null;
     const constraints: UserConstraints = { hasGas, hasEv, meterType };
     const combos = buildCombos(snapshot, constraints);
@@ -200,6 +209,19 @@ export function App() {
       })
       .sort((a, b) => a.annualEur - b.annualEur);
   }, [snapshot, series, hasGas, annualGasKwh, hasEv, annualEvKwh, meterType, referenceDate, effectiveExportKwh]);
+
+  // Ranked answer: only plans a household can sign up for online.
+  const ranking: RankedCombo[] | null = useMemo(
+    () => (allPriced ? allPriced.filter((r) => isComboObtainable(r.combo)) : null),
+    [allPriced],
+  );
+
+  // Published rates we could not confirm are open to new customers. Reported
+  // separately so the information is not lost, never ranked.
+  const excluded: RankedCombo[] | null = useMemo(
+    () => (allPriced ? allPriced.filter((r) => !isComboObtainable(r.combo)) : null),
+    [allPriced],
+  );
 
   // Per-component breakdown of the cheapest plan (and the current plan, if
   // chosen) for the "where the money goes / where the saving comes from" view.
@@ -685,6 +707,32 @@ export function App() {
               </table>
             )}
             {ranking.length > 0 && <ModellingDisclosure />}
+          </section>
+        )}
+
+        {excluded && excluded.length > 0 && ranking && ranking.length > 0 && (
+          <section className="excluded-plans">
+            <h2>{t.excludedHeading}</h2>
+            <p className="muted">{t.excludedIntro}</p>
+            <ul>
+              {excluded.map((row) => {
+                const diff = ranking[0].annualEur - row.annualEur;
+                return (
+                  <li key={row.combo.id}>
+                    <strong>{row.combo.label}</strong>{" "}
+                    <span className="num">
+                      {t.excludedCost(Math.round(row.annualEur))}
+                    </span>
+                    <br />
+                    <span className="muted">
+                      {t.availabilityReason(comboAvailability(row.combo))}
+                      {diff > 0 ? " " + t.excludedWouldSave(Math.round(diff)) : ""}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="muted">{t.excludedFootnote}</p>
           </section>
         )}
       </main>

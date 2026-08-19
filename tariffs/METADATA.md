@@ -16,6 +16,11 @@ Every plan record carries:
 - `id`: stable kebab-case identifier (e.g. `bg_ev_smart_dual_fuel_2026q2`)
 - `supplier`: official supplier name
 - `label`: human-readable plan name as shown on the supplier's website
+- `category`: what the plan is FOR — `new_customer_offer`,
+  `post_hike_standard`, or `discontinued`
+- `availability`: whether a household can ACTUALLY get it — `self_serve`
+  (default), `agent_only`, `unverified`, or `existing_customers_only`.
+  See below.
 - `meter_type`: one of `smart`, `day_night`, `standard_24hr`
 - `requires_dual_fuel`: true if the listed rate requires also taking the
   supplier's gas plan
@@ -24,6 +29,49 @@ Every plan record carries:
   `{kind: bands, bands: [{hours: [lo, hi], rate_cpkwh, label}, ...]}`
 - `standing_eur_per_year`
 - `source`: `{url, verified_on, confidence}`
+
+## Availability — published is not the same as obtainable
+
+`confidence` says how sure we are the **number** is right. `availability` says
+whether a user can **get** the plan. They are independent: a rate can be FACT
+(read straight off the supplier's own tariff page) and still be unreachable.
+
+Suppliers publish their full tariff tables to satisfy CRU transparency rules,
+but expose only a subset in their online sign-up flow. Ranking a rate the user
+cannot sign up for produces a recommendation they cannot act on — which is
+worse than not showing it, because it also discredits the rows that *are*
+actionable.
+
+| value | meaning |
+| --- | --- |
+| `self_serve` | can be signed up for online today — **the default** |
+| `agent_only` | published, but only via phone / retention desk |
+| `unverified` | published, but we could not confirm a new customer can get it |
+| `existing_customers_only` | not open to switchers |
+
+Rules:
+
+- **Default is `self_serve`.** A plan nobody has specifically checked stays
+  visible. This field hides things only on evidence, never on silence.
+- **Only `self_serve` plans are ranked.** Everything else is reported in a
+  separate "published but you cannot sign up for these" block, with its cost
+  and what it would have saved. Enforced in `src/cli.py`, in `App.tsx` (the
+  filter is applied once at the source so the headline answer, breakdowns,
+  solar and negotiate views cannot see an unobtainable plan), and tested in
+  `tests/test_availability.py` + `web/tests/availability.test.ts`.
+- **A dual-fuel combo is only as obtainable as its least obtainable half.**
+- **Any non-`self_serve` plan must say why in its `notes`**, so the flag can be
+  re-checked rather than becoming folklore. A test enforces this.
+- Unknown values are rejected at load time in both the Python loader and
+  `build-data.mjs` — a typo must not silently mark a plan obtainable.
+
+Worked example, and why this field exists: Yuno's *Dual Fuel Smart Discount*
+is the cheapest published dual fuel in the Aug 2026 catalogue (€3,966/yr on
+the reference household, €205 below the best obtainable plan). Its rates are
+FACT — on Yuno's own rate page, stamped "valid from 15th July 2026", and
+cross-checked against Yuno's published EABs to the cent. But Yuno's sign-up
+flow offers only three dual-fuel options and none of their EABs match it. It
+was briefly ranked #1 before this field existed. It is now `unverified`.
 
 ## Confidence levels
 

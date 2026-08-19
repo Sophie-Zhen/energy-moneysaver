@@ -14,6 +14,17 @@ export type PlanSource = {
 
 export type PlanCategory = "new_customer_offer" | "post_hike_standard" | "discontinued";
 
+// Whether a household can ACTUALLY get onto a plan — a separate axis from
+// `category`, which says what the plan is FOR. A published rate is not the
+// same as an obtainable one: suppliers publish full tariff tables to satisfy
+// CRU transparency rules while exposing only a subset in their sign-up flow.
+// Only `self_serve` plans may be ranked or shown as the headline answer.
+export type PlanAvailability =
+  | "self_serve"
+  | "agent_only"
+  | "unverified"
+  | "existing_customers_only";
+
 export type MeterType = "smart" | "day_night" | "standard_24hr";
 
 export type ElectricityPlan = {
@@ -21,6 +32,7 @@ export type ElectricityPlan = {
   supplier: string;
   label: string;
   category: PlanCategory;
+  availability: PlanAvailability;
   meter_type: MeterType;
   kind: "flat" | "bands";
   rate_cpkwh?: number;
@@ -39,6 +51,7 @@ export type GasPlan = {
   supplier: string;
   label: string;
   category: PlanCategory;
+  availability: PlanAvailability;
   rate_cpkwh: number; // inc VAT, ex carbon tax (added by simulator)
   standing_eur_per_year: number;
   welcome_credit_eur: number;

@@ -5,7 +5,12 @@
 // catalogue YAML; ids referenced here must exist in tariffs/electricity.yaml
 // or tariffs/gas.yaml).
 
-import type { ElectricityPlan, GasPlan, MeterType } from "./types";
+import type {
+  ElectricityPlan,
+  GasPlan,
+  MeterType,
+  PlanAvailability,
+} from "./types";
 import type { TariffSnapshot } from "../data/tariffLoader";
 
 export type Combo = {
@@ -14,6 +19,24 @@ export type Combo = {
   elec: ElectricityPlan;
   gas: GasPlan | null;
 };
+
+// A dual-fuel bundle needs both halves, so a combo is only as obtainable as
+// its least obtainable plan. Combos that fail this are kept out of the
+// ranking entirely: a cheaper number at rank 1 reads as "switch to this", and
+// a user who then cannot switch to it loses trust in the whole table.
+export function isComboObtainable(combo: Combo): boolean {
+  if (combo.elec.availability !== "self_serve") return false;
+  if (combo.gas && combo.gas.availability !== "self_serve") return false;
+  return true;
+}
+
+export function comboAvailability(combo: Combo): PlanAvailability {
+  if (combo.elec.availability !== "self_serve") return combo.elec.availability;
+  if (combo.gas && combo.gas.availability !== "self_serve") {
+    return combo.gas.availability;
+  }
+  return "self_serve";
+}
 
 export type UserConstraints = {
   hasGas: boolean;
