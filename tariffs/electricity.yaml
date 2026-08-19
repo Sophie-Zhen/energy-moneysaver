@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-06-06
+last_verified: 2026-08-17
 verified_by: sophiezhen
 notes: |
   All rates are c/kWh INC 9% residential VAT.
@@ -45,58 +45,64 @@ plans:
 
   - id: ei_home_dual_plus_sst_2026q2
     supplier: Electric Ireland
-    label: Home Dual+ SST (8.5% off, 3-band ToU smart, €120 welcome)
+    label: Home Dual + SST Saver 18% (3-band ToU smart, €135 welcome)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
     contract_months: 12
-    discount_pct: 8.5
+    discount_pct: 18
+    discount_duration_months: 12
+    welcome_credit_eur: 135
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 35.47, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 17.46, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 17.46, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 33.24, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 33.24, label: Day}
+    standing_eur_per_year: 250.77
+    source:
+      url: electricireland.ie/switch/new-customer/price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Post-1-Jul-2026 hike rates, and the discount tier moved 8.5% -> 18% with
+      the welcome bonus €120 -> €135. Day 08:00-23:00, Night 23:00-08:00,
+      Peak 17:00-19:00. Pairs with ei_gas_saver_18pc_2026q3 (10.037c).
+      Urban smart meter standing; EI does not publish standing charges on its
+      price-plan pages, so the €250.77 figure is carried over from the owner's
+      own EI bill (0.6303/day ex VAT) and may be slightly stale.
+
+  - id: ei_home_dual_plus_24hour_2026q2
+    supplier: Electric Ireland
+    label: Home Dual+ Saver 18% (flat 24hr, smart meter, €120 welcome)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 18
     discount_duration_months: 12
     welcome_credit_eur: 120
     exit_fee_eur: 50
     rates_inc_vat:
-      kind: bands
-      bands:
-        - {hours: [17, 19], rate_cpkwh: 36.14, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 17.80, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 17.80, label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 33.88, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 33.88, label: Day}
+      kind: flat
+      rate_cpkwh: 30.55
     standing_eur_per_year: 250.77
     source:
-      url: electricireland.ie/switch/new-customer/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
+      url: electricireland.ie/switch/new-customer/price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Urban smart meter standing. Rural standing €314.98/year if applicable.
-      Effective until 30 Jun 2026; post-1-Jul rates available on EI page
-      (Day 37.09 / Night 19.49 / Peak 39.57).
-
-  - id: ei_home_dual_plus_24hour_2026q2
-    supplier: Electric Ireland
-    label: Home Dual+ 24hour (flat 8.5% off, smart meter)
-    category: new_customer_offer
-    meter_type: smart
-    requires_dual_fuel: true
-    requires_ev: false
-    contract_months: 12
-    discount_pct: 8.5
-    discount_duration_months: 12
-    welcome_credit_eur: 0
-    exit_fee_eur: 50
-    rates_inc_vat:
-      kind: flat
-      rate_cpkwh: 31.08
-    standing_eur_per_year: 250.77
-    source:
-      url: electricireland.ie/switch/new-customer/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
-      confidence: FACT
+      Post-1-Jul-2026 hike. Discount tier moved 8.5% -> 18% and now carries a
+      €120 welcome bonus. Pairs with ei_gas_saver_18pc_2026q3 (10.037c).
 
   - id: ei_home_dual_plus_night_boost_2026q2
     supplier: Electric Ireland
-    label: Home Dual+ Night Boost (8.5% off, 9.62c @ 02-04am EV super-off-peak)
+    label: Home Dual+ Night Boost (8.5% off, 10.53c @ 02-04am EV super-off-peak)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
@@ -109,20 +115,22 @@ plans:
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [2, 4],   rate_cpkwh: 9.62,  label: Night Boost}
-        - {hours: [0, 2],   rate_cpkwh: 16.40, label: Night}
-        - {hours: [4, 8],   rate_cpkwh: 16.40, label: Night}
-        - {hours: [23, 24], rate_cpkwh: 16.40, label: Night}
-        - {hours: [8, 23],  rate_cpkwh: 33.25, label: Day}
+        - {hours: [2, 4],   rate_cpkwh: 10.53, label: Night Boost}
+        - {hours: [0, 2],   rate_cpkwh: 17.95, label: Night}
+        - {hours: [4, 8],   rate_cpkwh: 17.95, label: Night}
+        - {hours: [23, 24], rate_cpkwh: 17.95, label: Night}
+        - {hours: [8, 23],  rate_cpkwh: 36.40, label: Day}
     standing_eur_per_year: 250.77
     source:
-      url: electricireland.ie/switch/new-customer/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
+      url: electricireland.ie/switch/new-customer/price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      2-hour Night Boost window 02:00-04:00. Note: the EI page I scraped
-      didn't surface a separate Peak band for this plan — modelling without
-      Peak surcharge. Verify before relying.
+      Post-1-Jul-2026 hike. 2-hour Night Boost window 02:00-04:00 — the
+      narrowest EV window in the market. Still only 8.5% off, and the paired
+      gas is 11.199c (ei_gas_dual_plus_8_5pc), so the cheap 2-hour window is
+      paid for on every other unit. EI's page shows no separate Peak band for
+      this plan; modelled without a Peak surcharge.
 
   - id: ei_standard_24hr_post_jul_2026
     supplier: Electric Ireland
@@ -183,58 +191,64 @@ plans:
 
   - id: bg_smart_standard_dual_fuel_2026q2
     supplier: Bord Gáis
-    label: Smart Standard Dual Fuel (22%/21% off, 3-band ToU, no EV band)
+    label: Smart Standard Dual Fuel (17%/17% off, 3-band ToU, no EV band)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
     contract_months: 12
-    discount_pct: 22
+    discount_pct: 17
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [17, 19], rate_cpkwh: 42.20, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 25.59, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 25.59, label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 34.67, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 34.67, label: Day}
+        - {hours: [17, 19], rate_cpkwh: 44.91, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 27.23, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 27.23, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 36.89, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 36.89, label: Day}
     standing_eur_per_year: 244.76
     source:
-      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: bordgaisenergy.ie/home/compare-dual-fuel-price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
+    notes: |
+      BG cut its new-customer dual-fuel discount from 22%/21% to 17%/17%
+      between June and August 2026, so every band got MORE expensive despite
+      no headline price hike. Net rates are 17% off the standard smart tariff
+      (Day 44.45 / Night 32.81 / Peak 54.11 inc VAT).
 
   - id: bg_smart_all_day_dual_fuel_2026q2
     supplier: Bord Gáis
-    label: Smart All Day Dual Fuel (22%/21% off, single flat rate)
+    label: Smart All Day Dual Fuel (17%/17% off, single flat rate)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
     contract_months: 12
-    discount_pct: 22
+    discount_pct: 17
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: flat
-      rate_cpkwh: 32.44
+      rate_cpkwh: 34.52
     standing_eur_per_year: 244.76
     source:
-      url: bordgaisenergy.ie/home/our-plans (quote 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: bordgaisenergy.ie/home/compare-dual-fuel-price-plans (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
       Identical pricing all 24 hours. Suitable for users who can't shift
-      consumption to off-peak.
+      consumption to off-peak. Discount cut 22% -> 17% since June 2026;
+      34.52c is 17% off BG's standard 24hr rate of 41.59c inc VAT.
 
   - id: bg_smart_weekend_dual_fuel_2026q2
     supplier: Bord Gáis
-    label: Smart Weekend Dual Fuel (22%/21% off, 3-band ToU, higher night rate)
-    category: new_customer_offer
+    label: Smart Weekend Dual Fuel (22%/21% off, 3-band ToU — STALE, see notes)
+    category: discontinued
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
@@ -257,6 +271,12 @@ plans:
       verified_on: 2026-06-04
       confidence: FACT
     notes: |
+      STALE as of the 17 Aug 2026 re-scrape: BG's discount tier moved to
+      17%/17% (see bg_smart_standard_dual_fuel_2026q2) but the Weekender
+      plan's per-band rates were not republished on the pages checked, so
+      these June figures are left untouched rather than guessed at. Excluded
+      from ranking (category: discontinued) until re-verified — do NOT treat
+      the 22% rates below as current.
       Higher Night rate than Smart Standard (30.53c vs 25.59c) — likely the
       "STOD Weekender" T&C variant. EAB €2,876 (BG's reference 4200 kWh).
       Standing assumed same as Smart Standard.
@@ -317,33 +337,98 @@ plans:
 
   - id: energia_smart_data_mcc12_2026q2
     supplier: Energia
-    label: Smart Data MCC12 (27% off all bands, broad Night 23-08)
+    label: Smart Data MCC12 (30% off all bands, electricity only, broad Night 23-08)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: false
     requires_ev: false
     contract_months: 12
-    discount_pct: 27
+    discount_pct: 30
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [17, 19], rate_cpkwh: 34.54, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 16.91, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 16.91, label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 30.75, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 30.75, label: Day}
+        - {hours: [17, 19], rate_cpkwh: 33.12, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 16.21, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 16.21, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 29.49, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 29.49, label: Day}
     standing_eur_per_year: 265.01
     source:
-      url: energia.ie/about-energia/our-tariffs (browse 2 Jun 2026)
-      verified_on: 2026-06-03
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Effective 29 May 2026. No EV super-off-peak band but Night rate
-      (16.91c) is one of the lowest in the market. Gas discount jumps from
-      10% to 27% when bundled — see energia_gas_27pc_with_smart_data.
+      Effective 17 Aug 2026, when Energia raised this tier from 27% to 30%.
+      Night 16.21c is among the lowest electricity rates in the market, BUT
+      this is an ELECTRICITY-ONLY tariff: taking it means gas falls back to
+      the standalone 10% plan (energia_gas_10pc_standalone, 10.13c). For a
+      gas-heavy household the dual-fuel 23% tier below usually wins instead.
+      The 27%-elec + 27%-gas bundle that existed in June/July 2026 is GONE —
+      Energia no longer publishes it (see energia_gas_23pc_with_dual_fuel_data).
+
+  - id: energia_smart_dual_fuel_data_23pc_2026q3
+    supplier: Energia
+    label: Smart Dual Fuel Data MCC12 (23% off elec + gas, broad Night 23-08)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 23
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 36.43, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 17.83, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 17.83, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 32.44, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 32.44, label: Day}
+    standing_eur_per_year: 265.01
+    source:
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Effective 24 Jul 2026. Replaces the 27%-elec/27%-gas bundle. A smaller
+      electricity discount than the 30% electricity-only tier, but it keeps
+      gas at 23% (8.67c) instead of dropping to 10% (10.13c) — which is the
+      better trade for any household using much more gas than electricity.
+      Pairs with energia_gas_23pc_with_dual_fuel_data.
+
+  - id: energia_smart_ev_duo_2026q2
+    supplier: Energia
+    label: Smart EV Duo (10% off, Charge Time 2-6am @ 9.42c, NO night band)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: false
+    requires_ev: true
+    contract_months: 12
+    discount_pct: 10
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [2, 6],  rate_cpkwh: 9.42,  label: Charge Time (EV)}
+        - {hours: [0, 2],  rate_cpkwh: 40.16, label: Day}
+        - {hours: [6, 24], rate_cpkwh: 40.16, label: Day}
+    standing_eur_per_year: 265.01
+    source:
+      url: energia.ie/about-energia/our-tariffs (browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Effective 1 May 2026. Cheaper EV window than EV Smart Drive Plus
+      (9.42c vs 11.03c) but there is NO night band at all — every hour
+      outside 02:00-06:00 costs 40.16c. Only worth it for a household whose
+      consumption is almost entirely EV charging.
 
   - id: energia_smart_standard_mcc16_2026q2
     supplier: Energia
@@ -476,10 +561,10 @@ plans:
         - {hours: [5, 8],   rate_cpkwh: 24.66, label: Night}
         - {hours: [8, 17],  rate_cpkwh: 31.76, label: Day}
         - {hours: [19, 23], rate_cpkwh: 31.76, label: Day}
-    standing_eur_per_year: 376.70
+    standing_eur_per_year: 387.16
     source:
-      url: Flogas official price sheet "PRICES FROM 20 JULY 2026" (urban, inc VAT; issued 19 Jun 2026)
-      verified_on: 2026-07-20
+      url: flogas.ie/price-plans (live plan card, browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
       Exact post-hike per-band rates from Flogas's official price sheet
@@ -487,11 +572,11 @@ plans:
       (7.66 -> 9.96c) while Day/Peak/Night rise only +8% — a non-uniform
       increase the blanket hikes.yaml average (+10.9%) cannot express, so these
       are baked in directly and this plan is EXCLUDED from planner.HIKE_APPLICATIONS.
-      verified_on is set to the 20 Jul effective date so the web engine's
-      supplier-hike projection also skips it (no double-count). Standing charge
-      is not itemised on the sheet; scaled +8% (348.80 -> 376.70) to match the
-      non-EV band rise and the sheet's ~+9% electricity EAB increase.
-      100% renewable electricity.
+      Re-confirmed against Flogas's live plan card on 17 Aug 2026: all four
+      band rates match the price sheet exactly. The standing charge is the one
+      figure the sheet did not itemise — it was estimated at €376.70 (+8%) in
+      July and is now corrected to the published €387.16.
+      100% renewable electricity; includes 4x Emerald Park tickets.
 
   - id: flogas_smart_standard_2026q2
     supplier: Flogas
@@ -508,20 +593,49 @@ plans:
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [17, 19], rate_cpkwh: 34.044, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 20.771, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 20.771, label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 28.774, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 28.774, label: Day}
-    standing_eur_per_year: 270.46
+        - {hours: [17, 19], rate_cpkwh: 37.79, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 23.05, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 23.05, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 31.94, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 31.94, label: Day}
+    standing_eur_per_year: 300.20
     source:
-      url: https://www.bonkers.ie/compare-gas-electricity-prices/flogas/HR6TEX/dual-fuel-smart-29pc-28pc-gas-loyalty-discount/ (CRU-accredited comparison site; 3 Jun 2026)
-      verified_on: 2026-06-03
-      confidence: BONKERS
+      url: flogas.ie/price-plans (live plan card, browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
     notes: |
-      Band-level rates via bonkers.ie (CRU-accredited) — Flogas publishes
-      per-band rates only by quote. Supplier plan page:
-      flogas.ie/price-plan/dual-fuel-smart-29-28-gas-loyalty-discount
+      EXACT post-20-Jul-2026 rates read off Flogas's own plan card, replacing
+      the June bonkers.ie figures that were being scaled by the blanket
+      +10.9% in hikes.yaml. This plan is therefore EXCLUDED from
+      planner.HIKE_APPLICATIONS — the hike is already baked in.
+      The July estimate (uniform +8% on the June bands) came out ~2-3% low:
+      Day 31.08 est vs 31.94 actual, standing €292 est vs €300.20 actual.
+
+  - id: flogas_dual_fuel_24hr_smart_2026q3
+    supplier: Flogas
+    label: Dual Fuel 24Hr Smart (29%/28%, flat 29.31c, smart meter)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 29
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: flat
+      rate_cpkwh: 29.31
+    standing_eur_per_year: 300.20
+    source:
+      url: flogas.ie/price-plans (live plan card, browse 17 Aug 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Flat single rate on a smart meter, post-20-Jul-2026 hike. Distinct from
+      flogas_standard_dual_fuel_28pc_2026q2, which is the non-smart standard
+      meter product. Excluded from planner.HIKE_APPLICATIONS (rate is already
+      post-hike). Includes 4x Emerald Park tickets.
 
   - id: flogas_standard_variable_2026q2
     supplier: Flogas
@@ -574,11 +688,77 @@ plans:
   # ----------------- SSE Airtricity -----------------
   - id: sse_smart_ev_max_2026q2
     supplier: SSE Airtricity
-    label: Smart EV Max (30% off, 11pm-5am @ 12.13c)
+    label: Smart EV Max (20% off, 11pm-5am @ 13.86c)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: false
     requires_ev: true
+    contract_months: 12
+    discount_pct: 20
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [23, 24], rate_cpkwh: 13.86, label: EV Overnight}
+        - {hours: [0, 5],   rate_cpkwh: 13.86, label: EV Overnight}
+        - {hours: [5, 23],  rate_cpkwh: 38.58, label: Day}
+    standing_eur_per_year: 357.23
+    source:
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-20-20-EVMax.pdf (card 1YR-DF-20-20-EVMax-V4)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      REVERTED from 30%/30% back to 20%/20%. The 30/30 card
+      (1YR-DF-30-30-EVMax) that this catalogue carried from 3 Jul 2026 is no
+      longer published; SSE's current-offers page lists only
+      "1 Year Smart EV Max Dual Fuel 20%/20%" (start date 17 Apr 2026), and
+      the live product page states 20%. Net rates are 20% off the standard
+      base (overnight 17.33c, day 48.22c inc VAT) for Direct Debit + eBilling.
+      6-hour overnight window 23:00-05:00, still the widest EV window in the
+      market. No Peak surcharge. Pairs with sse_gas_20pc_with_ev_max (9.10c).
+
+  - id: sse_smart_electricity_3band_2026q2
+    supplier: SSE Airtricity
+    label: 1 Year Home Dual Fuel Smart 3-band (28% elec / 23% gas)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 28
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 50
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 35.10, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 20.14, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 20.14, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 31.34, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 31.34, label: Day}
+    standing_eur_per_year: 263.86
+    source:
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-28-23.pdf (card 1YR-DF-28-23-V1, start 6 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      SSE's headline dual-fuel offer moved from 25%/20% to 28%/23% on
+      6 Jul 2026, so this is now SSE's best plan for a gas-heavy household —
+      better than Smart EV Max, which fell back to 20%/20%.
+      Standard Smart Tariff Timetable: Day 8am-11pm excl 5-7pm, Night
+      11pm-8am, Peak 5-7pm (CRU). Rates from SSE's official tariff PDF.
+      Pairs with sse_gas_23pc_with_dual_fuel.
+
+  - id: sse_smart_electricity_30pc_2026q3
+    supplier: SSE Airtricity
+    label: 1 Year Electricity 30% (3-band smart, electricity only)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: false
+    requires_ev: false
     contract_months: 12
     discount_pct: 30
     discount_duration_months: 12
@@ -587,92 +767,65 @@ plans:
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [23, 24], rate_cpkwh: 12.13, label: EV Overnight}
-        - {hours: [0, 5],   rate_cpkwh: 12.13, label: EV Overnight}
-        - {hours: [5, 23],  rate_cpkwh: 33.76, label: Day}
-    standing_eur_per_year: 357.23
-    source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-30-30-EVMax.pdf (3 Jul 2026)
-      verified_on: 2026-07-03
-      confidence: FACT
-    notes: |
-      6-hour overnight window 23:00-05:00 (longest in market). No Peak
-      surcharge on this plan. SSE upgraded this offer from 20%/20% to 30%/30%
-      (Direct Debit + eBilling); net rates are 30% off the standard variable
-      base (overnight 17.33c, day 48.22c inc VAT). Pairs with sse_gas_30pc.
-
-  - id: sse_smart_electricity_3band_2026q2
-    supplier: SSE Airtricity
-    label: 1 Year Home Dual Fuel Smart 3-band (25% elec / 20% gas)
-    category: new_customer_offer
-    meter_type: smart
-    requires_dual_fuel: true
-    requires_ev: false
-    contract_months: 12
-    discount_pct: 25
-    discount_duration_months: 12
-    welcome_credit_eur: 0
-    exit_fee_eur: 50
-    rates_inc_vat:
-      kind: bands
-      bands:
-        - {hours: [17, 19], rate_cpkwh: 36.56, label: Peak}
-        - {hours: [23, 24], rate_cpkwh: 20.98, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 20.98, label: Night}
-        - {hours: [8, 17],  rate_cpkwh: 32.65, label: Day}
-        - {hours: [19, 23], rate_cpkwh: 32.65, label: Day}
+        - {hours: [17, 19], rate_cpkwh: 34.12, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 19.58, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 19.58, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 30.47, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 30.47, label: Day}
     standing_eur_per_year: 263.86
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-25-20.pdf (4 Jun 2026)
-      verified_on: 2026-06-04
+      url: sseairtricity.com/ie/home/products/smart-day-night-peak-electricity-with-top-discount (browse 17 Aug 2026)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
-      Standard Smart Tariff Timetable: Day 8am-11pm excl 5-7pm, Night
-      11pm-8am, Peak 5-7pm (CRU). Rates from SSE official tariff PDF.
+      SSE's "Top discount" electricity-only tier (start 6 Jul 2026). Cheaper
+      per unit than the 28% dual-fuel plan, but taking it drops gas to the
+      standalone 16% tier (sse_gas_16pc_standalone, 9.56c) instead of 23%
+      (8.76c) — the usual electricity-only trap for gas-heavy households.
 
   - id: sse_smart_24hr_dual_fuel_2026q2
     supplier: SSE Airtricity
-    label: 1 Year Home Dual Fuel Smart 24-hour (25% elec / 20% gas, flat)
+    label: 1 Year Home Dual Fuel Smart 24-hour (28% elec / 23% gas, flat)
     category: new_customer_offer
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
     contract_months: 12
-    discount_pct: 25
+    discount_pct: 28
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: flat
-      rate_cpkwh: 30.85
+      rate_cpkwh: 29.62
     standing_eur_per_year: 263.86
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-25-20.pdf (4 Jun 2026)
-      verified_on: 2026-06-04
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-28-23.pdf (card 1YR-DF-28-23-V1)
+      verified_on: 2026-08-17
       confidence: FACT
 
   - id: sse_smart_nightsaver_dual_fuel_2026q2
     supplier: SSE Airtricity
-    label: 1 Year Home Dual Fuel Smart Nightsaver (25% elec / 20% gas, 2-band)
+    label: 1 Year Home Dual Fuel Smart Nightsaver (28% elec / 23% gas, 2-band)
     category: new_customer_offer
-    meter_type: smart
+    meter_type: day_night
     requires_dual_fuel: true
     requires_ev: false
     contract_months: 12
-    discount_pct: 25
+    discount_pct: 28
     discount_duration_months: 12
     welcome_credit_eur: 0
     exit_fee_eur: 50
     rates_inc_vat:
       kind: bands
       bands:
-        - {hours: [23, 24], rate_cpkwh: 20.00, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 20.00, label: Night}
-        - {hours: [8, 23],  rate_cpkwh: 31.25, label: Day}
+        - {hours: [23, 24], rate_cpkwh: 19.19, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 19.19, label: Night}
+        - {hours: [8, 23],  rate_cpkwh: 30.01, label: Day}
     standing_eur_per_year: 338.98
     source:
-      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-25-20.pdf (4 Jun 2026)
-      verified_on: 2026-06-04
+      url: sseairtricity.com/assets/Tariffs/ROI/Current/1YR-DF-28-23.pdf (card 1YR-DF-28-23-V1)
+      verified_on: 2026-08-17
       confidence: FACT
     notes: |
       Winter Day 8am-11pm; Summer Day 9am-midnight. Higher standing charge
@@ -680,10 +833,259 @@ plans:
       meter physical wiring.
 
   # ----------------- Yuno Energy -----------------
+  # Full refresh 17 Aug 2026 from yunoenergy.ie/pricing-page (rates stamped
+  # "valid from 15th July 2026", i.e. already post the 1 Jul +9.5%/+11% hike,
+  # so every Yuno plan is now EXCLUDED from planner.HIKE_APPLICATIONS).
+  #
+  # Yuno names its plans on two independent axes, which its own site does not
+  # explain: "Discount" vs "Bonus" is cheaper units vs a EUR200 welcome credit,
+  # while the word "Smart" in a name just means the smart-meter rate table for
+  # that same product. Both axes are modelled as separate plan ids below.
+  - id: yuno_dual_fuel_smart_discount_2026q3
+    supplier: Yuno Energy
+    label: Dual Fuel Smart Discount (3-band ToU, cheapest dual fuel in market)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 32.80, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 16.35, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 16.35, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 29.43, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 29.43, label: Day}
+    standing_eur_per_year: 283.39
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Smart Discount" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      CAVEAT ON AVAILABILITY: this tariff is published on Yuno's rate page but
+      does NOT appear as a self-serve option in its sign-up flow, which offers
+      only Dual Fuel (EAB EUR2,746), Dual Fuel Bonus (EUR3,025) and Dual Fuel
+      Smart Bonus (EUR2,941). This plan's combined EAB is EUR2,539.75
+      (elec 1,348.03 + gas 1,191.72) and matches none of them. It is most
+      likely the rate table applied automatically when a smart-meter customer
+      picks "Dual Fuel", but that is inference, not verified — confirm with
+      Yuno before ranking this first for a real switch.
+
+      Rates cross-checked against Yuno's own published EABs: a single implied
+      CRU smart load split (day 54% / night 37% / peak 9%) fitted on two other
+      Yuno smart plans reproduces this plan's EUR1,348.03 EAB to the cent.
+      Pairs with yuno_gas_dual_fuel_discount (8.22c).
+
+  - id: yuno_dual_fuel_24hr_2026q3
+    supplier: Yuno Energy
+    label: Dual Fuel Discount 24hr (flat 30.81c, self-serve sign-up)
+    category: new_customer_offer
+    meter_type: standard_24hr
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: flat
+      rate_cpkwh: 30.81
+    standing_eur_per_year: 240.86
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Discount" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Was catalogued as yuno_24hr_urban_2026q2, an ELECTRICITY-ONLY plan. That
+      was wrong: 30.81c / EUR240.86 is the dual-fuel rate table, so the plan
+      now carries requires_dual_fuel: true. The genuine electricity-only rate
+      is 34.85c (see yuno_variable_discount_24hr_2026q3).
+      Verified against Yuno's published EAB: 4,200 x 0.3081 + 240.86 + 19.10
+      = EUR1,553.98, exactly the figure Yuno prints.
+
+  - id: yuno_dual_fuel_day_night_2026q3
+    supplier: Yuno Energy
+    label: Dual Fuel Discount Day/Night (2-band, no Peak surcharge)
+    category: new_customer_offer
+    meter_type: day_night
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [23, 24], rate_cpkwh: 18.67, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 18.67, label: Night}
+        - {hours: [8, 23],  rate_cpkwh: 32.31, label: Day}
+    standing_eur_per_year: 301.93
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Discount" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Was catalogued as yuno_day_night_urban_2026q2 without requires_dual_fuel;
+      same mislabelling as the 24hr entry. Legacy day/night meter, not smart.
+
+  - id: yuno_dual_fuel_smart_bonus_2026q3
+    supplier: Yuno Energy
+    label: Dual Fuel Smart Bonus (3-band ToU, EUR200 welcome credit)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: true
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 200
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 40.76, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 22.98, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 22.98, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 37.56, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 37.56, label: Day}
+    standing_eur_per_year: 235.77
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Dual Fuel Smart Bonus" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      The EUR200 credit is bought with worse unit rates than the Discount
+      version: gas 9.41c vs 8.22c and every electricity band ~6-8c higher.
+      The standing charge is EUR47.62/yr lower, which does not come close to
+      compensating. A useful worked example of a welcome-credit trap for any
+      household with meaningful gas usage.
+      Pairs with yuno_gas_bonus (9.41c).
+
+  - id: yuno_ev_variable_smart_2026q3
+    supplier: Yuno Energy
+    label: EV Variable Smart (EV 2-6am @ 8.59c, electricity only)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: false
+    requires_ev: true
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [2, 6],   rate_cpkwh: 8.59,  label: EV Super Off-Peak}
+        - {hours: [17, 19], rate_cpkwh: 45.38, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 21.46, label: Night}
+        - {hours: [0, 2],   rate_cpkwh: 21.46, label: Night}
+        - {hours: [6, 8],   rate_cpkwh: 21.46, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 40.47, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 40.47, label: Day}
+    standing_eur_per_year: 358.07
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "EV Variable Smart" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      Cheapest EV window in the Irish market at 8.59c, but the EV premium is
+      steep: standing EUR358.07 vs EUR283.39 on Dual Fuel Smart Discount, the
+      day rate jumps 29.43 -> 40.47c, and gas falls to the standalone 9.49c
+      tier. Directly comparable with yuno_dual_fuel_smart_discount_2026q3 —
+      the clearest same-supplier demonstration that a cheap EV band is paid
+      for everywhere else.
+
+  - id: yuno_variable_smart_discount_2026q3
+    supplier: Yuno Energy
+    label: Variable Smart Discount (3-band ToU, electricity only)
+    category: new_customer_offer
+    meter_type: smart
+    requires_dual_fuel: false
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 40.76, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 22.98, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 22.98, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 37.56, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 37.56, label: Day}
+    standing_eur_per_year: 235.77
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Variable Smart Discount" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+
+  - id: yuno_variable_discount_24hr_2026q3
+    supplier: Yuno Energy
+    label: Variable Discount 24hr (flat 34.85c, electricity only, lowest standing)
+    category: new_customer_offer
+    meter_type: standard_24hr
+    requires_dual_fuel: false
+    requires_ev: false
+    contract_months: 12
+    discount_pct: 0
+    discount_duration_months: 12
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: flat
+      rate_cpkwh: 34.85
+    standing_eur_per_year: 219.22
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Variable Discount Plan" (valid from 15 Jul 2026)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      The genuine electricity-only 24hr rate. Lowest standing charge in the
+      Irish market (EUR219.22).
+
+  - id: yuno_standard_smart_2026q3
+    supplier: Yuno Energy
+    label: Standard Smart TOU (no discount - do-nothing trap)
+    category: post_hike_standard
+    meter_type: smart
+    requires_dual_fuel: false
+    requires_ev: false
+    contract_months: 0
+    discount_pct: 0
+    discount_duration_months: 0
+    welcome_credit_eur: 0
+    exit_fee_eur: 0
+    rates_inc_vat:
+      kind: bands
+      bands:
+        - {hours: [17, 19], rate_cpkwh: 48.13, label: Peak}
+        - {hours: [23, 24], rate_cpkwh: 26.35, label: Night}
+        - {hours: [0, 8],   rate_cpkwh: 26.35, label: Night}
+        - {hours: [8, 17],  rate_cpkwh: 41.80, label: Day}
+        - {hours: [19, 23], rate_cpkwh: 41.80, label: Day}
+    standing_eur_per_year: 264.73
+    source:
+      url: yunoenergy.ie/pricing-page, accordion panel "Standard Smart Plan" (tariff code ETS01)
+      verified_on: 2026-08-17
+      confidence: FACT
+    notes: |
+      What a Yuno customer rolls onto once the 12-month discount period ends.
+
   - id: yuno_smart_dual_fuel_official_2026q2
     supplier: Yuno Energy
-    label: Smart Dual Fuel (rates from customer quote)
-    category: new_customer_offer
+    label: Smart Dual Fuel (Jun 2026 customer quote - SUPERSEDED)
+    category: discontinued
     meter_type: smart
     requires_dual_fuel: true
     requires_ev: false
@@ -706,13 +1108,15 @@ plans:
       verified_on: 2026-06-03
       confidence: FACT
     notes: |
-      Welcome credit value assumed €100 (carried over from NightSaver).
-      Variable rate; Yuno announced +9.5% elec hike effective 1 Jul 2026
-      (see hikes.yaml).
+      KEPT FOR HISTORICAL REPRODUCIBILITY ONLY. A 1 Jun 2026 customer quote
+      whose rates no longer appear anywhere on Yuno's published tariff page.
+      Use yuno_dual_fuel_smart_discount_2026q3 instead. The EUR100 welcome
+      credit was an assumption carried over from the NightSaver entry and was
+      never confirmed.
 
   - id: yuno_nightsaver_2026q2
     supplier: Yuno Energy
-    label: NightSaver (legacy selectra estimate — superseded by yuno_day_night_urban_2026q2)
+    label: NightSaver (legacy selectra estimate - superseded)
     category: discontinued
     meter_type: smart
     requires_dual_fuel: false
@@ -734,62 +1138,9 @@ plans:
       verified_on: 2026-06-03
       confidence: THIRD_PARTY
     notes: |
-      KEPT FOR HISTORICAL REPRODUCIBILITY: selectra had a "NightSaver"
-      label that doesn't appear on Yuno's official 2026 product matrix.
-      Use yuno_day_night_urban_2026q2 for the current actual product
-      (Day 32.31c / Night 18.67c, standing €301.93, FACT). Variable rate,
-      Yuno announced +9.5% elec / +11% gas hike effective 1 Jul 2026.
-
-  - id: yuno_24hr_urban_2026q2
-    supplier: Yuno Energy
-    label: Yuno 24hr Urban (flat smart, no discount, lowest standing)
-    category: new_customer_offer
-    meter_type: smart
-    requires_dual_fuel: false
-    requires_ev: false
-    contract_months: 12
-    discount_pct: 0
-    discount_duration_months: 0
-    welcome_credit_eur: 0
-    exit_fee_eur: 0
-    rates_inc_vat:
-      kind: flat
-      rate_cpkwh: 30.81
-    standing_eur_per_year: 240.86
-    source:
-      url: yunoenergy.ie/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
-      confidence: FACT
-    notes: |
-      Variable rate; subject to announced 1 Jul 2026 hike (+9.5%).
-      Lowest standing charge in Yuno's range. EAB €1,554 at 4,200 kWh ref.
-
-  - id: yuno_day_night_urban_2026q2
-    supplier: Yuno Energy
-    label: Yuno Day/Night Urban (2-band, no Peak surcharge)
-    category: new_customer_offer
-    meter_type: day_night
-    requires_dual_fuel: false
-    requires_ev: false
-    contract_months: 12
-    discount_pct: 0
-    discount_duration_months: 0
-    welcome_credit_eur: 0
-    exit_fee_eur: 0
-    rates_inc_vat:
-      kind: bands
-      bands:
-        - {hours: [23, 24], rate_cpkwh: 18.67, label: Night}
-        - {hours: [0, 8],   rate_cpkwh: 18.67, label: Night}
-        - {hours: [8, 23],  rate_cpkwh: 32.31, label: Day}
-    standing_eur_per_year: 301.93
-    source:
-      url: yunoenergy.ie/price-plans (browse 4 Jun 2026)
-      verified_on: 2026-06-04
-      confidence: FACT
-    notes: |
-      Day/Night meter type (older, not smart). Higher standing charge.
-      Variable rate; +9.5% hike applies 1 Jul 2026.
+      KEPT FOR HISTORICAL REPRODUCIBILITY: selectra had a "NightSaver" label
+      that does not appear on Yuno's official product matrix. Superseded by
+      yuno_dual_fuel_day_night_2026q3 / yuno_variable_discount_24hr_2026q3.
 
   # ----------------- Pinergy -----------------
   - id: pinergy_lifestyle_ev_drive_time_2026q2

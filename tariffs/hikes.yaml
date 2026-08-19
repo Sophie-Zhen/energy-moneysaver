@@ -1,5 +1,5 @@
 schema_version: 1
-last_verified: 2026-07-03
+last_verified: 2026-08-17
 verified_by: sophiezhen
 notes: |
   Announced supplier price changes with future effective dates.
@@ -15,6 +15,22 @@ notes: |
   Refresh procedure: search Google News for "<supplier> energy price" within
   the last 30 days, plus check each supplier's "price change information"
   page directly.
+
+  STATUS AT 2026-08-17: all three hikes below are now HISTORICAL — every plan
+  in the catalogue was re-read from its supplier after the relevant effective
+  date, so all rates are already post-hike and planner.HIKE_APPLICATIONS is
+  empty. The entries are kept as an audit trail of why rates moved between the
+  June and August snapshots, NOT as something still to be applied. Applying
+  them on top of the current rates would double-count.
+
+  Lesson from the June -> August gap, worth keeping: a supplier's headline
+  percentage is a bill-weighted average and can badly misdescribe what happens
+  to any one band (Flogas's EV window rose +30% against a "+10.9%" headline).
+  Where the exact per-band sheet is available, bake it in and leave this file
+  as documentation. Also note that a discount tier being re-cut is invisible
+  to this file entirely: Bord Gais went 22%/21% -> 17%/17% and SSE's EV Max
+  went 30%/30% -> 20%/20% with no price "hike" announced at all, which moved
+  their real rates more than most announced hikes did.
 
 hikes:
 
@@ -53,13 +69,20 @@ hikes:
       (flogas_gas_28pc_with_smart) now carry EXACT post-hike per-band rates in
       the YAML (verified_on 2026-07-20) and are excluded from
       planner.HIKE_APPLICATIONS; the web engine skips them via the same
-      verified_on. The uniform pct below still applies to the remaining Flogas
-      variable plans, which have no EV band.
+      verified_on. As of the 17 Aug 2026 refresh EVERY Flogas plan carries
+      exact post-hike rates read from flogas.ie, so the uniform pct here is
+      no longer applied to anything.
 
 # Suppliers with no announced hike as of last_verified. Listed for
 # transparency so the absence is intentional, not an oversight.
+# Re-checked 2026-08-17: no supplier in the catalogue has announced a further
+# increase with an effective date after that. Note this says nothing about
+# discount tiers, which several suppliers changed without any announcement.
 no_hike_announced:
   - Bord Gáis
   - SSE Airtricity
   - Energia
   - Pinergy
+  - Electric Ireland
+  - Yuno Energy
+  - Flogas

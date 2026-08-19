@@ -22,74 +22,88 @@ from .config import UserConfig
 # Used when the user has no gas in their config, OR via custom_combos when
 # they want to compare cross-supplier split bundles.
 CURATED_ELECTRICITY_ONLY = [
-    ("pinergy_lifestyle_ev_drive_time_2026q2",
-     "Pinergy EV Drive Time (5.99c @ 2-5am — electricity only)"),
+    # Pinergy EV Drive Time was discontinued 21 May 2026 and is deliberately
+    # NOT listed here; Pinergy also does not supply gas, so its plans can only
+    # ever appear as a split bundle against another supplier's gas.
     ("pinergy_lifestyle_smart_2026q2",
      "Pinergy Lifestyle Smart 3-band (electricity only)"),
     ("pinergy_lifestyle_family_time_2026q2",
      "Pinergy Lifestyle Family Time 7pm-12am (electricity only)"),
     ("pinergy_lifestyle_working_hours_2026q2",
      "Pinergy Lifestyle Working Hours 9am-5pm weekdays (electricity only)"),
+    ("yuno_ev_variable_smart_2026q3",
+     "Yuno EV Variable Smart (8.59c @ 02-06 — electricity only)"),
+    ("yuno_variable_discount_24hr_2026q3",
+     "Yuno Variable Discount 24hr (flat 34.85c, lowest standing in market)"),
+    ("sse_smart_electricity_30pc_2026q3",
+     "SSE Electricity 30% 3-band (electricity only)"),
+    ("energia_smart_data_mcc12_2026q2",
+     "Energia Smart Data 30% MCC12 (electricity only)"),
 ]
 
 # v0 curated dual-fuel switch options. (electricity_id, gas_id, label)
+# Refreshed 17 Aug 2026 against every supplier's own site / official tariff
+# cards. Labels carry the discount tier so a stale entry is obvious on sight.
 CURATED_DUAL_FUEL_COMBOS = [
-    ("bg_ev_smart_dual_fuel_2026q2",         "bg_gas_15pc_with_ev_smart",
-     "BG EV Smart + BG Gas-15%"),
-    ("bg_smart_standard_dual_fuel_2026q2",   "bg_gas_21pc_with_nonev_smart_plans",
-     "BG Smart Standard + BG Gas-21%"),
-    ("bg_smart_all_day_dual_fuel_2026q2",    "bg_gas_21pc_with_nonev_smart_plans",
-     "BG Smart All Day + BG Gas-21%"),
+    ("yuno_dual_fuel_smart_discount_2026q3", "yuno_gas_dual_fuel_discount",
+     "Yuno Dual Fuel Smart Discount (3-band, gas 8.22c)"),
+    ("yuno_dual_fuel_24hr_2026q3",           "yuno_gas_dual_fuel_discount",
+     "Yuno Dual Fuel Discount 24hr (flat 30.81c, gas 8.22c)"),
+    ("yuno_dual_fuel_smart_bonus_2026q3",    "yuno_gas_bonus",
+     "Yuno Dual Fuel Smart Bonus (EUR200 credit, gas 9.41c)"),
+    ("energia_smart_dual_fuel_data_23pc_2026q3", "energia_gas_23pc_with_dual_fuel_data",
+     "Energia Smart Dual Fuel Data 23%/23%"),
+    ("energia_smart_data_mcc12_2026q2",      "energia_gas_10pc_with_ev_smart_drive",
+     "Energia Smart Data 30% (elec only) + Gas 10%"),
+    ("energia_24hr_dual_fuel_25pc_2026q2",   "energia_gas_25pc_with_day_night_df",
+     "Energia 24hr Dual Fuel 25%/25%"),
     ("energia_ev_smart_drive_plus_2026q2",   "energia_gas_10pc_with_ev_smart_drive",
      "Energia EV Smart Drive Plus + Gas 10%"),
-    ("energia_smart_data_mcc12_2026q2",      "energia_gas_27pc_with_smart_data",
-     "Energia Smart Data 27% + Energia Gas 27%"),
-    ("flogas_ev_night_charge_2026q2",        "flogas_gas_28pc_with_smart",
-     "Flogas EV Night Charge"),
-    ("flogas_smart_standard_2026q2",         "flogas_gas_28pc_with_smart",
-     "Flogas Smart Standard"),
-    ("sse_smart_ev_max_2026q2",              "sse_gas_30pc",
-     "SSE Smart EV Max + SSE Gas"),
+    ("energia_smart_ev_duo_2026q2",          "energia_gas_10pc_with_ev_smart_drive",
+     "Energia Smart EV Duo (9.42c @ 02-06) + Gas 10%"),
     ("sse_smart_electricity_3band_2026q2",   "sse_gas_20pc",
-     "SSE Smart Electricity 3-band + SSE Gas"),
-    ("yuno_smart_dual_fuel_official_2026q2", "yuno_gas_official_quote",
-     "Yuno Smart Dual Fuel (official quote)"),
-    # Yuno NightSaver + estimated gas: pre-hike third-party rates, so apply
-    # the announced Jul 2026 hike to make this a fair post-hike comparison.
-    ("yuno_nightsaver_2026q2",               "yuno_gas_estimated",
-     "Yuno NightSaver + Yuno Gas (post-hike est.)"),
-    # Electric Ireland Home Dual+ family (current new-customer 8.5% off rates,
-    # added 4 Jun 2026 from EI's price plans page).
-    ("ei_home_dual_plus_sst_2026q2",         "ei_gas_dual_plus_8_5pc",
-     "EI Home Dual+ SST (3-band ToU, 8.5% off, €120 welcome)"),
-    ("ei_home_dual_plus_24hour_2026q2",      "ei_gas_dual_plus_8_5pc",
-     "EI Home Dual+ 24hour (flat 8.5% off)"),
+     "SSE Dual Fuel 28%/23% (3-band)"),
+    ("sse_smart_24hr_dual_fuel_2026q2",      "sse_gas_20pc",
+     "SSE Dual Fuel 28%/23% (flat 29.62c)"),
+    ("sse_smart_electricity_30pc_2026q3",    "sse_gas_16pc_standalone",
+     "SSE Electricity 30% (elec only) + SSE Gas 16%"),
+    ("sse_smart_ev_max_2026q2",              "sse_gas_30pc",
+     "SSE Smart EV Max 20%/20%"),
+    ("flogas_ev_night_charge_2026q2",        "flogas_gas_28pc_with_smart",
+     "Flogas EV Night Charge 29%/28% (9.96c @ 02-05)"),
+    ("flogas_smart_standard_2026q2",         "flogas_gas_28pc_with_smart",
+     "Flogas Dual Fuel Smart 29%/28%"),
+    ("flogas_dual_fuel_24hr_smart_2026q3",   "flogas_gas_28pc_with_smart",
+     "Flogas Dual Fuel 24Hr Smart 29%/28% (flat 29.31c)"),
+    ("bg_smart_standard_dual_fuel_2026q2",   "bg_gas_21pc_with_nonev_smart_plans",
+     "BG Smart Standard 17%/17%"),
+    ("bg_smart_all_day_dual_fuel_2026q2",    "bg_gas_21pc_with_nonev_smart_plans",
+     "BG Smart All Day 17%/17%"),
+    ("bg_ev_smart_dual_fuel_2026q2",         "bg_gas_15pc_with_ev_smart",
+     "BG EV Smart 15%/15% (8.98c @ 02-05)"),
+    ("ei_home_dual_plus_sst_2026q2",         "ei_gas_saver_18pc_2026q3",
+     "EI Home Dual + SST Saver 18% (3-band, EUR135 welcome)"),
+    ("ei_home_dual_plus_24hour_2026q2",      "ei_gas_saver_18pc_2026q3",
+     "EI Home Dual+ Saver 18% (flat, EUR120 welcome)"),
     ("ei_home_dual_plus_night_boost_2026q2", "ei_gas_dual_plus_8_5pc",
-     "EI Home Dual+ Night Boost (9.62c @ 02-04am)"),
+     "EI Home Dual+ Night Boost (10.53c @ 02-04, gas only 8.5% off)"),
 ]
 
 
 # Plans whose YAML rates are pre-hike — simulator should scale them up.
 # Maps plan_id -> (fuel, pct). Sourced from hikes.yaml semantics.
-HIKE_APPLICATIONS = {
-    "yuno_nightsaver_2026q2": ("elec", 9.5),
-    "yuno_gas_estimated":     ("gas", 11.0),
-    # Yuno's 1 Jul 2026 hike (+9.5% elec / +11% gas) applies to ALL Yuno plans,
-    # including the official-quote plan (quote dated 3 Jun 2026, pre-hike).
-    # Source: rte.ie / irishtimes.com 29 May 2026 (see hikes.yaml).
-    "yuno_smart_dual_fuel_official_2026q2": ("elec", 9.5),
-    "yuno_gas_official_quote":              ("gas", 11.0),
-    # Flogas announced +10.9% elec / +11.8% gas from 20 Jul 2026 (see hikes.yaml).
-    # The EV Night Charge plan + its paired gas (flogas_gas_28pc_with_smart) are
-    # deliberately NOT listed here: their real increase is non-uniform (the 2-5am
-    # EV band rose +30%, other bands +8%), so exact post-hike rates are baked
-    # into the YAML directly (verified_on 2026-07-20). The remaining Flogas
-    # variable plans below have no EV band, so the announced average is accurate.
-    "flogas_smart_standard_2026q2":          ("elec", 10.9),
-    "flogas_standard_variable_2026q2":       ("elec", 10.9),
-    "flogas_standard_dual_fuel_28pc_2026q2": ("elec", 10.9),
-    "flogas_gas_standard_variable":          ("gas", 11.8),
-}
+#
+# EMPTY since the 17 Aug 2026 refresh. Every plan in the catalogue now carries
+# rates read directly from the supplier post-hike, so there is nothing left to
+# scale: Flogas is post-20-Jul, Yuno's page is stamped "valid from 15 Jul 2026"
+# (post its 1 Jul rise), Electric Ireland and Energia are post-1-Jul, and no
+# supplier had announced a further increase as of 17 Aug 2026.
+#
+# Only add an entry here when hikes.yaml lists a hike that is ANNOUNCED but not
+# yet reflected in the plan's stored rate — otherwise the increase is applied
+# twice. The pre-2026q3 entries (Yuno +9.5%/+11%, Flogas +10.9%/+11.8%) were
+# removed for exactly that reason, not because the hikes did not happen.
+HIKE_APPLICATIONS: dict[str, tuple[str, float]] = {}
 
 
 # When the user's current supplier has a known post-discount-expiry trap,

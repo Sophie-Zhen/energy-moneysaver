@@ -1,9 +1,17 @@
 // Parity test: TS simulator must match Python output within EUR 0.01.
 //
-// The expected value 2735.962796 was computed by the Python simulator with
+// The expected value 2861.199016 was computed by the Python simulator with
 // the same inputs: default residential profile (dublin_2person_mixed)
 // scaled to 3,500 kWh/year electricity, BG Smart Standard Dual Fuel +
-// BG Gas 21% off, 12,000 kWh gas, no EV.
+// BG Gas (the bg_gas_21pc_* id), 12,000 kWh gas, no EV.
+//
+// It rose from 2735.962796 in the 17 Aug 2026 rate refresh because Bord Gáis
+// cut its new-customer dual-fuel discount from 22%/21% to 17%/17% — the rates
+// changed, not the engines. If this assertion fails after a tariff edit, take
+// the replacement number from the freshly generated
+// tests/fixtures/parity.json (scenario form_3500_elec_12000_gas_no_ev, this
+// exact plan pair) so it stays a genuine Python-vs-TS check rather than a
+// copy of whatever the TS side happened to produce.
 //
 // This test now exercises the full data-load path:
 //   tariffs/*.yaml ─(build:data)→ public/tariffs.json ─(toSnapshot)→ plans
@@ -54,7 +62,7 @@ describe("annualDualFuelCostEur — parity with Python", () => {
       evAnnualKwh: 0,
     });
 
-    const PYTHON_EXPECTED = 2735.962796;
+    const PYTHON_EXPECTED = 2861.199016;
     expect(cost).toBeCloseTo(PYTHON_EXPECTED, 2);
   });
 });
